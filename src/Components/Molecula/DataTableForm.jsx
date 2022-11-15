@@ -1,6 +1,6 @@
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import React from "react";
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import React from 'react';
 export default function DataTableForm({
   dt,
   products,
@@ -12,6 +12,7 @@ export default function DataTableForm({
   actionBodyTemplate2,
   ColumnNameDataTable,
 }) {
+  console.log(products);
   return (
     <>
       <DataTable
@@ -19,23 +20,24 @@ export default function DataTableForm({
         value={products}
         selection={selectedProducts}
         onSelectionChange={(e) => setSelectedProducts(e.value)}
-        dataKey="id"
+        dataKey='id'
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25]}
-        className="datatable-responsive"
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+        className='datatable-responsive'
+        paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+        currentPageReportTemplate='Mostrando {first} a {last} de {totalRecords}'
         globalFilter={globalFilter}
-        emptyMessage="No products found."
+        emptyMessage='No products found.'
         header={header}
-        responsiveLayout="scroll"
+        responsiveLayout='scroll'
       >
-        <Column
-          selectionMode="multiple"
-          headerStyle={{ width: "3rem" }}
-        ></Column>
+        {/* <Column
+          selectionMode='multiple'
+          headerStyle={{ width: '3rem' }}
+        ></Column> */}
         {ColumnNameDataTable?.map((item, index) => {
+          console.log(item);
           let name =
             item.NameColumn.charAt(0).toUpperCase() +
             item.NameColumn.slice(1).toLowerCase();
@@ -48,7 +50,7 @@ export default function DataTableForm({
               body={item.BodyColumn}
               headerStyle={{
                 width: `${item.StyleWidthColumn}%`,
-                minWidth: "10rem",
+                minWidth: '10rem',
               }}
             ></Column>
           );

@@ -1,3 +1,4 @@
+// todo: para eliminar
 import React from 'react';
 import { Calendar } from 'primereact/calendar';
 import { InputText } from 'primereact/inputtext';
@@ -17,8 +18,6 @@ const RegistroSolicitudDinero = () => {
       objetoComision: '',
       fechaInicio: '',
       fechaFin: '',
-      products: [],
-      total: 0,
     },
     onSubmit: (values) => {
       if (values.fechaRegistro) {
@@ -61,18 +60,19 @@ const RegistroSolicitudDinero = () => {
       numeroSolicitud: Yup.number('Solo se permite numeros')
         .min(8)
         .required('Requerido'),
-      nombre: Yup.string().required('Rquerido'),
-      nombreProyecto: Yup.string().required('Rquerido'),
-      lugarComision: Yup.string().required('Rquerido'),
-      itenerarioTransporte: Yup.string().required('Rquerido'),
-      objetoComision: Yup.string().required('Rquerido'),
+      nombre: Yup.string().required('Requerido'),
+      nombreProyecto: Yup.string().required('Requerido'),
+      lugarComision: Yup.string().required('Requerido'),
+      itenerarioTransporte: Yup.string().required('Requerido'),
+      objetoComision: Yup.string().required('Requerido'),
+      fechaFin: Yup.string().required('La fecha fin es requerida'),
     }),
   });
   return (
     <div className='grid crud-demo'>
       <div className='col-12'>
         <div className='card'>
-          <Toolbar
+          {/* <Toolbar
             className='mb-4'
             left={
               <Button
@@ -81,7 +81,7 @@ const RegistroSolicitudDinero = () => {
                 onClick={handleClickRetornar}
               />
             }
-          ></Toolbar>
+          ></Toolbar> */}
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <h4>Datos Personales</h4>
@@ -227,12 +227,20 @@ const RegistroSolicitudDinero = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
-                  inputId='calendar'
+                  // inputId='calendarioFin'
                   values={formik.values.fechaFin}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   name='fechaFin'
-                  required
+                  // required
+                  // {...formik.getFieldProps('fechaFin')}
                 ></Calendar>
+                {formik.touched.calendarioFin &&
+                  formik.errors.calendarioFin && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.calendarioFin}
+                    </span>
+                  )}
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -249,4 +257,4 @@ const RegistroSolicitudDinero = () => {
   );
 };
 
-export default RegistroSolicitudDinero;
+// export default RegistroSolicitudDinero;

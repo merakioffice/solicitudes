@@ -1,4 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
@@ -10,46 +12,71 @@ import { useFormik } from 'formik';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-// import LeftToolBarTemplate from '../../../Molecula/LeftToolBarTemplate';
-import ModalSolicitudDinero from './modal/ModalSolicitudDinero';
-import DataTableForm from '../../../Molecula/DataTableForm';
 import ModalCreacionProducto from './modal/ModalCreacionProducto';
+import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { useSelector } from 'react-redux';
+// import PDFSolicitud from './PDFSolicitud';
 
-const RegistroDimero = () => {
-  // const dt = useRef(null);
-  const [data, setData] = useState({});
-  // const [dataProduct, setDataProduct] = useState([]);
+const RegistroDinero = () => {
+  const toast = useRef(null);
+  const { solicitud } = useSelector((state) => state.solicitudDinero);
+  const [dataRegistro, setDataRegistro] = useState([]);
+  const [totales, setTotal] = useState(0);
+  const [uuid, setUuid] = useState(null);
+  const [boolCreate, setBoolCreate] = useState(false);
+  const [viewProduct, setViewProduct] = useState(false);
   const navigate = useNavigate();
 
-  const [view, setView] = useState(false);
-  const [viewProduct, setViewProduct] = useState(false);
+  // const [data, setData] = useState({});
+
+  // const [view, setView] = useState(false);
 
   const handleClickRetornar = () => {
     navigate('/SolicitudDinero');
   };
-  // const handleClickModal = () => {
-  //   setView(!view);
-  // };
+
   const handleClickProduct = () => {
     setViewProduct(!viewProduct);
   };
 
-  //  TODO: use formik
+  const deleteData = (data) => {
+    fetchDelete(`solicitudProducto/${data.id}`).then(() => {
+      listaSolicitudDinero();
+      toast.current.show({
+        severity: 'success',
+        summary: 'Eliminado',
+        detail: 'El producto se ha eliminado correctamente',
+        life: 3000,
+      });
+    });
+  };
+
+  const tableButtonDelete = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-trash'
+          className='p-button-rounded p-button-danger'
+          onClick={() => deleteData(rowData)}
+        />
+      </div>
+    );
+  };
+
   const formik = useFormik({
     initialValues: {
-      numeroSolicitud: '',
-      fechaRegistro: '',
-      nombre: '',
+      numeroSolicitud: solicitud ? solicitud?.numeroSolicitud : '',
+      fechaRegistro: solicitud ? solicitud?.fechaRegistro : '',
+      nombre: 'hola',
       nombreProyecto: '',
       lugarComision: '',
-      itenerarioTransporte: '',
+      itinerarioTransporte: '',
       objetoComision: '',
       fechaInicio: '',
       fechaFin: '',
-      products: [],
-      total: 0,
     },
     onSubmit: (values) => {
+      // console.log(values);
       if (values.fechaRegistro) {
         const datosRegistros =
           values.fechaRegistro.getMonth() +
@@ -81,45 +108,64 @@ const RegistroDimero = () => {
           values.fechaFin.getFullYear();
         values.fechaFin = fechaFin;
       }
-      //
-      localStorage.setItem('solicitudDinero', JSON.stringify(values));
-      setData(values);
-      setView(false);
+
+      registreAdd(values);
     },
     validationSchema: Yup.object({
-      numeroSolicitud: Yup.number('Solo se permite numeros')
+      numeroSolicitud: Yup.number('Solo se permiten números')
         .min(8)
-        .required('Requerido'),
-      nombre: Yup.string().required('Rquerido'),
-      nombreProyecto: Yup.string().required('Rquerido'),
-      lugarComision: Yup.string().required('Rquerido'),
-      itenerarioTransporte: Yup.string().required('Rquerido'),
-      objetoComision: Yup.string().required('Rquerido'),
+        .required('El número de solicitud es requerido'),
+      fechaRegistro: Yup.string().required('La fecha de registro es requerido'),
+      nombre: Yup.string().required('El nombre es requerido'),
+      nombreProyecto: Yup.string().required(
+        'El nombre del proyecto es requerido'
+      ),
+      lugarComision: Yup.string().required('El lugar de comisión es requerido'),
+      itinerarioTransporte: Yup.string().required('El itinerario es requerido'),
+      objetoComision: Yup.string().required('El objeto es requerido'),
+      fechaInicio: Yup.string().required('La fecha de inicio es requerido'),
+      fechaFin: Yup.string().required('La fecha de fin es requerido'),
     }),
   });
+
+  const registreAdd = (values) => {
+    fetchPost('solicitud', 'POST', values).then(({ personal }) => {
+      setUuid(personal.id);
+      console.log(personal);
+      setBoolCreate(true);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Creado',
+        detail: 'Se ha creado correctamente',
+        life: 3000,
+      });
+    });
+  };
+
+  const listaSolicitudDinero = () => {
+    fetchGet(`solicitud/${uuid}`).then(({ personal, total }) => {
+      setDataRegistro(personal);
+      setTotal(total);
+    });
+  };
+
+  useEffect(() => {
+    if (uuid) {
+      listaSolicitudDinero();
+    }
+  }, []);
+
   return (
     <div className='grid crud-demo'>
+      <Toast ref={toast} />
+
       <div className='col-12'>
         <div className='card'>
-          {/* <Toolbar
+          <Toolbar
             className='mb-4'
-            left={
-              <Button
-                label='Retornar'
-                // icon='pi-arrow-left'
-                onClick={handleClickRetornar}
-              />
-            }
-            right={
-              <Button
-                label='Guardar'
-                // icon='pi-arrow-left'
-                onClick={handleClickRetornar}
-              />
-            }
-          ></Toolbar> */}
+            right={<Button label='Ver PDF' />}
+          ></Toolbar>
 
-          {/*  */}
           <form onSubmit={formik.handleSubmit} noValidate>
             <h4>Datos Personales</h4>
 
@@ -135,6 +181,7 @@ const RegistroDimero = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
                 {formik.touched.numeroSolicitud &&
                   formik.errors.numeroSolicitud && (
@@ -146,14 +193,19 @@ const RegistroDimero = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha Registro</label>
                 <Calendar
-                  inputId='calendar'
                   values={formik.values.fechaRegistro}
                   onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  // required
                   name='fechaRegistro'
+                  disabled={boolCreate}
                 ></Calendar>
+                {formik.touched.fechaRegistro &&
+                  formik.errors.fechaRegistro && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.fechaRegistro}
+                    </span>
+                  )}
               </div>
               <div className='field col-12 md:col-12'>
                 <label htmlFor='nombre' className='block'>
@@ -166,6 +218,7 @@ const RegistroDimero = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
                 {formik.touched.nombre && formik.errors.nombre && (
                   <span style={{ color: '#e5432d' }}>
@@ -174,7 +227,7 @@ const RegistroDimero = () => {
                 )}
               </div>
             </div>
-            <h4>Informacion del proyecto</h4>
+            <h4>Información del proyecto</h4>
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='nombreProyecto' className='block'>
@@ -187,6 +240,7 @@ const RegistroDimero = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
                 {formik.touched.nombreProyecto &&
                   formik.errors.nombreProyecto && (
@@ -206,6 +260,7 @@ const RegistroDimero = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
                 {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
@@ -215,21 +270,22 @@ const RegistroDimero = () => {
                   )}
               </div>
               <div className='field col-12 md:col-6'>
-                <label htmlFor='itenerarioTransporte' className='block'>
+                <label htmlFor='itinerarioTransporte' className='block'>
                   Itinerario de transporte
                 </label>
                 <InputText
-                  name='itenerarioTransporte'
+                  name='itinerarioTransporte'
                   type='text'
-                  values={formik.values.itenerarioTransporte}
+                  values={formik.values.itinerarioTransporte}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
-                {formik.touched.itenerarioTransporte &&
-                  formik.errors.itenerarioTransporte && (
+                {formik.touched.itinerarioTransporte &&
+                  formik.errors.itinerarioTransporte && (
                     <span style={{ color: '#e5432d' }}>
-                      {formik.errors.itenerarioTransporte}
+                      {formik.errors.itinerarioTransporte}
                     </span>
                   )}
               </div>
@@ -243,6 +299,8 @@ const RegistroDimero = () => {
                   values={formik.values.objetoComision}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
                 {formik.touched.objetoComision &&
                   formik.errors.objetoComision && (
@@ -254,22 +312,34 @@ const RegistroDimero = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaInicio'>Fecha inicio</label>
                 <Calendar
-                  inputId='calendar'
                   name='fechaInicio'
                   values={formik.values.fechaInicio}
                   onChange={formik.handleChange}
-                  required
+                  onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 ></Calendar>
+                {formik.touched.fechaInicio && formik.errors.fechaInicio && (
+                  <span style={{ color: '#e5432d' }}>
+                    {formik.errors.fechaInicio}
+                  </span>
+                )}
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
-                  inputId='calendar'
                   values={formik.values.fechaFin}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   name='fechaFin'
-                  required
+                  style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 ></Calendar>
+                {formik.touched.fechaFin && formik.errors.fechaFin && (
+                  <span style={{ color: '#e5432d' }}>
+                    {formik.errors.fechaFin}
+                  </span>
+                )}
               </div>
             </div>
             <div
@@ -282,13 +352,11 @@ const RegistroDimero = () => {
               <Button
                 style={{ width: '100px', marginLeft: '20px' }}
                 label='Retornar'
-                // icon='pi pi-check'
                 onClick={handleClickRetornar}
               />
               <Button
                 style={{ width: '100px', marginLeft: '20px' }}
                 label='Guardar'
-                // icon='pi pi-check'
                 type='submit'
               />
             </div>
@@ -311,20 +379,24 @@ const RegistroDimero = () => {
               onClick={handleClickProduct}
             />
           </div>
-          {/* poner en otro archivo */}
-          <DataTable value={[]} showGridlines responsiveLayout='scroll'>
-            <Column field='code' header='Item'></Column>
-            <Column field='name' header='Descripción'></Column>
-            <Column field='category' header='Partida Presupuestal'></Column>
-            <Column field='quantity' header='Importe'></Column>
+
+          <DataTable value={dataRegistro.productos} responsiveLayout='scroll'>
+            <Column field='id' header='Item'></Column>
+            <Column field='descripcion' header='Descripción'></Column>
+            <Column
+              field='partidaPresupuestal'
+              header='Partida Presupuestal'
+            ></Column>
+            <Column field='importe' header='Importe'></Column>
+            <Column body={tableButtonDelete}></Column>
           </DataTable>
-          {/*  */}
+
           <div>
             <button
               style={{
                 border: '0px',
                 padding: '5px',
-                width: '645px',
+                width: '445px',
                 height: '30px',
                 color: '#fff',
                 backgroundColor: '#fff',
@@ -335,7 +407,7 @@ const RegistroDimero = () => {
               style={{
                 border: '0px',
                 padding: '5px',
-                width: '260px',
+                width: '200px',
                 color: '#575D63',
               }}
               disabled
@@ -346,23 +418,33 @@ const RegistroDimero = () => {
               style={{
                 border: '0px',
                 padding: '5px',
-                width: '100px',
-                backgroundColor: 'white',
+                width: '200px',
+                backgroundColor: '#ececec',
                 color: '#575D63',
               }}
               disabled
             >
-              {/* 1234.23 */}
+              {totales.toFixed(2)}
             </button>
           </div>
           <ModalCreacionProducto
             viewProduct={viewProduct}
             setViewProduct={setViewProduct}
+            uuid={uuid}
+            listaSolicitudDinero={listaSolicitudDinero}
           />
+          {/*  */}
+          <hr />
+          {/*  */}
         </div>
+        {/*  */}
       </div>
+      {/*  */}
+
+      {/*  */}
+      {/* <PDFSolicitud /> */}
     </div>
   );
 };
 
-export default RegistroDimero;
+export default RegistroDinero;

@@ -16,7 +16,7 @@ import './assets/layout/layout.scss';
 import { useState } from 'react';
 // import Detalle from './Components/Sistema/Menu/Detalle/SolicitudDinero';
 import Demostracion from './pages/Demostracion';
-import RegistroDimero from './Components/Sistema/Menu/Detalle/RegistroDimero';
+import RegistroDinero from './Components/Sistema/Menu/Detalle/RegistroDinero';
 import SolicitudDinero from './Components/Sistema/Menu/Detalle/SolicitudDinero';
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
           <Route
             exact
             path={'RegistroSolicitudDinero'}
-            element={<RegistroDimero />}
+            element={<RegistroDinero />}
           />
           <Route exact path={'Visor'} element={<Demostracion />} />
         </Route>

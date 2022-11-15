@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { Toast } from 'primereact/toast';
+
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 
 import { Button } from 'primereact/button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { fetchPost } from '../../../../../api';
 
-export default function ModalCreacionProducto({ viewProduct, setViewProduct }) {
+export default function ModalCreacionProducto({
+  viewProduct,
+  setViewProduct,
+  listaSolicitudDinero,
+  uuid,
+}) {
+  const toast = useRef(null);
+
   const formik = useFormik({
     initialValues: {
       descripcion: '',
@@ -14,7 +24,9 @@ export default function ModalCreacionProducto({ viewProduct, setViewProduct }) {
       importe: '',
     },
     onSubmit: (values) => {
-      console.log(values);
+      values.importe = Number(values.importe);
+      values.solicitudId = uuid;
+      createProduct(values);
     },
     validationSchema: Yup.object({
       descripcion: Yup.string().required('La descripción es requerida'),
@@ -24,16 +36,25 @@ export default function ModalCreacionProducto({ viewProduct, setViewProduct }) {
       importe: Yup.number().positive().required('El importe es requerido'),
     }),
   });
+  const createProduct = (data) => {
+    fetchPost('solicitudProducto', 'POST', data).then(() => {
+      setViewProduct(false);
+      formik.resetForm();
+      listaSolicitudDinero();
+    });
+  };
 
   return (
     <Dialog
       visible={viewProduct}
       style={{ width: '450px' }}
-      header='Creacion de producto'
+      header='Creación de producto'
       modal
       className='p-fluid'
       onHide={() => setViewProduct(false)}
     >
+      <Toast ref={toast} />
+
       <form onSubmit={formik.handleSubmit}>
         <div className='p-fluid formgrid grid'>
           <div className='field col-12 md:col-12'>

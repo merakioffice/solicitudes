@@ -1,4 +1,5 @@
 import React from 'react';
+import PDFSolicitud from '../Components/Sistema/Menu/Detalle/PDFSolicitud';
 // import { InputText } from 'primereact';
 
 export default function Detalle() {
@@ -80,10 +81,8 @@ export default function Detalle() {
   };
 
   return (
-    <div className='grid crud-demo'>
-      <div className='col-12'>
-        <div className='card'></div>
-      </div>
+    <div>
+      <PDFSolicitud style={{ height: '100vh', width: '100wh' }} />
     </div>
   );
 }
