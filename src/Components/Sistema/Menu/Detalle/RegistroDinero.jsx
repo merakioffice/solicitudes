@@ -15,7 +15,6 @@ import { Column } from 'primereact/column';
 import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
-// import PDFSolicitud from './PDFSolicitud';
 
 const RegistroDinero = () => {
   const toast = useRef(null);
@@ -25,11 +24,8 @@ const RegistroDinero = () => {
   const [uuid, setUuid] = useState(null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [viewProduct, setViewProduct] = useState(false);
+  const [view, setView] = useState(false);
   const navigate = useNavigate();
-
-  // const [data, setData] = useState({});
-
-  // const [view, setView] = useState(false);
 
   const handleClickRetornar = () => {
     navigate('/SolicitudDinero');
@@ -155,6 +151,8 @@ const RegistroDinero = () => {
     }
   }, []);
 
+  // console.log(view);
+
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -164,6 +162,7 @@ const RegistroDinero = () => {
           <Toolbar
             className='mb-4'
             right={<Button label='Ver PDF' />}
+            onClick={() => setView(true)}
           ></Toolbar>
 
           <form onSubmit={formik.handleSubmit} noValidate>
