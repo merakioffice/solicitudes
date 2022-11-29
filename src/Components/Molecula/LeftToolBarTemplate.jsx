@@ -1,12 +1,12 @@
-import React from "react";
-import BtnToolBarTemplateSuccess from "../Atomo/BtnToolBarTemplateSuccess";
+import React from 'react';
+import { Button } from 'primereact/button';
 
 export default function LeftToolBarTemplate({
   openNew,
   nameBtn,
   ventana = true,
-  openNewDos,
-  nameBtnDos,
+  // openNewDos,
+  // nameBtnDos,
   ventanaAdd = true,
 }) {
   let bool = false;
@@ -15,15 +15,11 @@ export default function LeftToolBarTemplate({
   }
   return (
     <div>
-      <BtnToolBarTemplateSuccess openNew={openNew} nameBtn={nameBtn} />
-      {bool && (
-        <>
-          <BtnToolBarTemplateSuccess
-            openNew={openNewDos}
-            nameBtn={nameBtnDos}
-          />
-        </>
-      )}
+      <Button
+        label={nameBtn}
+        icon='pi pi-angle-double-left'
+        onClick={openNew}
+      />
     </div>
   );
 }

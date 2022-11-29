@@ -1,5 +1,5 @@
 // import { PDFViewer } from '@react-pdf/renderer';
-import PDFSolicitud from '../Components/Sistema/Menu/Detalle/PDFSolicitud';
+// import PDFSolicitud from '../Components/Sistema/Menu/Detalle/PDFSolicitud';
 export default function Detalle() {
   return (
     <>

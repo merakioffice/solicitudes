@@ -13,14 +13,14 @@ import 'primeflex/primeflex.css';
 import './assets/demo/flags/flags.css';
 import './assets/demo/Demos.scss';
 import './assets/layout/layout.scss';
-import { useState } from 'react';
+// import { useState } from 'react';
 // import Detalle from './Components/Sistema/Menu/Detalle/SolicitudDinero';
 import Demostracion from './pages/Demostracion';
 import RegistroDinero from './Components/Sistema/Menu/Detalle/RegistroDinero';
 import SolicitudDinero from './Components/Sistema/Menu/Detalle/SolicitudDinero';
 
 function App() {
-  const [mobileMenuActive, setMobileMenuActive] = useState(false);
+  // const [mobileMenuActive, setMobileMenuActive] = useState(false);
   return (
     <div>
       <Routes>
