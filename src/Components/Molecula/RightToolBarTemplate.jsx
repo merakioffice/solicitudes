@@ -1,14 +1,12 @@
 import React from 'react';
 import { Button } from 'primereact/button';
 
-export default function RightToolBarTemplate({ openNew, nameBtn }) {
+const RightToolBarTemplate = ({ openNew, nameBtn }) => {
   return (
     <div>
-      <Button
-        label={nameBtn}
-        icon='pi pi-angle-double-left'
-        onClick={openNew}
-      />
+      <Button label={nameBtn} onClick={openNew} />
     </div>
   );
-}
+};
+
+export { RightToolBarTemplate };

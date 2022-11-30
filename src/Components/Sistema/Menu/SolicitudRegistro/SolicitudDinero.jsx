@@ -3,7 +3,6 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
-import LeftToolBarTemplate from '../../../Molecula/LeftToolBarTemplate';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import './styles.scss';
@@ -11,6 +10,7 @@ import { fetchDelete, fetchGet } from '../../../../api';
 import { useDispatch } from 'react-redux';
 import { getSolicitudDinero } from '../../../../store/thunsk';
 import { oneIdSolicitud } from '../../../../store/slices/solicitud/solicitudStile';
+import { LeftToolBarTemplate } from '../../../Molecula';
 
 const SolicitudDinero = () => {
   const dispatch = useDispatch();
@@ -78,7 +78,7 @@ const SolicitudDinero = () => {
         <div className='card'>
           <Toolbar
             className='mb-4'
-            left={LeftToolBarTemplate({
+            right={LeftToolBarTemplate({
               openNew: openSolicitud,
               nameBtn: 'Generar solicitud',
             })}
@@ -99,4 +99,4 @@ const SolicitudDinero = () => {
   );
 };
 
-export default SolicitudDinero;
+export { SolicitudDinero };

@@ -446,4 +446,4 @@ const RegistroDinero = () => {
   );
 };
 
-export default RegistroDinero;
+export { RegistroDinero };

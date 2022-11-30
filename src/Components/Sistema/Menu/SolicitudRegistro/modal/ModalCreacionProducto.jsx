@@ -36,6 +36,7 @@ export default function ModalCreacionProducto({
       importe: Yup.number().positive().required('El importe es requerido'),
     }),
   });
+
   const createProduct = (data) => {
     fetchPost('solicitudProducto', 'POST', data).then(() => {
       setViewProduct(false);
@@ -101,7 +102,7 @@ export default function ModalCreacionProducto({
             )}
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
             label='No'
             style={{ width: '100px' }}

@@ -45,13 +45,13 @@ export default function AppMenu() {
         {
           label: 'Solicitud de dinero',
           icon: 'pi pi-fw pi-eye',
-          to: '/SolicitudDinero',
+          to: '/solicitud-dinero',
           command: () => {
-            navigate('/SolicitudDinero');
+            navigate('/solicitud-dinero');
           },
         },
         {
-          label: 'Rendicion de Gastos',
+          label: 'Rendición de Gastos',
           icon: 'pi pi-fw pi-eye',
           to: '/Visor',
           command: () => {
@@ -79,17 +79,17 @@ export default function AppMenu() {
         {
           label: 'Registro de Proyectos',
           icon: 'pi pi-fw pi-eye',
-          to: '/Visor',
+          to: '/registro-proyecto',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-proyecto');
           },
         },
         {
           label: 'Registro de Presupuestos',
           icon: 'pi pi-fw pi-eye',
-          to: '/Visor',
+          to: '/registro-presupuesto',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-presupuesto');
           },
         },
         {
@@ -103,33 +103,33 @@ export default function AppMenu() {
         {
           label: 'Registro de Codigos de Referencia',
           icon: 'pi pi-fw pi-save',
-          to: '/Visor',
+          to: '/registro-referencia',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-referencia');
           },
         },
         {
           label: 'Registro de Cargos',
           icon: 'pi pi-fw pi-save',
-          to: '/Visor',
+          to: '/registro-cargos',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-cargos');
           },
         },
         {
-          label: 'Tipos de Documento',
+          label: 'Registro de Documento',
           icon: 'pi pi-fw pi-save',
-          to: '/Visor',
+          to: '/registro-documentos',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-documentos');
           },
         },
         {
-          label: 'Lugares Comision',
+          label: 'Lugares Comisión',
           icon: 'pi pi-fw pi-save',
-          to: '/Visor',
+          to: '/lugar-comision',
           command: () => {
-            navigate('/Visor');
+            navigate('/lugar-comision');
           },
         },
         {
