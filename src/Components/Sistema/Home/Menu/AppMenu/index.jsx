@@ -26,7 +26,7 @@ export default function AppMenu() {
           icon: 'pi pi-fw pi-user',
           to: '/Dashboard',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-usuario');
           },
         },
         {
@@ -34,7 +34,7 @@ export default function AppMenu() {
           icon: 'pi pi-fw pi-user',
           to: '/Dashboard',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-empleado');
           },
         },
       ],
@@ -53,9 +53,9 @@ export default function AppMenu() {
         {
           label: 'Rendición de Gastos',
           icon: 'pi pi-fw pi-eye',
-          to: '/Visor',
+          to: '/rendicion-gastos',
           command: () => {
-            navigate('/Visor');
+            navigate('/rendicion-gastos');
           },
         },
       ],
@@ -130,14 +130,6 @@ export default function AppMenu() {
           to: '/lugar-comision',
           command: () => {
             navigate('/lugar-comision');
-          },
-        },
-        {
-          label: 'Registro de Empleados',
-          icon: 'pi pi-fw pi-save',
-          to: '/Visor',
-          command: () => {
-            navigate('/Visor');
           },
         },
       ],

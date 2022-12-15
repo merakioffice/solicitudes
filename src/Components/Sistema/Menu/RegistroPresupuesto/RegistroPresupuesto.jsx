@@ -1,32 +1,16 @@
 import React, { useState } from 'react';
+import * as XLSX from 'xlsx';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toolbar } from 'primereact/toolbar';
-import { RightToolBarTemplate } from '../../../Molecula';
+import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroProsupuesto from './Modal/ModalRegistroProsupuesto';
-const datos = [
-  {
-    id: 1,
-    codigo: 654332,
-    proyecto: 'OTE',
-    equivalentes: 'Proyectos',
-  },
-  {
-    id: 2,
-    codigo: 234592,
-    proyecto: 'OTE',
-    equivalentes: 'Proyectos',
-  },
-  {
-    id: 3,
-    codigo: 536278,
-    proyecto: 'OTE',
-    equivalentes: 'Proyectos',
-  },
-];
+import { FileUpload } from 'primereact/fileupload';
+
 const RegistroPresupuesto = () => {
   const [view, setView] = useState(false);
+  const [addData, setAddData] = useState([]);
 
   const openModal = () => {
     setView(!view);
@@ -56,6 +40,56 @@ const RegistroPresupuesto = () => {
     );
   };
 
+  const RightToolBarTemplate = () => {
+    return (
+      <React.Fragment>
+        <FileUpload
+          customUpload
+          uploadHandler={readExcel}
+          accept='.xlsx'
+          mode='basic'
+          maxFileSize={1000000}
+          label='Import'
+          chooseLabel='Importar Presupuesto'
+          className='mr-2 inline-block'
+        />
+      </React.Fragment>
+    );
+  };
+
+  const readExcel = ({ files }) => {
+    const [File] = files;
+    const reader = new FileReader();
+    const rABS = !!reader.readAsBinaryString;
+
+    reader.onload = (e) => {
+      const bstr = e.target.result;
+      const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
+      const wsname = wb.SheetNames[0];
+      const ws = wb.Sheets[wsname];
+      const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+      const listData = (data) => {
+        const newData = [];
+        for (let i = 1; i < data.length - 1; i++) {
+          const element = data[i];
+          const items = {
+            id: i,
+            codigo: element[0],
+            proyecto: element[1],
+            equivalentes: element[2],
+          };
+          newData.push(items);
+        }
+        return newData;
+      };
+      setAddData(listData(data));
+    };
+
+    if (rABS) reader.readAsBinaryString(File);
+    else reader.readAsArrayBuffer(File);
+  };
+
   return (
     <div className='grid crud-demo'>
       {/* <Toast ref={toast} /> */}
@@ -63,13 +97,20 @@ const RegistroPresupuesto = () => {
         <div className='card'>
           <Toolbar
             className='mb-4'
-            right={RightToolBarTemplate({
+            right={RightToolBarTemplate}
+            left={LeftToolBarTemplate({
               openNew: openModal,
-              nameBtn: 'Crea Presupuesto',
+              nameBtn: 'Agregar Presupuesto',
             })}
           ></Toolbar>
-          <DataTable value={datos} responsiveLayout='scroll'>
-            <Column field='id' header='Id'></Column>
+          <DataTable value={addData} responsiveLayout='scroll'>
+            <Column field='id' header='Id'>
+              {addData.map((item, index) => {
+                {
+                  index + 1;
+                }
+              })}
+            </Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='proyecto' header='Proyecto / Resultado'></Column>
             <Column

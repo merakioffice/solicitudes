@@ -21,8 +21,11 @@ import {
   RegistroCodigoReferencia,
   RegistroDinero,
   RegistroDocumentos,
+  RegistroEmpleado,
   RegistroPresupuesto,
   RegistroProyecto,
+  RegistroUsuario,
+  RendicionGastos,
   SolicitudDinero,
 } from './Components/Sistema/Menu';
 
@@ -35,8 +38,23 @@ function App() {
           <Route exact path={'Dashboard'} element={<Dashboard />} />
           <Route
             exact
+            path={'registro-usuario'}
+            element={<RegistroUsuario />}
+          />
+          <Route
+            exact
+            path={'registro-empleado'}
+            element={<RegistroEmpleado />}
+          />
+          <Route
+            exact
             path={'solicitud-dinero'}
             element={<SolicitudDinero />}
+          />
+          <Route
+            exact
+            path={'rendicion-gastos'}
+            element={<RendicionGastos />}
           />
           <Route
             exact
