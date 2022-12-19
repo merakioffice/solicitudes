@@ -6,21 +6,44 @@ import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import './styles.scss';
+// import './styles.scss';
 import { fetchDelete, fetchGet } from '../../../../api';
-import { useDispatch } from 'react-redux';
-import { getSolicitudDinero } from '../../../../store/thunsk';
-import { oneIdSolicitud } from '../../../../store/slices/solicitud/solicitudStile';
+// import { useDispatch } from 'react-redux';
+// import { getSolicitudDinero } from '../../../../store/thunsk';
+// import { oneIdSolicitud } from '../../../../store/slices/solicitud/solicitudStile';
 import { LeftToolBarTemplate } from '../../../Molecula';
 
-const SolicitudDinero = () => {
-  const dispatch = useDispatch();
+const gastos = [
+  {
+    id: 1,
+    nombre: 'pepe',
+    proyecto: 'pepe',
+    lugar: 'pepe',
+    ObjetoComision: 'pepe',
+  },
+  {
+    id: 2,
+    nombre: 'pepe',
+    proyecto: 'pepe',
+    lugar: 'pepe',
+    ObjetoComision: 'pepe',
+  },
+  {
+    id: 3,
+    nombre: 'pepe',
+    proyecto: 'pepe',
+    lugar: 'pepe',
+    ObjetoComision: 'pepe',
+  },
+];
+const RegistroActividad = () => {
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useRef(null);
-  const [dataRegistro, setDataRegistro] = useState([]);
+  // const [dataRegistro, setDataRegistro] = useState([]);
 
   const listaSolicitud = () => {
-    fetchGet('solicitud').then(({ personal }) => setDataRegistro(personal));
+    // fetchGet('solicitud').then(({ personal }) => setDataRegistro(personal));
   };
 
   useEffect(() => {
@@ -28,13 +51,14 @@ const SolicitudDinero = () => {
   }, []);
 
   const openSolicitud = () => {
-    navigate('/RegistroSolicitudDinero');
+    console.log('click');
+    //  navigate('/RegistroRendicionGastos');
   };
 
   const editData = (data) => {
-    dispatch(getSolicitudDinero());
-    dispatch(oneIdSolicitud(data));
-    navigate('/RegistroSolicitudDinero');
+    // dispatch(getSolicitudDinero());
+    // dispatch(oneIdSolicitud(data));
+    //  navigate('/RegistroRendicionGastos');
   };
 
   const tableButtonEdit = (rowData) => {
@@ -72,7 +96,6 @@ const SolicitudDinero = () => {
       </div>
     );
   };
-
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -82,26 +105,26 @@ const SolicitudDinero = () => {
             className='mb-4'
             right={LeftToolBarTemplate({
               openNew: openSolicitud,
-              nameBtn: 'Generar solicitud',
+              nameBtn: 'Generar rendición',
             })}
           ></Toolbar>
 
-          <DataTable value={dataRegistro} responsiveLayout='scroll'>
+          <DataTable value={gastos} responsiveLayout='scroll'>
             <Column field='id' header='Id'></Column>
             <Column field='nombre' header='Nombre'></Column>
-            <Column field='nombreProyecto' header='Nombre Proyecto'></Column>
-            <Column field='fechaInicio' header='Fecha Inicio'></Column>
-            <Column field='fechaFin' header='Fecha Fin'></Column>
+            <Column field='proyecto' header='Fecha'></Column>
+            <Column field='lugar' header='Destino'></Column>
+            <Column
+              field='ObjetoComision'
+              header='Objeto de la comisión'
+            ></Column>
             <Column body={tableButtonEdit}></Column>
             <Column body={tableButtonDelete}></Column>
           </DataTable>
         </div>
       </div>
-      {/* <PDFViewer>
-        <PDFSolicitud />
-      </PDFViewer> */}
     </div>
   );
 };
 
-export { SolicitudDinero };
+export default RegistroActividad;

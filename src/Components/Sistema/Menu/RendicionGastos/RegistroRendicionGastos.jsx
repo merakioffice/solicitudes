@@ -11,13 +11,14 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Row } from 'primereact/row';
+import { ColumnGroup } from 'primereact/columngroup';
 
-import ModalCreacionProducto from './modal/ModalCreacionProducto';
+// import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
 import { getEnvVariables } from '../../../../helpers';
-
-const RegistroDinero = () => {
+const RegistroRendicionGastos = () => {
   const { VITE_API_URL } = getEnvVariables();
 
   const toast = useRef(null);
@@ -165,6 +166,26 @@ const RegistroDinero = () => {
     // // setView(true)
   };
 
+  let headerGroup = (
+    <ColumnGroup>
+      <Row>
+        <Column header='Documento' colSpan={4} />
+        <Column header='Descripción' colSpan={4} />
+        <Column
+          header='
+        Actividad'
+          colSpan={4}
+        />
+        <Column header='Importe' colSpan={4} />
+      </Row>
+      <Row>
+        <Column header='Fecha' sortable field='lastYearSale' />
+        <Column header='Tipo' sortable field='thisYearSale' />
+        <Column header='Numero' sortable field='lastYearProfit' />
+      </Row>
+    </ColumnGroup>
+  );
+
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -187,176 +208,185 @@ const RegistroDinero = () => {
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='numeroSolicitud' className='block'>
-                  N. solicitud
+                  Nombre y apellidos
                 </label>
                 <InputText
                   name='numeroSolicitud'
                   type='text'
-                  values={formik.values.numeroSolicitud}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // values={formik.values.numeroSolicitud}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   disabled={boolCreate}
                 />
-                {formik.touched.numeroSolicitud &&
+                {/* {formik.touched.numeroSolicitud &&
                   formik.errors.numeroSolicitud && (
                     <span style={{ color: '#e5432d' }}>
                       {formik.errors.numeroSolicitud}
                     </span>
-                  )}
+                  )} */}
               </div>
+
               <div className='field col-12 md:col-6'>
-                <label htmlFor='fechaRegistro'>Fecha Registro</label>
-                <Calendar
-                  values={formik.values.fechaRegistro}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  name='fechaRegistro'
-                  disabled={boolCreate}
-                ></Calendar>
-                {formik.touched.fechaRegistro &&
-                  formik.errors.fechaRegistro && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.fechaRegistro}
-                    </span>
-                  )}
-              </div>
-              <div className='field col-12 md:col-12'>
                 <label htmlFor='nombre' className='block'>
-                  Nombre
+                  Proyecto
                 </label>
                 <InputText
                   name='nombre'
                   type='text'
-                  values={formik.values.nombre}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // values={formik.values.nombre}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
+                  // disabled={boolCreate}
                 />
-                {formik.touched.nombre && formik.errors.nombre && (
+                {/* {formik.touched.nombre && formik.errors.nombre && (
                   <span style={{ color: '#e5432d' }}>
                     {formik.errors.nombre}
                   </span>
-                )}
+                )} */}
+              </div>
+              <div className='field col-12 md:col-6'>
+                <label htmlFor='nombre' className='block'>
+                  Lugar Comisión
+                </label>
+                <InputText
+                  name='nombre'
+                  type='text'
+                  // values={formik.values.nombre}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  // disabled={boolCreate}
+                />
+                {/* {formik.touched.nombre && formik.errors.nombre && (
+                  <span style={{ color: '#e5432d' }}>
+                    {formik.errors.nombre}
+                  </span>
+                )} */}
+              </div>
+              <div className='field col-12 md:col-6'>
+                <label htmlFor='nombre' className='block'>
+                  Objeto de la Comisión
+                </label>
+                <InputText
+                  name='nombre'
+                  type='text'
+                  // values={formik.values.nombre}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  // disabled={boolCreate}
+                />
+                {/* {formik.touched.nombre && formik.errors.nombre && (
+                  <span style={{ color: '#e5432d' }}>
+                    {formik.errors.nombre}
+                  </span>
+                )} */}
+              </div>
+              <div className='field col-12 md:col-6'>
+                <label htmlFor='fechaRegistro'>Fecha inicio</label>
+                <Calendar
+                  // values={formik.values.fechaRegistro}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  name='fechaRegistro'
+                  disabled={boolCreate}
+                ></Calendar>
+                {/* {formik.touched.fechaRegistro &&
+                  formik.errors.fechaRegistro && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.fechaRegistro}
+                    </span>
+                  )} */}
+              </div>
+              <div className='field col-12 md:col-6'>
+                <label htmlFor='fechaRegistro'>Fecha fin</label>
+                <Calendar
+                  // values={formik.values.fechaRegistro}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  name='fechaRegistro'
+                  disabled={boolCreate}
+                ></Calendar>
+                {/* {formik.touched.fechaRegistro &&
+                  formik.errors.fechaRegistro && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.fechaRegistro}
+                    </span>
+                  )} */}
               </div>
             </div>
-            <h4>Información del proyecto</h4>
+            <h4>Resumen de la rendición de las cuentas</h4>
             <div className='p-fluid formgrid grid'>
-              <div className='field col-12 md:col-6'>
+              <div className='field col-12 md:col-4'>
                 <label htmlFor='nombreProyecto' className='block'>
-                  Nombre del proyecto`
+                  Recibido $/
                 </label>
                 <InputText
                   name='nombreProyecto'
                   type='text'
-                  values={formik.values.nombreProyecto}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // values={formik.values.nombreProyecto}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
+                  // disabled={boolCreate}
                 />
-                {formik.touched.nombreProyecto &&
+                {/* {formik.touched.nombreProyecto &&
                   formik.errors.nombreProyecto && (
                     <span style={{ color: '#e5432d' }}>
                       {formik.errors.nombreProyecto}
                     </span>
-                  )}
+                  )} */}
               </div>
-              <div className='field col-12 md:col-6'>
+              <div className='field col-12 md:col-4'>
                 <label htmlFor='lugarComision' className='block'>
-                  Lugar comisión
+                  Rendido $/
                 </label>
                 <InputText
                   name='lugarComision'
                   type='text'
-                  values={formik.values.lugarComision}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // values={formik.values.lugarComision}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
+                  // disabled={boolCreate}
                 />
-                {formik.touched.lugarComision &&
+                {/* {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
                     <span style={{ color: '#e5432d' }}>
                       {formik.errors.lugarComision}
                     </span>
-                  )}
+                  )} */}
               </div>
-              <div className='field col-12 md:col-6'>
+              <div className='field col-12 md:col-4'>
                 <label htmlFor='itinerarioTransporte' className='block'>
-                  Itinerario de transporte
+                  Saldo $/
                 </label>
                 <InputText
                   name='itinerarioTransporte'
                   type='text'
-                  values={formik.values.itinerarioTransporte}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // values={formik.values.itinerarioTransporte}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
+                  // disabled={boolCreate}
                 />
-                {formik.touched.itinerarioTransporte &&
+                {/* {formik.touched.itinerarioTransporte &&
                   formik.errors.itinerarioTransporte && (
                     <span style={{ color: '#e5432d' }}>
                       {formik.errors.itinerarioTransporte}
                     </span>
-                  )}
-              </div>
-              <div className='field col-12 md:col-6'>
-                <label htmlFor='objetoComision' className='block'>
-                  Objeto de la comisión
-                </label>
-                <InputText
-                  name='objetoComision'
-                  type='text'
-                  values={formik.values.objetoComision}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
-                />
-                {formik.touched.objetoComision &&
-                  formik.errors.objetoComision && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.objetoComision}
-                    </span>
-                  )}
-              </div>
-              <div className='field col-12 md:col-6'>
-                <label htmlFor='fechaInicio'>Fecha inicio</label>
-                <Calendar
-                  name='fechaInicio'
-                  values={formik.values.fechaInicio}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
-                ></Calendar>
-                {formik.touched.fechaInicio && formik.errors.fechaInicio && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.fechaInicio}
-                  </span>
-                )}
-              </div>
-              <div className='field col-12 md:col-6'>
-                <label htmlFor='fechaFin'>Fecha fin</label>
-                <Calendar
-                  values={formik.values.fechaFin}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  name='fechaFin'
-                  style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
-                ></Calendar>
-                {formik.touched.fechaFin && formik.errors.fechaFin && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.fechaFin}
-                  </span>
-                )}
+                  )} */}
               </div>
             </div>
+            <h4>
+              RELACIÓN DETALLADA DE LOS DOCUMENTOS RENDIDOS (Detallar por
+              separado cada gasto de hospedaje, alimentación, movilidad local,
+              pasajes y gastos de transporte, otros)
+            </h4>
             <div
               style={{
                 display: 'flex',
@@ -395,18 +425,19 @@ const RegistroDinero = () => {
             />
           </div>
 
-          <DataTable value={dataRegistro.productos} responsiveLayout='scroll'>
+          <DataTable
+            value={dataRegistro.productos}
+            headerColumnGroup={headerGroup}
+            responsiveLayout='scroll'
+          >
             <Column field='id' header='Item'></Column>
             <Column field='descripcion' header='Descripción'></Column>
-            <Column
-              field='partidaPresupuestal'
-              header='Partida Presupuestal'
-            ></Column>
+            <Column field='partidaPresupuestal' header='Actividad'></Column>
             <Column field='importe' header='Importe'></Column>
             <Column body={tableButtonDelete}></Column>
           </DataTable>
 
-          <div>
+          {/* <div>
             <button
               style={{
                 border: '0px',
@@ -441,13 +472,13 @@ const RegistroDinero = () => {
             >
               {totales.toFixed(2)}
             </button>
-          </div>
-          <ModalCreacionProducto
+          </div> */}
+          {/* <ModalCreacionProducto
             viewProduct={viewProduct}
             setViewProduct={setViewProduct}
             uuid={uuid}
             listaSolicitudDinero={listaSolicitudDinero}
-          />
+          /> */}
           {/*  */}
           <hr />
           {/*  */}
@@ -462,4 +493,4 @@ const RegistroDinero = () => {
   );
 };
 
-export { RegistroDinero };
+export default RegistroRendicionGastos;
