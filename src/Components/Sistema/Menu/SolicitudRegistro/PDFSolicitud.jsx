@@ -1,5 +1,5 @@
-// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import { jsPDF } from 'jspdf';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
 const producto = [
   {
     id: 1,
@@ -413,158 +413,158 @@ const PDFSolicitud = () => {
     },
   });
 
-  // return (
-  //   <Document style={{ backgroundColor: 'tomato' }}>
-  //     <Page size='A4' style={styles.page}>
-  //       <View style={styles.tituloBlock}>
-  //         <View style={styles.titulo}>
-  //           <Text>SOLICITUD DE VIAJE EN COMISIÓN DE SERVICIOS</Text>
-  //         </View>
-  //         <View style={styles.tituloFormato}>
-  //           <Text>Formato-0001</Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.institutoBlock}>
-  //         <View style={styles.instituto}>
-  //           <Text>Institución: Descocentro</Text>
-  //         </View>
-  //       </View>{' '}
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>1</Text>
-  //           <Text style={styles.datos}>
-  //             Nombres y Apellidos de Comisionado/a:{' '}
-  //           </Text>
-  //           <Text style={styles.personal1}>LAURENTE SORIANO ROCIO EDITH</Text>
-  //         </View>
-  //       </View>
-  //       {/*  */}
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>2</Text>
-  //           <Text style={styles.datos}>Cargo:</Text>
-  //           <Text style={styles.personal2}> PERSONAL ADMINISTRATIVO</Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>3</Text>
-  //           <Text style={styles.datos}>Proyecto:</Text>
-  //           <Text style={styles.personal3}> Ingresos propios</Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>4</Text>
-  //           <Text style={styles.datos}>Lugar de comisión:</Text>
-  //           <Text style={styles.personal4}> Huancayo</Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>5</Text>
-  //           <Text style={styles.datos}>Itinerario de transporte:</Text>
-  //           <Text style={styles.personal5}> Huancayo</Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>6</Text>
-  //           <Text style={styles.datos}>Objeto de la comisión:</Text>
-  //           <Text style={styles.personal6}>
-  //             REUNION DE COORDINACIÓN DIRECCIÓN EJECUTIVA -ADMINISTRACIÓN
-  //           </Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.personalBlock}>
-  //         <View>
-  //           <Text style={styles.numero}>7</Text>
-  //           <Text style={styles.datos}>Fecha Inicio</Text>
-  //           <Text style={styles.personal7}>12-04-2022</Text>
-  //           <Text style={styles.datos}>Fecha Fin</Text>
-  //           <Text style={styles.personal71}>12-04-2022</Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.personalBlock}>
-  //         <View style={{ marginBottom: '80px' }}>
-  //           <Text style={styles.bordesOne}>8</Text>
-  //           <Text style={styles.bordesTwo}>Detalle de los gatos de viaje:</Text>
-  //           <Text style={styles.bordesTree}>sadfasdfas</Text>
-  //         </View>
-  //       </View>
-  //       {/*  */}
-  //       <View style={styles.spaceTable}>
-  //         <View>
-  //           <Text style={styles.spaceHeader1}>#</Text>
-  //           <Text style={styles.spaceHeader2}>Descripción</Text>
-  //           <Text style={styles.spaceHeader3}>Partida Presupuestal</Text>
-  //           <Text style={styles.spaceHeader4}>Importe</Text>
-  //         </View>
-  //       </View>
-  //       {/*  */}
-  //       {producto.map((item, index) => {
-  //         const { descripcion, importe, presupuesto } = item;
-  //         return (
-  //           <View style={styles.spaceBody}>
-  //             <View>
-  //               <Text style={styles.spaceBody1}>{index + 1}</Text>
-  //               <Text style={styles.spaceBody2}>{descripcion}</Text>
-  //               <Text style={styles.spaceBody3}>{presupuesto}</Text>
-  //               <Text style={styles.spaceBody4}>{importe}</Text>
-  //             </View>
-  //           </View>
-  //         );
-  //       })}
-  //       <View style={styles.informe}>
-  //         <View>
-  //           <Text style={styles.spaceInforme1}>Lugar</Text>
-  //           <Text style={styles.spaceInforme2}>San juan de lurigancho</Text>
-  //           <Text style={styles.spaceInforme3}>Fecha</Text>
-  //           <Text style={styles.spaceInforme4}>01</Text>
-  //           <Text style={styles.spaceInforme5}>02</Text>
-  //           <Text style={styles.spaceInforme5}>2022</Text>
-  //           <Text style={styles.spaceInforme6}>TOTAL S/.</Text>
-  //           <Text style={styles.spaceInforme7}>1234.12</Text>
-  //         </View>
-  //       </View>
-  //       {/*  */}
-  //       <View style={styles.firmas}>
-  //         <View>
-  //           <Text style={styles.firmas1}>9</Text>
-  //           <Text style={styles.firmas2}>
-  //             Recepción de fondos y autorización
-  //           </Text>
-  //         </View>
-  //       </View>
-  //       <View style={styles.firmaContainer}>
-  //         <Text style={styles.cubo1}>
-  //           En caso de no cumplir con la rendición de cuentas dentro de los
-  //           plazos definidos en la Directiva de Viáticos, <b>AUTORIZO </b> a la
-  //           Institución, a retener el pago de mi remuneración u honorario, según
-  //           corresponda, el monto del viático otorgado asumiendo adicionalmente
-  //           los intereses respectivos a que hubiere lugar, renunciando a
-  //           cualquier reclamo posterior.
-  //         </Text>
-  //         <Text style={styles.cubo}>
-  //           _____________________________ <br />
-  //           Rocio Edith Laurente Soriano DNI N°
-  //         </Text>
-  //       </View>
-  //       <View style={styles.firmaContainer}>
-  //         <Text style={styles.cubo}>
-  //           _____________________________ <br />
-  //           FIRMA DE ADMINISTRACIÓN
-  //         </Text>
-  //         <View style={styles.cubo}>
-  //           <Text>
-  //             _____________________________ <br />
-  //             FIRMA DE JEFE DE PROYECTO
-  //           </Text>
-  //         </View>
-  //       </View>
-  //     </Page>
-  //   </Document>
-  // );
+  return (
+    <Document style={{ backgroundColor: 'tomato' }}>
+      <Page size='A4' style={styles.page}>
+        <View style={styles.tituloBlock}>
+          <View style={styles.titulo}>
+            <Text>SOLICITUD DE VIAJE EN COMISIÓN DE SERVICIOS</Text>
+          </View>
+          <View style={styles.tituloFormato}>
+            <Text>Formato-0001</Text>
+          </View>
+        </View>
+        <View style={styles.institutoBlock}>
+          <View style={styles.instituto}>
+            <Text>Institución: Descocentro</Text>
+          </View>
+        </View>{' '}
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>1</Text>
+            <Text style={styles.datos}>
+              Nombres y Apellidos de Comisionado/a:{' '}
+            </Text>
+            <Text style={styles.personal1}>LAURENTE SORIANO ROCIO EDITH</Text>
+          </View>
+        </View>
+        {/*  */}
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>2</Text>
+            <Text style={styles.datos}>Cargo:</Text>
+            <Text style={styles.personal2}> PERSONAL ADMINISTRATIVO</Text>
+          </View>
+        </View>
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>3</Text>
+            <Text style={styles.datos}>Proyecto:</Text>
+            <Text style={styles.personal3}> Ingresos propios</Text>
+          </View>
+        </View>
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>4</Text>
+            <Text style={styles.datos}>Lugar de comisión:</Text>
+            <Text style={styles.personal4}> Huancayo</Text>
+          </View>
+        </View>
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>5</Text>
+            <Text style={styles.datos}>Itinerario de transporte:</Text>
+            <Text style={styles.personal5}> Huancayo</Text>
+          </View>
+        </View>
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>6</Text>
+            <Text style={styles.datos}>Objeto de la comisión:</Text>
+            <Text style={styles.personal6}>
+              REUNION DE COORDINACIÓN DIRECCIÓN EJECUTIVA -ADMINISTRACIÓN
+            </Text>
+          </View>
+        </View>
+        <View style={styles.personalBlock}>
+          <View>
+            <Text style={styles.numero}>7</Text>
+            <Text style={styles.datos}>Fecha Inicio</Text>
+            <Text style={styles.personal7}>12-04-2022</Text>
+            <Text style={styles.datos}>Fecha Fin</Text>
+            <Text style={styles.personal71}>12-04-2022</Text>
+          </View>
+        </View>
+        <View style={styles.personalBlock}>
+          <View style={{ marginBottom: '80px' }}>
+            <Text style={styles.bordesOne}>8</Text>
+            <Text style={styles.bordesTwo}>Detalle de los gatos de viaje:</Text>
+            <Text style={styles.bordesTree}>sadfasdfas</Text>
+          </View>
+        </View>
+        {/*  */}
+        <View style={styles.spaceTable}>
+          <View>
+            <Text style={styles.spaceHeader1}>#</Text>
+            <Text style={styles.spaceHeader2}>Descripción</Text>
+            <Text style={styles.spaceHeader3}>Partida Presupuestal</Text>
+            <Text style={styles.spaceHeader4}>Importe</Text>
+          </View>
+        </View>
+        {/*  */}
+        {producto.map((item, index) => {
+          const { descripcion, importe, presupuesto } = item;
+          return (
+            <View style={styles.spaceBody}>
+              <View>
+                <Text style={styles.spaceBody1}>{index + 1}</Text>
+                <Text style={styles.spaceBody2}>{descripcion}</Text>
+                <Text style={styles.spaceBody3}>{presupuesto}</Text>
+                <Text style={styles.spaceBody4}>{importe}</Text>
+              </View>
+            </View>
+          );
+        })}
+        <View style={styles.informe}>
+          <View>
+            <Text style={styles.spaceInforme1}>Lugar</Text>
+            <Text style={styles.spaceInforme2}>San juan de lurigancho</Text>
+            <Text style={styles.spaceInforme3}>Fecha</Text>
+            <Text style={styles.spaceInforme4}>01</Text>
+            <Text style={styles.spaceInforme5}>02</Text>
+            <Text style={styles.spaceInforme5}>2022</Text>
+            <Text style={styles.spaceInforme6}>TOTAL S/.</Text>
+            <Text style={styles.spaceInforme7}>1234.12</Text>
+          </View>
+        </View>
+        {/*  */}
+        <View style={styles.firmas}>
+          <View>
+            <Text style={styles.firmas1}>9</Text>
+            <Text style={styles.firmas2}>
+              Recepción de fondos y autorización
+            </Text>
+          </View>
+        </View>
+        <View style={styles.firmaContainer}>
+          <Text style={styles.cubo1}>
+            En caso de no cumplir con la rendición de cuentas dentro de los
+            plazos definidos en la Directiva de Viáticos, <b>AUTORIZO </b> a la
+            Institución, a retener el pago de mi remuneración u honorario, según
+            corresponda, el monto del viático otorgado asumiendo adicionalmente
+            los intereses respectivos a que hubiere lugar, renunciando a
+            cualquier reclamo posterior.
+          </Text>
+          <Text style={styles.cubo}>
+            _____________________________ <br />
+            Rocio Edith Laurente Soriano DNI N°
+          </Text>
+        </View>
+        <View style={styles.firmaContainer}>
+          <Text style={styles.cubo}>
+            _____________________________ <br />
+            FIRMA DE ADMINISTRACIÓN
+          </Text>
+          <View style={styles.cubo}>
+            <Text>
+              _____________________________ <br />
+              FIRMA DE JEFE DE PROYECTO
+            </Text>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  );
 };
 
 export default PDFSolicitud;

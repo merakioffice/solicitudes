@@ -1,5 +1,6 @@
 import { getEnvVariables } from '../helpers';
 const { VITE_API_URL } = getEnvVariables();
+
 const fetchGet = async (url = '', method = 'GET') => {
   const response = await fetch(`${VITE_API_URL}/${url}`, { method });
 
@@ -15,9 +16,6 @@ const fetchDelete = async (url = '', method = 'DELETE') => {
 };
 
 const fetchPost = async (url = '', method = '', data) => {
-  console.log(url);
-  console.log(method);
-  console.log(data);
   const response = await fetch(`${VITE_API_URL}/${url}`, {
     method,
     headers: {

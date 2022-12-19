@@ -66,9 +66,9 @@ export default function AppMenu() {
         {
           label: 'Registro de Actividades',
           icon: 'pi pi-fw pi-eye',
-          to: '/Visor',
+          to: '/registro-actividad',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-actividad');
           },
         },
       ],

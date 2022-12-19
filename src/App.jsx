@@ -17,6 +17,7 @@ import Demostracion from './pages/Demostracion';
 
 import {
   LugarComision,
+  RegistroActividad,
   RegistroCargos,
   RegistroCodigoReferencia,
   RegistroDinero,
@@ -24,6 +25,7 @@ import {
   RegistroEmpleado,
   RegistroPresupuesto,
   RegistroProyecto,
+  RegistroRendicionGastos,
   RegistroUsuario,
   RendicionGastos,
   SolicitudDinero,
@@ -58,10 +60,19 @@ function App() {
           />
           <Route
             exact
+            path={'RegistroRendicionGastos'}
+            element={<RegistroRendicionGastos />}
+          />
+          <Route
+            exact
             path={'RegistroSolicitudDinero'}
             element={<RegistroDinero />}
           />
-          <Route exact path={'Visor'} element={<Demostracion />} />
+          <Route
+            exact
+            path={'registro-actividad'}
+            element={<RegistroActividad />}
+          />
           <Route
             exact
             path={'registro-proyecto'}
