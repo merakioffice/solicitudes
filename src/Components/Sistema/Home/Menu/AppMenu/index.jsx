@@ -68,7 +68,7 @@ export default function AppMenu() {
           icon: 'pi pi-fw pi-eye',
           to: '/registro-actividad',
           command: () => {
-            navigate('/registro-actividad');
+            navigate('/informe-actividad');
           },
         },
       ],

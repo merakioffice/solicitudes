@@ -16,6 +16,7 @@ import './assets/layout/layout.scss';
 import Demostracion from './pages/Demostracion';
 
 import {
+  InformeRegistroActividad,
   LugarComision,
   RegistroActividad,
   RegistroCargos,
@@ -70,8 +71,13 @@ function App() {
           />
           <Route
             exact
-            path={'registro-actividad'}
+            path={'informe-actividad'}
             element={<RegistroActividad />}
+          />
+          <Route
+            exact
+            path={'registro-actividad'}
+            element={<InformeRegistroActividad />}
           />
           <Route
             exact

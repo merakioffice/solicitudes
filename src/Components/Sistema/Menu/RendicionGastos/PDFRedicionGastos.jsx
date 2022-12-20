@@ -2,7 +2,7 @@ import { Button } from 'primereact/button';
 
 import jsPDF from 'jspdf';
 
-const Demostracion = () => {
+const PDFRendicionGastos = () => {
   const descarga = () => {
     const doc = new jsPDF();
     doc.setFontSize(10);
@@ -95,4 +95,4 @@ const Demostracion = () => {
   );
 };
 
-export default Demostracion;
+export default PDFRendicionGastos;
