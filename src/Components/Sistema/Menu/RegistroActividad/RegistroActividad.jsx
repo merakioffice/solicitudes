@@ -52,7 +52,7 @@ const RegistroActividad = () => {
 
   const openSolicitud = () => {
     console.log('click');
-    //  navigate('/RegistroRendicionGastos');
+    navigate('/registro-actividad');
   };
 
   const editData = (data) => {

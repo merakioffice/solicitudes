@@ -16,6 +16,8 @@ import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
 import { getEnvVariables } from '../../../../helpers';
+import PDFSolicitud from './PDFSolicitud';
+import Demostracion from '../../../../pages/Demostracion';
 
 const RegistroDinero = () => {
   const { VITE_API_URL } = getEnvVariables();
@@ -31,7 +33,7 @@ const RegistroDinero = () => {
   const navigate = useNavigate();
 
   const handleClickRetornar = () => {
-    navigate('/SolicitudDinero');
+    navigate('/solicitud-dinero');
   };
 
   const handleClickProduct = () => {
@@ -171,15 +173,7 @@ const RegistroDinero = () => {
 
       <div className='col-12'>
         <div className='card'>
-          <Toolbar
-            className='mb-4'
-            right={
-              <a label='Ver PDF' href={`${VITE_API_URL}/solicitud/pdf`}>
-                Ver PDF
-              </a>
-            }
-            // onClick={() => viewPDF()}
-          ></Toolbar>
+          <Toolbar className='mb-4' right={<PDFSolicitud />}></Toolbar>
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <h4>Datos Personales</h4>

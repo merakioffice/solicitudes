@@ -1,4 +1,5 @@
 import { LugarComision } from './LugarComision/LugarComision';
+import InformeRegistroActividad from './RegistroActividad/InformeRegistroActividad';
 import RegistroActividad from './RegistroActividad/RegistroActividad';
 import { RegistroCargos } from './RegistroCargos/RegistroCargos';
 import { RegistroCodigoReferencia } from './RegistroCodigoReferencia/RegistroCodigoReferencia';
@@ -13,6 +14,7 @@ import { RegistroDinero } from './SolicitudRegistro/RegistroDinero';
 import { SolicitudDinero } from './SolicitudRegistro/SolicitudDinero';
 
 export {
+  InformeRegistroActividad,
   RegistroActividad,
   RegistroRendicionGastos,
   RegistroUsuario,

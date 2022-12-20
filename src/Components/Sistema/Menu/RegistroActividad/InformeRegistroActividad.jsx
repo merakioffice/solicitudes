@@ -18,8 +18,10 @@ import { ColumnGroup } from 'primereact/columngroup';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
 import { getEnvVariables } from '../../../../helpers';
-import PDFRendicionGastos from './PDFRedicionGastos';
-const RegistroRendicionGastos = () => {
+import PDFActividad from './PDFActividad';
+// import PDFRendicionGastos from './PDFRedicionGastos';
+import { InputTextarea } from 'primereact/inputtextarea';
+const InformeRegistroActividad = () => {
   const { VITE_API_URL } = getEnvVariables();
 
   const toast = useRef(null);
@@ -33,7 +35,7 @@ const RegistroRendicionGastos = () => {
   const navigate = useNavigate();
 
   const handleClickRetornar = () => {
-    navigate('/rendicion-gastos');
+    navigate('/informe-actividad');
   };
 
   const handleClickProduct = () => {
@@ -167,33 +169,13 @@ const RegistroRendicionGastos = () => {
     // // setView(true)
   };
 
-  let headerGroup = (
-    <ColumnGroup>
-      <Row>
-        <Column header='Documento' colSpan={4} />
-        <Column header='Descripción' colSpan={4} />
-        <Column
-          header='
-        Actividad'
-          colSpan={4}
-        />
-        <Column header='Importe' colSpan={4} />
-      </Row>
-      <Row>
-        <Column header='Fecha' sortable field='lastYearSale' />
-        <Column header='Tipo' sortable field='thisYearSale' />
-        <Column header='Numero' sortable field='lastYearProfit' />
-      </Row>
-    </ColumnGroup>
-  );
-
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
 
       <div className='col-12'>
         <div className='card'>
-          <Toolbar className='mb-4' right={<PDFRendicionGastos />}></Toolbar>
+          <Toolbar className='mb-4' right={<PDFActividad />}></Toolbar>
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <h4>Datos Personales</h4>
@@ -213,16 +195,16 @@ const RegistroRendicionGastos = () => {
                   disabled={boolCreate}
                 />
                 {/* {formik.touched.numeroSolicitud &&
-                  formik.errors.numeroSolicitud && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.numeroSolicitud}
-                    </span>
-                  )} */}
+                   formik.errors.numeroSolicitud && (
+                     <span style={{ color: '#e5432d' }}>
+                       {formik.errors.numeroSolicitud}
+                     </span>
+                   )} */}
               </div>
 
               <div className='field col-12 md:col-6'>
                 <label htmlFor='nombre' className='block'>
-                  Proyecto
+                  Destino
                 </label>
                 <InputText
                   name='nombre'
@@ -234,49 +216,12 @@ const RegistroRendicionGastos = () => {
                   // disabled={boolCreate}
                 />
                 {/* {formik.touched.nombre && formik.errors.nombre && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.nombre}
-                  </span>
-                )} */}
+                   <span style={{ color: '#e5432d' }}>
+                     {formik.errors.nombre}
+                   </span>
+                 )} */}
               </div>
-              <div className='field col-12 md:col-6'>
-                <label htmlFor='nombre' className='block'>
-                  Lugar Comisión
-                </label>
-                <InputText
-                  name='nombre'
-                  type='text'
-                  // values={formik.values.nombre}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
-                />
-                {/* {formik.touched.nombre && formik.errors.nombre && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.nombre}
-                  </span>
-                )} */}
-              </div>
-              <div className='field col-12 md:col-6'>
-                <label htmlFor='nombre' className='block'>
-                  Objeto de la Comisión
-                </label>
-                <InputText
-                  name='nombre'
-                  type='text'
-                  // values={formik.values.nombre}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
-                />
-                {/* {formik.touched.nombre && formik.errors.nombre && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.nombre}
-                  </span>
-                )} */}
-              </div>
+
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha inicio</label>
                 <Calendar
@@ -288,11 +233,11 @@ const RegistroRendicionGastos = () => {
                   disabled={boolCreate}
                 ></Calendar>
                 {/* {formik.touched.fechaRegistro &&
-                  formik.errors.fechaRegistro && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.fechaRegistro}
-                    </span>
-                  )} */}
+                   formik.errors.fechaRegistro && (
+                     <span style={{ color: '#e5432d' }}>
+                       {formik.errors.fechaRegistro}
+                     </span>
+                   )} */}
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha fin</label>
@@ -305,81 +250,54 @@ const RegistroRendicionGastos = () => {
                   disabled={boolCreate}
                 ></Calendar>
                 {/* {formik.touched.fechaRegistro &&
-                  formik.errors.fechaRegistro && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.fechaRegistro}
-                    </span>
-                  )} */}
+                   formik.errors.fechaRegistro && (
+                     <span style={{ color: '#e5432d' }}>
+                       {formik.errors.fechaRegistro}
+                     </span>
+                   )} */}
               </div>
             </div>
             <h4>Resumen de la rendición de las cuentas</h4>
             <div className='p-fluid formgrid grid'>
-              <div className='field col-12 md:col-4'>
+              <div className='field col-12 md:col-12'>
                 <label htmlFor='nombreProyecto' className='block'>
-                  Recibido $/
+                  Objeto de la comisión:
                 </label>
-                <InputText
-                  name='nombreProyecto'
-                  type='text'
-                  // values={formik.values.nombreProyecto}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
+                <InputTextarea
+                  //  value={value2}
+                  //  onChange={(e) => setValue2(e.target.value)}
+                  rows={5}
+                  cols={30}
+                  autoResize
                 />
-                {/* {formik.touched.nombreProyecto &&
-                  formik.errors.nombreProyecto && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.nombreProyecto}
-                    </span>
-                  )} */}
               </div>
-              <div className='field col-12 md:col-4'>
+              <div className='field col-12 md:col-12'>
                 <label htmlFor='lugarComision' className='block'>
-                  Rendido $/
+                  Detalle de actividad realizada:
                 </label>
-                <InputText
-                  name='lugarComision'
-                  type='text'
-                  // values={formik.values.lugarComision}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
+                <InputTextarea
+                  //  value={value2}
+                  //  onChange={(e) => setValue2(e.target.value)}
+                  rows={7}
+                  cols={30}
+                  autoResize
                 />
-                {/* {formik.touched.lugarComision &&
-                  formik.errors.lugarComision && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.lugarComision}
-                    </span>
-                  )} */}
               </div>
-              <div className='field col-12 md:col-4'>
+              <div className='field col-12 md:col-12'>
                 <label htmlFor='itinerarioTransporte' className='block'>
-                  Saldo $/
+                  Otros aspectos administrativos relevantes que afecten su
+                  rendición de cuentas
                 </label>
-                <InputText
-                  name='itinerarioTransporte'
-                  type='text'
-                  // values={formik.values.itinerarioTransporte}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
+                <InputTextarea
+                  //  value={value2}
+                  //  onChange={(e) => setValue2(e.target.value)}
+                  rows={8}
+                  cols={30}
+                  autoResize
                 />
-                {/* {formik.touched.itinerarioTransporte &&
-                  formik.errors.itinerarioTransporte && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.itinerarioTransporte}
-                    </span>
-                  )} */}
               </div>
             </div>
-            <h4>
-              RELACIÓN DETALLADA DE LOS DOCUMENTOS RENDIDOS (Detallar por
-              separado cada gasto de hospedaje, alimentación, movilidad local,
-              pasajes y gastos de transporte, otros)
-            </h4>
+
             <div
               style={{
                 display: 'flex',
@@ -400,78 +318,50 @@ const RegistroRendicionGastos = () => {
             </div>
           </form>
           {/*  */}
-          <hr />
           {/*  */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              margin: '5px 0px',
-            }}
-          >
-            <Button
-              icon='pi pi-plus'
-              className='p-button-success'
-              style={{ width: '120px' }}
-              label='Crear Producto'
-              onClick={handleClickProduct}
-            />
-          </div>
-
-          <DataTable
-            value={dataRegistro.productos}
-            headerColumnGroup={headerGroup}
-            responsiveLayout='scroll'
-          >
-            <Column field='id' header='Item'></Column>
-            <Column field='descripcion' header='Descripción'></Column>
-            <Column field='partidaPresupuestal' header='Actividad'></Column>
-            <Column field='importe' header='Importe'></Column>
-            <Column body={tableButtonDelete}></Column>
-          </DataTable>
 
           {/* <div>
-            <button
-              style={{
-                border: '0px',
-                padding: '5px',
-                width: '445px',
-                height: '30px',
-                color: '#fff',
-                backgroundColor: '#fff',
-              }}
-              disabled
-            ></button>
-            <button
-              style={{
-                border: '0px',
-                padding: '5px',
-                width: '200px',
-                color: '#575D63',
-              }}
-              disabled
-            >
-              Total $/
-            </button>
-            <button
-              style={{
-                border: '0px',
-                padding: '5px',
-                width: '200px',
-                backgroundColor: '#ececec',
-                color: '#575D63',
-              }}
-              disabled
-            >
-              {totales.toFixed(2)}
-            </button>
-          </div> */}
+             <button
+               style={{
+                 border: '0px',
+                 padding: '5px',
+                 width: '445px',
+                 height: '30px',
+                 color: '#fff',
+                 backgroundColor: '#fff',
+               }}
+               disabled
+             ></button>
+             <button
+               style={{
+                 border: '0px',
+                 padding: '5px',
+                 width: '200px',
+                 color: '#575D63',
+               }}
+               disabled
+             >
+               Total $/
+             </button>
+             <button
+               style={{
+                 border: '0px',
+                 padding: '5px',
+                 width: '200px',
+                 backgroundColor: '#ececec',
+                 color: '#575D63',
+               }}
+               disabled
+             >
+               {totales.toFixed(2)}
+             </button>
+           </div> */}
           {/* <ModalCreacionProducto
-            viewProduct={viewProduct}
-            setViewProduct={setViewProduct}
-            uuid={uuid}
-            listaSolicitudDinero={listaSolicitudDinero}
-          /> */}
+             viewProduct={viewProduct}
+             setViewProduct={setViewProduct}
+             uuid={uuid}
+             listaSolicitudDinero={listaSolicitudDinero}
+           /> */}
           {/*  */}
           <hr />
           {/*  */}
@@ -486,4 +376,4 @@ const RegistroRendicionGastos = () => {
   );
 };
 
-export default RegistroRendicionGastos;
+export default InformeRegistroActividad;
