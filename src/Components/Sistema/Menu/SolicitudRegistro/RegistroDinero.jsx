@@ -5,7 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { Calendar } from 'primereact/calendar';
-
+import { AutoComplete } from 'primereact/autocomplete';
 import { Toolbar } from 'primereact/toolbar';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -31,6 +31,19 @@ const RegistroDinero = () => {
   const [viewProduct, setViewProduct] = useState(false);
   const [view, setView] = useState(false);
   const navigate = useNavigate();
+
+  const [listLugar, setListLugar] = useState([]);
+  const [selectedCountry1, setSelectedCountry1] = useState(null);
+  const [filteredCountries, setFilteredCountries] = useState(null);
+  const listData = () => {
+    fetchGet('comision').then(({ lugar }) => {
+      const data = lugar.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+      setListLugar(data);
+    });
+  };
 
   const handleClickRetornar = () => {
     navigate('/solicitud-dinero');
@@ -154,6 +167,7 @@ const RegistroDinero = () => {
     if (uuid) {
       listaSolicitudDinero();
     }
+    listData();
   }, []);
 
   const viewPDF = () => {
@@ -165,6 +179,24 @@ const RegistroDinero = () => {
     //   })
     //   .catch((err) => console.log(err));
     // // setView(true)
+  };
+
+  // autocomplete
+  const searchCountry = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...listLugar];
+      } else {
+        _filteredCountries = listLugar.filter((country) => {
+          return country.descripcion
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+
+      setFilteredCountries(_filteredCountries);
+    }, 250);
   };
 
   return (
@@ -262,6 +294,19 @@ const RegistroDinero = () => {
                 <label htmlFor='lugarComision' className='block'>
                   Lugar comisión
                 </label>
+                {/* <AutoComplete
+                  value={selectedCountry1}
+                  suggestions={filteredCountries}
+                  completeMethod={searchCountry}
+                  field='descripcion'
+                  onChange={(e) => {
+                    console.log(e);
+                    setSelectedCountry1(e.value),
+                      (e.target.value?.id = formik.values.lugarComision);
+                  }}
+                  aria-label='Countries'
+                  dropdownAriaLabel='Select Country'
+                /> */}
                 <InputText
                   name='lugarComision'
                   type='text'
