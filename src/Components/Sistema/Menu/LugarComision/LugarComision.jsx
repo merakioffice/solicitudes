@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toolbar } from 'primereact/toolbar';
-import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
+import { Toast } from 'primereact/toast';
+import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalLugarComision from './Modal/ModalLugarComision';
 import { FileUpload } from 'primereact/fileupload';
+import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const LugarComision = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
+  const toast = useRef(null);
+
+  const listData = () => {
+    fetchGet('comision').then(({ lugar }) => {
+      const data = lugar.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+      setAddData(data);
+    });
+  };
+
+  useEffect(() => {
+    listData();
+  }, []);
 
   const tableButtonEdit = (rowData) => {
     return (
@@ -30,10 +48,33 @@ const LugarComision = () => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          // onClick={() => deleteData(rowData.id)}
+          onClick={() => {
+            confirm1(rowData.id);
+          }}
         />
       </div>
     );
+  };
+
+  const acceptFunc = (data) => {
+    fetchDelete(`comision/${data}`).then((data) => {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Confirmado',
+        detail: data.message,
+        life: 3000,
+      });
+      listData();
+    });
+  };
+
+  const confirm1 = (data) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => acceptFunc(data),
+    });
   };
 
   const openModal = () => {
@@ -74,15 +115,44 @@ const LugarComision = () => {
         for (let i = 1; i < data.length - 1; i++) {
           const element = data[i];
           const items = {
-            id: i,
-            codigo: element[0],
+            codigo: element[0].toString(),
             descripcion: element[1],
           };
           newData.push(items);
         }
+
+        fetchPost('comisionAddAll', 'POST', newData).then((data) => {
+          if (data.error) {
+            toast.current.show({
+              severity: 'error',
+              summary: 'Error al subir el archivo',
+              detail: data.error,
+              life: 3000,
+            });
+          }
+          if (data.repiet) {
+            toast.current.show({
+              severity: 'warn',
+              summary: 'Datos duplicados',
+              detail: 'Se esta ingresando datos existentes',
+              life: 3000,
+            });
+          }
+          if (data.message) {
+            toast.current.show({
+              severity: 'success',
+              summary: 'Registro solicitud comision',
+              detail: data.message,
+              life: 3000,
+            });
+          }
+
+          listData();
+        });
+
         return newData;
       };
-      setAddData(listData(data));
+      listData(data);
     };
 
     if (rABS) reader.readAsBinaryString(File);
@@ -91,7 +161,8 @@ const LugarComision = () => {
 
   return (
     <div className='grid crud-demo'>
-      {/* <Toast ref={toast} /> */}
+      <Toast ref={toast} />
+      <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -103,13 +174,7 @@ const LugarComision = () => {
             })}
           ></Toolbar>
           <DataTable value={addData} responsiveLayout='scroll'>
-            <Column field='id' header='Id'>
-              {addData.map((item, index) => {
-                {
-                  index + 1;
-                }
-              })}
-            </Column>
+            <Column field='index' header='Id'></Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='descripcion' header='Descripción'></Column>
             <Column body={tableButtonEdit}></Column>
@@ -117,7 +182,7 @@ const LugarComision = () => {
           </DataTable>
         </div>
       </div>
-      <ModalLugarComision setView={setView} view={view} />
+      <ModalLugarComision setView={setView} view={view} listData={listData} />
     </div>
   );
 };

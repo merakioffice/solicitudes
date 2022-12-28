@@ -77,6 +77,33 @@ const PDFRendicionGastos = () => {
 
     doc.text('Importe', 171, 97);
     doc.rect(164, 90, 25, 12);
+    //
+    doc.text('10/10/2022', 35, 106);
+    doc.text('Boleta', 55, 106);
+    doc.text('002-6879', 71, 106);
+    doc.text('Descripcion', 105, 106);
+    doc.text('1000.00', 170, 106);
+
+    doc.rect(20, 102, 169, 6);
+
+    doc.text('10/10/2022', 35, 112);
+    doc.text('Boleta', 55, 112);
+    doc.text('002-000006879', 71, 112);
+    doc.text(
+      'RELACIÓN DETALLADA DE LOS DOCUMENTOS RENDIDOS (Detallar por separado cada gasto de hospedaje, alimentación, movilidad local, pasajes y gastos de transporte, otros',
+      105,
+      112
+    );
+    doc.text('1000.00', 170, 112);
+    doc.rect(20, 108, 169, 6);
+
+    //
+    doc.text('Total', 146, 118);
+    doc.rect(139, 114, 25, 6);
+
+    doc.text('2000.00', 171, 118);
+    doc.rect(164, 114, 25, 6);
+    //
 
     doc.text('_________________________', 40, 278);
     doc.text('FIRMA DE COMISIONADO/A', 42, 282);
