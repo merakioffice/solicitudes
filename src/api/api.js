@@ -1,3 +1,4 @@
+import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
 const { VITE_API_URL } = getEnvVariables();
 
@@ -29,4 +30,19 @@ const fetchPost = async (url = '', method = '', data) => {
   return result;
 };
 
-export { fetchGet, fetchDelete, fetchPost };
+const fetchPut = async (url = '', method = '', data) => {
+  const response = await fetch(`${VITE_API_URL}/${url}`, {
+    method,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  return result;
+};
+
+export { fetchGet, fetchDelete, fetchPost, fetchPut };

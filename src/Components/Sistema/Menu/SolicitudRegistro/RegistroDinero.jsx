@@ -29,7 +29,7 @@ const RegistroDinero = () => {
   const [uuid, setUuid] = useState(null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [viewProduct, setViewProduct] = useState(false);
-  const [view, setView] = useState(false);
+  // const [view, setView] = useState(false);
   const navigate = useNavigate();
 
   const [listLugar, setListLugar] = useState([]);
@@ -294,20 +294,19 @@ const RegistroDinero = () => {
                 <label htmlFor='lugarComision' className='block'>
                   Lugar comisión
                 </label>
-                {/* <AutoComplete
+                <AutoComplete
                   value={selectedCountry1}
                   suggestions={filteredCountries}
                   completeMethod={searchCountry}
                   field='descripcion'
                   onChange={(e) => {
                     console.log(e);
-                    setSelectedCountry1(e.value),
-                      (e.target.value?.id = formik.values.lugarComision);
+                    setSelectedCountry1(e.value);
                   }}
                   aria-label='Countries'
                   dropdownAriaLabel='Select Country'
-                /> */}
-                <InputText
+                />
+                {/* <InputText
                   name='lugarComision'
                   type='text'
                   values={formik.values.lugarComision}
@@ -315,7 +314,7 @@ const RegistroDinero = () => {
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   disabled={boolCreate}
-                />
+                /> */}
                 {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
                     <span style={{ color: '#e5432d' }}>

@@ -13,7 +13,9 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const LugarComision = () => {
   const [view, setView] = useState(false);
+  const [viewError, setViewError] = useState(false);
   const [addData, setAddData] = useState([]);
+  const [edit, setEdit] = useState(null);
   const toast = useRef(null);
 
   const listData = () => {
@@ -26,20 +28,22 @@ const LugarComision = () => {
     });
   };
 
-  useEffect(() => {
-    listData();
-  }, []);
-
   const tableButtonEdit = (rowData) => {
+    // console.log(rowData);
     return (
       <div className='actions'>
         <Button
           icon='pi pi-pencil'
           className='p-button-rounded p-button-warning'
-          // onClick={() => editData(rowData)}
+          onClick={() => editData(rowData)}
         />
       </div>
     );
+  };
+
+  const editData = (data) => {
+    setView(!view);
+    setEdit(data);
   };
 
   const tableButtonDelete = (rowData) => {
@@ -110,17 +114,17 @@ const LugarComision = () => {
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const listData = (data) => {
+      const list = (data) => {
         const newData = [];
         for (let i = 1; i < data.length - 1; i++) {
           const element = data[i];
           const items = {
             codigo: element[0].toString(),
-            descripcion: element[1],
+            descripcion: element[1].toString(),
           };
           newData.push(items);
         }
-
+        // console.log(newData);
         fetchPost('comisionAddAll', 'POST', newData).then((data) => {
           if (data.error) {
             toast.current.show({
@@ -141,23 +145,27 @@ const LugarComision = () => {
           if (data.message) {
             toast.current.show({
               severity: 'success',
-              summary: 'Registro solicitud comision',
+              summary: 'Registro lugar comisión',
               detail: data.message,
               life: 3000,
             });
-          }
 
-          listData();
+            listData();
+          }
         });
 
         return newData;
       };
-      listData(data);
+      list(data);
     };
 
     if (rABS) reader.readAsBinaryString(File);
     else reader.readAsArrayBuffer(File);
   };
+
+  useEffect(() => {
+    listData();
+  }, []);
 
   return (
     <div className='grid crud-demo'>
@@ -182,7 +190,15 @@ const LugarComision = () => {
           </DataTable>
         </div>
       </div>
-      <ModalLugarComision setView={setView} view={view} listData={listData} />
+      {view && (
+        <ModalLugarComision
+          setView={setView}
+          view={view}
+          listData={listData}
+          edit={edit}
+          setEdit={setEdit}
+        />
+      )}
     </div>
   );
 };

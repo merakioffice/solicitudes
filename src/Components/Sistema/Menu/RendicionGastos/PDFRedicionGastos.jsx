@@ -88,12 +88,8 @@ const PDFRendicionGastos = () => {
 
     doc.text('10/10/2022', 35, 112);
     doc.text('Boleta', 55, 112);
-    doc.text('002-000006879', 71, 112);
-    doc.text(
-      'RELACIÓN DETALLADA DE LOS DOCUMENTOS RENDIDOS (Detallar por separado cada gasto de hospedaje, alimentación, movilidad local, pasajes y gastos de transporte, otros',
-      105,
-      112
-    );
+    doc.text('002-000006', 71, 112);
+    doc.text('movilidad local, pasajes', 105, 112);
     doc.text('1000.00', 170, 112);
     doc.rect(20, 108, 169, 6);
 
