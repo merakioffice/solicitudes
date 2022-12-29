@@ -5,18 +5,24 @@ import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { fetchPost } from '../../../../../api';
+import { fetchPost, fetchPut } from '../../../../../api';
 
-const ModalLugarComision = ({ setView, view, listData }) => {
+const ModalLugarComision = ({ setView, view, listData, edit, setEdit }) => {
   const toast = useRef(null);
 
   const formik = useFormik({
     initialValues: {
-      codigo: '',
-      descripcion: '',
+      codigo: edit ? edit?.codigo : '',
+      descripcion: edit ? edit?.descripcion : '',
     },
     onSubmit: (values) => {
-      registreAdd(values);
+      if (edit) {
+        console.log('edito');
+        updateAdd(values);
+      } else {
+        console.log('creo');
+        registreAdd(values);
+      }
     },
     validationSchema: Yup.object({
       codigo: Yup.string()
@@ -27,24 +33,49 @@ const ModalLugarComision = ({ setView, view, listData }) => {
   });
 
   const registreAdd = (data) => {
-    fetchPost('comision', 'POST', data).then((response) => {
-      console.log(response);
-      if (response.lugarComision) {
+    fetchPost('comision', 'POST', data).then(({ lugarComision, message }) => {
+      if (lugarComision === undefined || !lugarComision) {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Datos duplicados',
+          detail: message,
+        });
+      } else {
         toast.current.show({
           severity: 'success',
           summary: 'Creado',
-          detail: response.message,
+          detail: message,
         });
-        formik.resetForm();
-        listData();
-        setView(false);
+        setTimeout(() => {
+          formik.resetForm();
+          listData();
+          setView(false);
+          setEdit(null);
+        }, 500);
       }
-      if (!response.lugarComision) {
+    });
+  };
+
+  const updateAdd = (data) => {
+    fetchPut(`comision/${edit.id}`, 'PUT', data).then((response) => {
+      if (response.lugar === undefined) {
         toast.current.show({
           severity: 'warn',
           summary: 'Datos duplicados',
           detail: response.message,
         });
+      } else {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Creado',
+          detail: response.message,
+        });
+        setTimeout(() => {
+          formik.resetForm();
+          listData();
+          setView(false);
+          setEdit(null);
+        }, 500);
       }
     });
   };
@@ -56,7 +87,10 @@ const ModalLugarComision = ({ setView, view, listData }) => {
       header='Registro de Lugar de comisión'
       modal
       className='p-fluid'
-      onHide={() => setView(false)}
+      onHide={() => {
+        setEdit(null);
+        setView(false);
+      }}
     >
       <Toast ref={toast} />
       <form onSubmit={formik.handleSubmit}>
@@ -104,12 +138,13 @@ const ModalLugarComision = ({ setView, view, listData }) => {
             type='button'
             onClick={() => {
               setView(false);
-              // formik.resetForm({});
+              formik.resetForm({});
+              setEdit(null);
             }}
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label={edit ? 'Editar' : 'Crear'}
             icon='pi pi-check'
             type='submit'
           />
