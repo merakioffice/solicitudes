@@ -13,7 +13,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const LugarComision = () => {
   const [view, setView] = useState(false);
-  const [viewError, setViewError] = useState(false);
+  // const [viewError, setViewError] = useState(false);
   const [addData, setAddData] = useState([]);
   const [edit, setEdit] = useState(null);
   const toast = useRef(null);
