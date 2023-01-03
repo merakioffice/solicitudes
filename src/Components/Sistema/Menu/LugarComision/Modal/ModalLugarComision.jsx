@@ -67,7 +67,7 @@ const ModalLugarComision = ({ setView, view, listData, edit, setEdit }) => {
       } else {
         toast.current.show({
           severity: 'success',
-          summary: 'Creado',
+          summary: 'Actualizado',
           detail: response.message,
         });
         setTimeout(() => {
