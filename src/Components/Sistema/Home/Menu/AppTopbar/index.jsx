@@ -1,11 +1,81 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { MegaMenu } from 'primereact/megamenu';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  stateMenu,
+  stateMenuMain,
+} from '../../../../../store/slices/solicitud/MenuRRHHSlice';
 
 export default function AppTopbar() {
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const { estado } = useSelector((state) => {
+    return state.menuRRHH;
+  });
+
+  const handleClick = () => {
+    dispatch(stateMenu());
+    // navigate('/FyA');
+  };
+  const handleClickMain = () => {
+    dispatch(stateMenuMain());
+  };
+
+  const megamenuItems = [
+    {
+      label: 'RR.HH',
+      items: [
+        [
+          {
+            label: 'Fe y Alegría',
+            items: [
+              {
+                label: 'Ir a menu',
+                className: 'disabled',
+                command: () => {
+                  handleClick();
+                },
+              },
+              {
+                label: 'Página principal',
+                command: () => {
+                  handleClickMain();
+                },
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  ];
+
+  const megaMenuMain = [
+    {
+      label: 'RR.HH',
+      items: [
+        [
+          {
+            label: 'Fe y Alegría',
+            items: [
+              {
+                label: 'Página principal',
+                command: () => {
+                  handleClickMain();
+                },
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  ];
+
   return (
     <div className='layout-topbar '>
       <Link to='/Dashboard' className='layout-topbar-logo'>
-        <span>Gestión de rendiciones</span>
+        <span>Proyecto OTE</span>
       </Link>
       <button
         type='button'
@@ -19,15 +89,15 @@ export default function AppTopbar() {
       >
         <i className='pi pi-ellipsis-v' />
       </button>
-      <ul
-        className='layout-topbar-menu lg:flex origin-top'
-        // className={
-        //   //classNames("layout-topbar-menu lg:flex origin-top", {
-        //   "layout-topbar-menu-mobile-active"
-        //   //: props.mobileTopbarMenuActive,
-        //   // })
-        // }
-      >
+      <ul className='layout-topbar-menu lg:flex origin-top'>
+        <li>
+          {!estado ? (
+            <MegaMenu model={megamenuItems} />
+          ) : (
+            <MegaMenu model={megaMenuMain} />
+          )}
+          {/* <MegaMenu model={megamenuItems} /> */}
+        </li>
         <li>
           <button
             className='p-link layout-topbar-button'

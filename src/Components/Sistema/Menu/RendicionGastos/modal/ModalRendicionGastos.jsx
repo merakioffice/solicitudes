@@ -7,14 +7,12 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { fetchPost } from '../../../../../api';
-
-export default function ModalCreacionProducto({
-  viewProduct,
-  setViewProduct,
+const ModalRendicionGastos = ({
+  view,
+  setView,
   listaSolicitudDinero,
   uuid,
-}) {
+}) => {
   const toast = useRef(null);
 
   const formik = useFormik({
@@ -29,6 +27,16 @@ export default function ModalCreacionProducto({
       createProduct(values);
     },
     validationSchema: Yup.object({
+      fecha: Yup.string().required('La fecha es requerida'),
+      serie: Yup.string().required('La serie es requerida'),
+      numero: Yup.number('Solo se permiten números').required(
+        'El número es requerido'
+      ),
+      tipo: Yup.string().required('EL tipo es requerido'),
+      ruc: Yup.number('Solo se permiten números').required(
+        'EL RUC es requerido'
+      ),
+
       descripcion: Yup.string().required('La descripción es requerida'),
       partidaPresupuestal: Yup.string().required(
         'La partida presupuestal es requerido'
@@ -43,28 +51,88 @@ export default function ModalCreacionProducto({
 
   const createProduct = (data) => {
     // console.log(data);
-    fetchPost('solicitudProducto', 'POST', data).then(() => {
-      setViewProduct(false);
-      formik.resetForm();
-      listaSolicitudDinero();
-    });
+    //  fetchPost('solicitudProducto', 'POST', data).then(() => {
+    //    setView(false);
+    //    formik.resetForm();
+    //    listaSolicitudDinero();
+    //  });
   };
 
   return (
     <Dialog
-      visible={viewProduct}
+      visible={view}
       style={{ width: '450px' }}
-      header='Creación de producto'
+      header='Creación de documentos rendidos'
       modal
       className='p-fluid'
-      onHide={() => setViewProduct(false)}
+      onHide={() => setView(false)}
     >
       <Toast ref={toast} />
 
       <form onSubmit={formik.handleSubmit}>
         <div className='p-fluid formgrid grid'>
+          <div className='field col-12 md:col-6'>
+            <label htmlFor='fecha'>Fecha</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('fecha')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.fecha && formik.errors.fecha && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.fecha}</span>
+            )}
+          </div>
+          <div className='field col-12 md:col-6'>
+            <label htmlFor='serie'>Serie</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('serie')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.serie && formik.errors.serie && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.serie}</span>
+            )}
+          </div>{' '}
+          <div className='field col-12 md:col-6'>
+            <label htmlFor='numero'>Número</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('numero')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.numero && formik.errors.numero && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.numero}</span>
+            )}
+          </div>{' '}
+          <div className='field col-12 md:col-6'>
+            <label htmlFor='tipo'>Tipo</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('tipo')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.tipo && formik.errors.tipo && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.tipo}</span>
+            )}
+          </div>{' '}
           <div className='field col-12 md:col-12'>
-            <label htmlFor='descripcion'>Descripción</label>
+            <label htmlFor='ruc'>RUC</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('ruc')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.ruc && formik.errors.ruc && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.ruc}</span>
+            )}
+          </div>
+          <div className='field col-12 md:col-12'>
+            <label htmlFor='descripcion'>Descripcion</label>
 
             <InputText
               type='text'
@@ -77,7 +145,6 @@ export default function ModalCreacionProducto({
               </span>
             )}
           </div>
-
           <div className='field col-12 md:col-12'>
             <label htmlFor='partidaPresupuestal'>Partida Presupuestal</label>
 
@@ -93,7 +160,6 @@ export default function ModalCreacionProducto({
                 </span>
               )}
           </div>
-
           <div className='field col-12 md:col-12'>
             <label htmlFor='importe'>Importe</label>
 
@@ -115,7 +181,7 @@ export default function ModalCreacionProducto({
             className='p-button-text'
             type='button'
             onClick={() => {
-              setViewProduct(false);
+              setView(false);
               formik.resetForm({});
             }}
           />
@@ -129,22 +195,6 @@ export default function ModalCreacionProducto({
       </form>
     </Dialog>
   );
+};
 
-  // autoTable(doc, {
-  //   // columnStyles: { europe: { halign: 'center' } }, // European countries centered
-  //   body: [
-  //     solicitud?.solicitud_productos?.map(
-  //       ({ descripcion, partidaPresupuestal, importe }) => {
-  //         return [descripcion, partidaPresupuestal, importe];
-  //         // return [  'Id'= index + 1,  'descripcion' = item.description,  'partidaPresupuestal'= item.partidaPresupuestal, 'importe'= item.importe  ]
-  //       }
-  //     ),
-  //   ],
-  //   columns: [
-  //     // { header: 'Id', dataKey: 'Id' },
-  //     { header: 'Descripcion', dataKey: 'descripcion' },
-  //     { header: 'Partida Presupuestal', dataKey: 'partidaPresupuestal' },
-  //     { header: 'Importe', dataKey: 'importe' },
-  //   ],
-  // });
-}
+export default ModalRendicionGastos;

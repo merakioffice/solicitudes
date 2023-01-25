@@ -29,7 +29,6 @@ const LugarComision = () => {
   };
 
   const tableButtonEdit = (rowData) => {
-    // console.log(rowData);
     return (
       <div className='actions'>
         <Button

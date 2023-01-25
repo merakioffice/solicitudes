@@ -10,6 +10,9 @@ import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 
 // Css
+// import 'primereact/resources/primereact.css';
+// import 'primeicons/primeicons.css';
+// import 'primeflex/primeflex.css';
 import './assets/demo/flags/flags.css';
 import './assets/demo/Demos.scss';
 import './assets/layout/layout.scss';

@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toolbar } from 'primereact/toolbar';
+import { Toast } from 'primereact/toast';
 import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroProyecto from './Modal/ModalRegistroProyecto';
 import { FileUpload } from 'primereact/fileupload';
+import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const RegistroProyecto = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
+  const [edit, setEdit] = useState(null);
+  const toast = useRef(null);
+
+  const listData = () => {
+    fetchGet('regProyecto').then(({ registroProyecto }) => {
+      const data = registroProyecto.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+      setAddData(data);
+    });
+  };
+
   const openModal = () => {
     setView(!view);
   };
@@ -21,10 +37,15 @@ const RegistroProyecto = () => {
         <Button
           icon='pi pi-pencil'
           className='p-button-rounded p-button-warning'
-          // onClick={() => editData(rowData)}
+          onClick={() => editData(rowData)}
         />
       </div>
     );
+  };
+
+  const editData = (data) => {
+    setView(!view);
+    setEdit(data);
   };
 
   const tableButtonDelete = (rowData) => {
@@ -33,10 +54,33 @@ const RegistroProyecto = () => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          // onClick={() => deleteData(rowData.id)}
+          onClick={() => {
+            confirm1(rowData.id);
+          }}
         />
       </div>
     );
+  };
+
+  const acceptFunc = (data) => {
+    fetchDelete(`regProyecto/${data}`).then((data) => {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Confirmado',
+        detail: data.message,
+        life: 3000,
+      });
+      listData();
+    });
+  };
+
+  const confirm1 = (data) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => acceptFunc(data),
+    });
   };
 
   const RightToolBarTemplate = () => {
@@ -68,30 +112,62 @@ const RegistroProyecto = () => {
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const listData = (data) => {
+      const list = (data) => {
         const newData = [];
         for (let i = 1; i < data.length - 1; i++) {
           const element = data[i];
           const items = {
-            id: i,
-            codigo: element[0],
-            nombreAbreviado: element[1],
-            nombreCompleto: element[2],
+            codigo: element[0].toString(),
+            nombreAbreviado: element[1].toString(),
+            nombreCompleto: element[2].toString(),
           };
           newData.push(items);
         }
+        fetchPost('regProyectoAddAll', 'POST', newData).then((data) => {
+          if (data.error) {
+            toast.current.show({
+              severity: 'error',
+              summary: 'Error al subir el archivo',
+              detail: data.error,
+              life: 3000,
+            });
+          }
+          if (data.repeat) {
+            toast.current.show({
+              severity: 'warn',
+              summary: 'Datos duplicados',
+              detail: 'Se esta ingresando datos existentes',
+              life: 3000,
+            });
+          }
+          if (data.message) {
+            toast.current.show({
+              severity: 'success',
+              summary: 'Registro de proyecto con éxito',
+              detail: data.message,
+              life: 3000,
+            });
+
+            listData();
+          }
+        });
         return newData;
       };
-      setAddData(listData(data));
+      list(data);
     };
 
     if (rABS) reader.readAsBinaryString(File);
     else reader.readAsArrayBuffer(File);
   };
 
+  useEffect(() => {
+    listData();
+  }, []);
+
   return (
     <div className='grid crud-demo'>
-      {/* <Toast ref={toast} /> */}
+      <Toast ref={toast} />
+      <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -103,13 +179,7 @@ const RegistroProyecto = () => {
             right={RightToolBarTemplate}
           ></Toolbar>
           <DataTable value={addData} responsiveLayout='scroll'>
-            <Column field='id' header='Id'>
-              {addData.map((item, index) => {
-                {
-                  index + 1;
-                }
-              })}
-            </Column>
+            <Column field='index' header='Id'></Column>
             <Column field='codigo' header='Código Contable'></Column>
             <Column field='nombreAbreviado' header='Nombre Abreviado'></Column>
             <Column field='nombreCompleto' header='Nombre Completo'></Column>
@@ -118,7 +188,15 @@ const RegistroProyecto = () => {
           </DataTable>
         </div>
       </div>
-      {<ModalRegistroProyecto setView={setView} view={view} />}
+      {view && (
+        <ModalRegistroProyecto
+          setView={setView}
+          view={view}
+          listData={listData}
+          edit={edit}
+          setEdit={setEdit}
+        />
+      )}
     </div>
   );
 };

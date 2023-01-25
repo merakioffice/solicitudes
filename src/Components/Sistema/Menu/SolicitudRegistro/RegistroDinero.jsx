@@ -15,12 +15,12 @@ import { Column } from 'primereact/column';
 import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
-import { getEnvVariables } from '../../../../helpers';
+// import { getEnvVariables } from '../../../../helpers';
 import PDFSolicitud from './PDFSolicitud';
-import Demostracion from '../../../../pages/Demostracion';
+// import Demostracion from '../../../../pages/Demostracion';
 
 const RegistroDinero = () => {
-  const { VITE_API_URL } = getEnvVariables();
+  // const { VITE_API_URL } = getEnvVariables();
 
   const toast = useRef(null);
   const { solicitud } = useSelector((state) => state.solicitudDinero);
@@ -29,12 +29,12 @@ const RegistroDinero = () => {
   const [uuid, setUuid] = useState(null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [viewProduct, setViewProduct] = useState(false);
-  // const [view, setView] = useState(false);
   const navigate = useNavigate();
 
   const [listLugar, setListLugar] = useState([]);
   const [selectedCountry1, setSelectedCountry1] = useState(null);
   const [filteredCountries, setFilteredCountries] = useState(null);
+
   const listData = () => {
     fetchGet('comision').then(({ lugar }) => {
       const data = lugar.map((element, item) => {
@@ -77,11 +77,17 @@ const RegistroDinero = () => {
     );
   };
 
+  useEffect(() => {
+    if (uuid) {
+      listaSolicitudDinero();
+    }
+    listData();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
-      numeroSolicitud: solicitud ? solicitud?.numeroSolicitud : '',
-      fechaRegistro: solicitud ? solicitud?.fechaRegistro : '',
-      nombre: 'hola',
+      fechaRegistro: '',
+      nombre: '',
       nombreProyecto: '',
       lugarComision: '',
       itinerarioTransporte: '',
@@ -126,26 +132,30 @@ const RegistroDinero = () => {
       registreAdd(values);
     },
     validationSchema: Yup.object({
-      numeroSolicitud: Yup.number('Solo se permiten números')
-        .min(8)
-        .required('El número de solicitud es requerido'),
       fechaRegistro: Yup.string().required('La fecha de registro es requerido'),
       nombre: Yup.string().required('El nombre es requerido'),
       nombreProyecto: Yup.string().required(
         'El nombre del proyecto es requerido'
       ),
-      lugarComision: Yup.string().required('El lugar de comisión es requerido'),
-      itinerarioTransporte: Yup.string().required('El itinerario es requerido'),
-      objetoComision: Yup.string().required('El objeto es requerido'),
+      lugarComision: Yup.string('Solo se aceptan letras').required(
+        'El lugar de comisión es requerido'
+      ),
+      itinerarioTransporte: Yup.string('Solo se ingresa letras').required(
+        'El itinerario es requerido'
+      ),
+      objetoComision: Yup.string('Solo se ingresa letras').required(
+        'El objeto es requerido'
+      ),
       fechaInicio: Yup.string().required('La fecha de inicio es requerido'),
       fechaFin: Yup.string().required('La fecha de fin es requerido'),
     }),
   });
 
   const registreAdd = (values) => {
+    values.lugarComision = selectedCountry1.id.toString();
+
     fetchPost('solicitud', 'POST', values).then(({ personal }) => {
       setUuid(personal.id);
-      console.log(personal);
       setBoolCreate(true);
       toast.current.show({
         severity: 'success',
@@ -161,42 +171,6 @@ const RegistroDinero = () => {
       setDataRegistro(personal);
       setTotal(total);
     });
-  };
-
-  useEffect(() => {
-    if (uuid) {
-      listaSolicitudDinero();
-    }
-    listData();
-  }, []);
-
-  const viewPDF = () => {
-    // console.log('pdf');
-    navigate(`${VITE_API_URL}/solicitud/pdf`);
-    // fetchGet('solicitud/pdf')
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((err) => console.log(err));
-    // // setView(true)
-  };
-
-  // autocomplete
-  const searchCountry = (event) => {
-    setTimeout(() => {
-      let _filteredCountries;
-      if (!event.query.trim().length) {
-        _filteredCountries = [...listLugar];
-      } else {
-        _filteredCountries = listLugar.filter((country) => {
-          return country.descripcion
-            .toLowerCase()
-            .startsWith(event.query.toLowerCase());
-        });
-      }
-
-      setFilteredCountries(_filteredCountries);
-    }, 250);
   };
 
   return (
@@ -215,21 +189,7 @@ const RegistroDinero = () => {
                 <label htmlFor='numeroSolicitud' className='block'>
                   N. solicitud
                 </label>
-                <InputText
-                  name='numeroSolicitud'
-                  type='text'
-                  values={formik.values.numeroSolicitud}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
-                />
-                {formik.touched.numeroSolicitud &&
-                  formik.errors.numeroSolicitud && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.numeroSolicitud}
-                    </span>
-                  )}
+                <InputText name='numeroSolicitud' type='text' disabled />
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha Registro</label>
@@ -294,19 +254,7 @@ const RegistroDinero = () => {
                 <label htmlFor='lugarComision' className='block'>
                   Lugar comisión
                 </label>
-                <AutoComplete
-                  value={selectedCountry1}
-                  suggestions={filteredCountries}
-                  completeMethod={searchCountry}
-                  field='descripcion'
-                  onChange={(e) => {
-                    console.log(e);
-                    setSelectedCountry1(e.value);
-                  }}
-                  aria-label='Countries'
-                  dropdownAriaLabel='Select Country'
-                />
-                {/* <InputText
+                <InputText
                   name='lugarComision'
                   type='text'
                   values={formik.values.lugarComision}
@@ -314,7 +262,7 @@ const RegistroDinero = () => {
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   disabled={boolCreate}
-                /> */}
+                />
                 {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
                     <span style={{ color: '#e5432d' }}>
@@ -480,12 +428,14 @@ const RegistroDinero = () => {
               {totales.toFixed(2)}
             </button>
           </div>
-          <ModalCreacionProducto
-            viewProduct={viewProduct}
-            setViewProduct={setViewProduct}
-            uuid={uuid}
-            listaSolicitudDinero={listaSolicitudDinero}
-          />
+          {viewProduct && (
+            <ModalCreacionProducto
+              viewProduct={viewProduct}
+              setViewProduct={setViewProduct}
+              uuid={uuid}
+              listaSolicitudDinero={listaSolicitudDinero}
+            />
+          )}
           {/*  */}
           <hr />
           {/*  */}
