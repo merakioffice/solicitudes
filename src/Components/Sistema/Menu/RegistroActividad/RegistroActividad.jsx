@@ -8,47 +8,25 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 // import './styles.scss';
 import { fetchDelete, fetchGet } from '../../../../api';
-// import { useDispatch } from 'react-redux';
-// import { getSolicitudDinero } from '../../../../store/thunsk';
-// import { oneIdSolicitud } from '../../../../store/slices/solicitud/solicitudStile';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { LeftToolBarTemplate } from '../../../Molecula';
+import { useDispatch } from 'react-redux';
 
-const gastos = [
-  {
-    id: 1,
-    nombre: 'pepe',
-    proyecto: 'pepe',
-    lugar: 'pepe',
-    ObjetoComision: 'pepe',
-  },
-  {
-    id: 2,
-    nombre: 'pepe',
-    proyecto: 'pepe',
-    lugar: 'pepe',
-    ObjetoComision: 'pepe',
-  },
-  {
-    id: 3,
-    nombre: 'pepe',
-    proyecto: 'pepe',
-    lugar: 'pepe',
-    ObjetoComision: 'pepe',
-  },
-];
 const RegistroActividad = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const [addData, setAddData] = useState([]);
   const navigate = useNavigate();
   const toast = useRef(null);
-  // const [dataRegistro, setDataRegistro] = useState([]);
 
-  const listaSolicitud = () => {
-    // fetchGet('solicitud').then(({ personal }) => setDataRegistro(personal));
+  const listData = () => {
+    fetchGet('regActividad').then(({ registroActividad }) => {
+      const data = registroActividad.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+      setAddData(data);
+    });
   };
-
-  useEffect(() => {
-    listaSolicitud();
-  }, []);
 
   const openSolicitud = () => {
     console.log('click');
@@ -56,9 +34,10 @@ const RegistroActividad = () => {
   };
 
   const editData = (data) => {
+    console.log(data);
     // dispatch(getSolicitudDinero());
     // dispatch(oneIdSolicitud(data));
-    //  navigate('/RegistroRendicionGastos');
+    navigate('/registro-actividad');
   };
 
   const tableButtonEdit = (rowData) => {
@@ -73,32 +52,50 @@ const RegistroActividad = () => {
     );
   };
 
-  const deleteData = (data) => {
-    fetchDelete(`solicitud/${data}`).then(() => {
-      listaSolicitud();
-      toast.current.show({
-        severity: 'success',
-        summary: 'Eliminado',
-        detail: 'Se ha eliminado correctamente',
-        life: 3000,
-      });
-    });
-  };
-
   const tableButtonDelete = (rowData) => {
     return (
       <div className='actions'>
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          onClick={() => deleteData(rowData.id)}
+          onClick={() => {
+            confirm1(rowData.id);
+          }}
         />
       </div>
     );
   };
+
+  const acceptFunc = (data) => {
+    fetchDelete(`regActividad/${data}`).then((data) => {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Confirmado',
+        detail: data.message,
+        life: 3000,
+      });
+      listData();
+    });
+  };
+
+  const confirm1 = (data) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => acceptFunc(data),
+    });
+  };
+
+  useEffect(() => {
+    listData();
+  }, []);
+
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
+      <ConfirmDialog />
+
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -109,13 +106,13 @@ const RegistroActividad = () => {
             })}
           ></Toolbar>
 
-          <DataTable value={gastos} responsiveLayout='scroll'>
-            <Column field='id' header='Id'></Column>
-            <Column field='nombre' header='Nombre'></Column>
-            <Column field='proyecto' header='Fecha'></Column>
-            <Column field='lugar' header='Destino'></Column>
+          <DataTable value={addData} responsiveLayout='scroll'>
+            <Column field='index' header='Id'></Column>
+            <Column field='nombreApellido' header='Nombre'></Column>
+            <Column field='fechaInicio' header='Fecha'></Column>
+            <Column field='destino' header='Destino'></Column>
             <Column
-              field='ObjetoComision'
+              field='objetoComision'
               header='Objeto de la comisión'
             ></Column>
             <Column body={tableButtonEdit}></Column>

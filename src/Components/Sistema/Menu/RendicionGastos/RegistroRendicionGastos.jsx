@@ -19,6 +19,7 @@ import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
 import { getEnvVariables } from '../../../../helpers';
 import PDFRendicionGastos from './PDFRedicionGastos';
+import ModalRendicionGastos from './modal/ModalRendicionGastos';
 const RegistroRendicionGastos = () => {
   const { VITE_API_URL } = getEnvVariables();
 
@@ -28,7 +29,7 @@ const RegistroRendicionGastos = () => {
   const [totales, setTotal] = useState(0);
   const [uuid, setUuid] = useState(null);
   const [boolCreate, setBoolCreate] = useState(false);
-  const [viewProduct, setViewProduct] = useState(false);
+  // const [viewProduct, setViewProduct] = useState(false);
   const [view, setView] = useState(false);
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const RegistroRendicionGastos = () => {
   };
 
   const handleClickProduct = () => {
-    setViewProduct(!viewProduct);
+    setView(!view);
   };
 
   const deleteData = (data) => {
@@ -170,23 +171,66 @@ const RegistroRendicionGastos = () => {
   let headerGroup = (
     <ColumnGroup>
       <Row>
-        <Column header='Documento' colSpan={4} />
-        <Column header='Descripción' colSpan={4} />
+        <Column header='Documento' colSpan={5} />
         <Column
-          header='
-        Actividad'
-          colSpan={4}
+          header='Descripción'
+          alignHeader='center'
+          style={{ width: '150px' }}
         />
-        <Column header='Importe' colSpan={4} />
+        <Column
+          header='Actividad'
+          alignHeader='center'
+          style={{ width: '120px' }}
+        />
+        <Column
+          header='Importe'
+          style={{
+            width: '110px',
+          }}
+          alignHeader='center'
+          // colSpan={5}
+        />
       </Row>
       <Row>
-        <Column header='Fecha' sortable field='lastYearSale' />
-        <Column header='Tipo' sortable field='thisYearSale' />
-        <Column header='Numero' sortable field='lastYearProfit' />
+        <Column
+          header='Fecha'
+          style={{ width: '70px' }}
+          sortable
+          alignHeader='center'
+          field='lastYearSale'
+        />
+        <Column
+          header='Serie'
+          style={{ width: '90px' }}
+          sortable
+          alignHeader='center'
+          field='lastYearProfit'
+        />
+        <Column
+          header='Numero'
+          style={{ width: '90px' }}
+          sortable
+          alignHeader='center'
+          field='lastYearProfit'
+        />
+        <Column
+          header='Tipo'
+          style={{ width: '90px' }}
+          sortable
+          alignHeader='center'
+          field='thisYearSale'
+        />
+        <Column
+          header='RUC'
+          style={{ width: '90px' }}
+          sortable
+          alignHeader='center'
+          field='lastYearProfit'
+        />
       </Row>
     </ColumnGroup>
   );
-
+  console.log('=>', view);
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -413,7 +457,7 @@ const RegistroRendicionGastos = () => {
               icon='pi pi-plus'
               className='p-button-success'
               style={{ width: '120px' }}
-              label='Crear Producto'
+              label='Crear rendición'
               onClick={handleClickProduct}
             />
           </div>
@@ -427,61 +471,20 @@ const RegistroRendicionGastos = () => {
             <Column field='descripcion' header='Descripción'></Column>
             <Column field='partidaPresupuestal' header='Actividad'></Column>
             <Column field='importe' header='Importe'></Column>
+
             <Column body={tableButtonDelete}></Column>
           </DataTable>
-
-          {/* <div>
-            <button
-              style={{
-                border: '0px',
-                padding: '5px',
-                width: '445px',
-                height: '30px',
-                color: '#fff',
-                backgroundColor: '#fff',
-              }}
-              disabled
-            ></button>
-            <button
-              style={{
-                border: '0px',
-                padding: '5px',
-                width: '200px',
-                color: '#575D63',
-              }}
-              disabled
-            >
-              Total $/
-            </button>
-            <button
-              style={{
-                border: '0px',
-                padding: '5px',
-                width: '200px',
-                backgroundColor: '#ececec',
-                color: '#575D63',
-              }}
-              disabled
-            >
-              {totales.toFixed(2)}
-            </button>
-          </div> */}
+          {view && <ModalRendicionGastos view={view} setView={setView} />}
           {/* <ModalCreacionProducto
             viewProduct={viewProduct}
             setViewProduct={setViewProduct}
             uuid={uuid}
             listaSolicitudDinero={listaSolicitudDinero}
           /> */}
-          {/*  */}
-          <hr />
-          {/*  */}
-        </div>
-        {/*  */}
-      </div>
-      {/*  */}
 
-      {/*  */}
-      {/* <PDFSolicitud /> */}
+          <hr />
+        </div>
+      </div>
     </div>
   );
 };

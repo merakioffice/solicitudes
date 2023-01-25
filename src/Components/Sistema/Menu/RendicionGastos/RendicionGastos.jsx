@@ -74,6 +74,18 @@ const RendicionGastos = () => {
     );
   };
 
+  const tableButtonAutomatization = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-cog'
+          className='p-button-rounded p-button-info'
+          onClick={() => editData(rowData)}
+        />
+      </div>
+    );
+  };
+
   const deleteData = (data) => {
     fetchDelete(`solicitud/${data}`).then(() => {
       listaSolicitud();
@@ -119,8 +131,21 @@ const RendicionGastos = () => {
               field='ObjetoComision'
               header='Objeto de la comisión'
             ></Column>
-            <Column body={tableButtonEdit}></Column>
-            <Column body={tableButtonDelete}></Column>
+            <Column
+              header='Autorización'
+              style={{ width: '40px' }}
+              body={tableButtonAutomatization}
+            ></Column>
+            <Column
+              header='Editar'
+              style={{ width: '40px' }}
+              body={tableButtonEdit}
+            ></Column>
+            <Column
+              header='Eliminar'
+              style={{ width: '40px' }}
+              body={tableButtonDelete}
+            ></Column>
           </DataTable>
         </div>
       </div>

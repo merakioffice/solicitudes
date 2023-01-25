@@ -1,36 +1,114 @@
 import React, { useRef } from 'react';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import { fetchPost, fetchPut } from '../../../../../api';
 
-const ModalRegistroProyecto = ({ setView, view }) => {
+const ModalRegistroProyecto = ({ setView, view, listData, edit, setEdit }) => {
   const toast = useRef(null);
+
+  const formik = useFormik({
+    initialValues: {
+      codigo: edit ? edit.codigo : '',
+      nombreAbreviado: edit ? edit.nombreAbreviado : '',
+      nombreCompleto: edit ? edit.nombreCompleto : '',
+    },
+    onSubmit: (values) => {
+      if (edit) {
+        updateAdd(values);
+      } else {
+        registreAdd(values);
+      }
+    },
+    validationSchema: Yup.object({
+      codigo: Yup.string().required('El campo es requerido'),
+      nombreAbreviado: Yup.string().required('El campo es requerido'),
+      nombreCompleto: Yup.string().required('El campo es requerido'),
+    }),
+  });
+
+  const registreAdd = (data) => {
+    fetchPost('regProyecto', 'POST', data).then(
+      ({ registroProyecto, message }) => {
+        if (registroProyecto === undefined || !registroProyecto) {
+          toast.current.show({
+            severity: 'warn',
+            summary: 'Datos duplicados',
+            detail: message,
+          });
+        } else {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Creado',
+            detail: message,
+          });
+          setTimeout(() => {
+            formik.resetForm();
+            listData();
+            setView(false);
+            setEdit(null);
+          }, 500);
+        }
+      }
+    );
+  };
+
+  const updateAdd = (data) => {
+    fetchPut(`regProyecto/${edit.id}`, 'PUT', data).then((response) => {
+      if (response.proyecto === undefined) {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Datos duplicados',
+          detail: response.message,
+        });
+      } else {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: response.message,
+        });
+        setTimeout(() => {
+          formik.resetForm();
+          listData();
+          setView(false);
+          setEdit(null);
+        }, 500);
+      }
+    });
+  };
+
   return (
     <Dialog
       visible={view}
       style={{ width: '450px' }}
-      header='Registro de Proyecto'
+      header={
+        edit ? 'Editar Registro de Proyecto' : 'Crear Registro de Proyecto'
+      }
       modal
       className='p-fluid'
-      onHide={() => setView(false)}
+      onHide={() => {
+        setEdit(null);
+        setView(false);
+      }}
     >
       <Toast ref={toast} />
-      <form>
+      <form onSubmit={formik.handleSubmit}>
         <div className='p-fluid formgrid grid'>
           <div className='field col-12 md:col-12'>
             <label htmlFor='codigo'>Código</label>
 
             <InputText
               type='text'
-              // {...formik.getFieldProps('descripcion')}
+              {...formik.getFieldProps('codigo')}
               style={{ marginBottom: '5px' }}
+              disabled={edit ? true : false}
             />
-            {/* {formik.touched.descripcion && formik.errors.descripcion && (
-              <span style={{ color: '#e5432d' }}>
-                {formik.errors.descripcion}
-              </span>
-            )} */}
+            {formik.touched.codigo && formik.errors.codigo && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.codigo}</span>
+            )}
           </div>
 
           <div className='field col-12 md:col-12'>
@@ -38,19 +116,30 @@ const ModalRegistroProyecto = ({ setView, view }) => {
 
             <InputText
               type='text'
-              // {...formik.getFieldProps('partidaPresupuestal')}
+              {...formik.getFieldProps('nombreAbreviado')}
               style={{ marginBottom: '5px' }}
             />
+            {formik.touched.nombreAbreviado &&
+              formik.errors.nombreAbreviado && (
+                <span style={{ color: '#e5432d' }}>
+                  {formik.errors.nombreAbreviado}
+                </span>
+              )}
           </div>
 
           <div className='field col-12 md:col-12'>
             <label htmlFor='nombreCompleto'>Nombre Completo</label>
 
             <InputText
-              // {...formik.getFieldProps('importe')}
               type='text'
+              {...formik.getFieldProps('nombreCompleto')}
               style={{ marginBottom: '5px' }}
             />
+            {formik.touched.nombreCompleto && formik.errors.nombreCompleto && (
+              <span style={{ color: '#e5432d' }}>
+                {formik.errors.nombreCompleto}
+              </span>
+            )}
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -61,13 +150,14 @@ const ModalRegistroProyecto = ({ setView, view }) => {
             className='p-button-text'
             type='button'
             onClick={() => {
-              // setViewProduct(false);
-              // formik.resetForm({});
+              setView(false);
+              formik.resetForm({});
+              setEdit(null);
             }}
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label={edit ? 'Editar' : 'Crear'}
             icon='pi pi-check'
             type='submit'
           />

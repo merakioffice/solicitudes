@@ -1,8 +1,12 @@
 import React from 'react';
 import jsPDF from 'jspdf';
 import { Button } from 'primereact/button';
+import { useSelector } from 'react-redux';
+import autoTable from 'jspdf-autotable';
 
 const PDFSolicitud = () => {
+  const { solicitud } = useSelector((state) => state.solicitudDinero);
+
   const descarga = () => {
     const doc = new jsPDF();
     doc.setFontSize(10);
@@ -15,43 +19,88 @@ const PDFSolicitud = () => {
 
     doc.setFontSize(9);
     doc.rect(138, 15, 51, 12);
-    doc.text('FORMATO - 001', 149, 22);
+    doc.text(`FORMATO - ${solicitud.numeroSolicitud}`, 149, 22);
 
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.text('INSTITUCIÓN: descocentro - 001', 140, 34);
 
     doc.rect(20, 37, 169, 6);
-    doc.text('Nombres y Apellidos:  LAURENTE SORIANO ROCIO EDITH', 25, 41);
+    doc.text(`Nombres y Apellidos:  ${solicitud.nombre}`, 25, 41);
     doc.rect(20, 43, 169, 6);
     doc.text('Cargo: PERSONAL ADMINISTRATIVO', 25, 47);
     doc.rect(20, 49, 169, 6);
-    doc.text('Proyecto: INGRESOS PROPIOS', 25, 53);
+    doc.text(`Proyecto: ${solicitud.nombreProyecto}`, 25, 53);
     doc.rect(20, 55, 169, 6);
-    doc.text('Lugar de comisión: HUANCAYO', 25, 59);
+    doc.text(`Lugar de comisión: ${solicitud.lugarComision}`, 25, 59);
     doc.rect(20, 61, 169, 6);
-    doc.text('Itinerario de transporte:', 25, 65);
-    doc.rect(20, 67, 169, 6);
     doc.text(
-      'Objeto de la comisión: REUNION DE COORDINACION DIRECCION EJECUTIVA -ADMINISTRACION',
+      `Itinerario de transporte: ${solicitud.itinerarioTransporte}`,
       25,
-      71
+      65
     );
+    doc.rect(20, 67, 169, 6);
+    doc.text(`Objeto de la comisión: ${solicitud.objetoComision}`, 25, 71);
     doc.rect(20, 73, 169, 6);
-    doc.text('Fecha de inicio 11/01/202', 25, 77);
-    doc.text('Fecha de fin: 11/01/202', 130, 77);
+    doc.text(`Fecha de inicio: ${solicitud.fechaInicio}`, 25, 77);
+    doc.text(`Fecha de fin: ${solicitud.fechaFin}`, 130, 77);
     doc.rect(20, 79, 169, 6);
     doc.text('Detalle de gastos de viaje', 25, 83);
 
-    doc.text('Id', 25, 94);
-    doc.rect(20, 90, 13, 6);
-    doc.text('Descripción', 72, 94);
-    doc.rect(33, 90, 93, 6);
-    doc.text('Partida Presupuestal', 132, 94);
-    doc.rect(126, 90, 38, 6);
-    doc.text('Importe', 171, 94);
-    doc.rect(164, 90, 25, 6);
+    //
+    doc.setFontSize(8);
 
+    autoTable(doc, {
+      // columnStyles: { europe: { halign: 'center' } }, // European countries centered
+      head: [['Descripcion', 'Partida Presupuestal', 'Importe']],
+      body: [
+        solicitud?.solicitud_productos?.map(
+          ({ descripcion, partidaPresupuestal, importe }) => {
+            return [descripcion, partidaPresupuestal, importe];
+            // return [  'Id'= index + 1,  'descripcion' = item.description,  'partidaPresupuestal'= item.partidaPresupuestal, 'importe'= item.importe  ]
+          }
+        ),
+      ],
+    });
+
+    // let columns = ['Id', 'Descripcion', 'Partida Presupuestal', 'Importe'];
+    // let data = [];
+    // let headers = {
+    //   Id: 'Id',
+    //   Descripcion: 'Descripcion',
+    //   'Partida Presupuestal': 'Partida Presupuestal',
+    //   Importe: 'Importe',
+    // };
+    // data.push(headers);
+    // solicitud.solicitud_productos.map((item, index) => {
+    //   const data1 = {
+    //     Id: index + 1,
+    //     Descripcion: item.descripcion,
+    //     'Partida Presupuestal': item.partidaPresupuestal,
+    //     Importe: item.importe,
+    //   };
+    //   data.push(data1);
+    // });
+
+    // let config = {
+    //   autoSize: true,
+    //   printHeaders: false,
+    //   columnWidths: 70,
+    // };
+
+    // doc.table(20, 90, data, columns, config);
+
+    // });
+    doc.setFontSize(8);
+    // doc.text('Id', 25, 94);
+    // doc.rect(20, 90, 13, 6);
+    // doc.text('Descripción', 72, 94);
+    // doc.rect(33, 90, 93, 6);
+    // doc.text('Partida Presupuestal', 132, 94);
+    // doc.rect(126, 90, 38, 6);
+    // doc.text('Importe', 171, 94);
+    // doc.rect(164, 90, 25, 6);
+    //
     doc.text(
       'En caso de no cumplir con la rendición de cuentas dentro',
       25,

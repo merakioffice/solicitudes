@@ -73,6 +73,30 @@ const SolicitudDinero = () => {
     );
   };
 
+  const buttonAdministrator = () => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-shield'
+          className='p-button-rounded p-button-success'
+          onClick={() => deleteData(rowData.id)}
+        />
+      </div>
+    );
+  };
+
+  const buttonCoordinator = () => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-user'
+          className='p-button-rounded p-button-info'
+          onClick={() => deleteData(rowData.id)}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -92,8 +116,26 @@ const SolicitudDinero = () => {
             <Column field='nombreProyecto' header='Nombre Proyecto'></Column>
             <Column field='fechaInicio' header='Fecha Inicio'></Column>
             <Column field='fechaFin' header='Fecha Fin'></Column>
-            <Column body={tableButtonEdit}></Column>
-            <Column body={tableButtonDelete}></Column>
+            <Column
+              header='Administrador'
+              style={{ width: '40px' }}
+              body={buttonAdministrator}
+            ></Column>
+            <Column
+              header='Coordinador'
+              style={{ width: '40px' }}
+              body={buttonCoordinator}
+            ></Column>
+            <Column
+              header='Editar'
+              style={{ width: '40px' }}
+              body={tableButtonEdit}
+            ></Column>
+            <Column
+              header='Eliminar'
+              style={{ width: '30px' }}
+              body={tableButtonDelete}
+            ></Column>
           </DataTable>
         </div>
       </div>
