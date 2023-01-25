@@ -145,54 +145,26 @@ export default function AppMenu() {
 
   const menuFyA = [
     {
-      label: 'Menu Hierarchy',
+      label: 'Base de información',
       icon: 'pi pi-fw pi-search',
       items: [
         {
-          label: 'Submenu 1',
+          label: 'Registro de usuario',
           icon: 'pi pi-fw pi-bookmark',
-          items: [
-            {
-              label: 'Submenu 1.1',
-              icon: 'pi pi-fw pi-bookmark',
-              items: [
-                { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-                { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-                { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' },
-              ],
-            },
-            {
-              label: 'Submenu 1.2',
-              icon: 'pi pi-fw pi-bookmark',
-              items: [
-                { label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' },
-                { label: 'Submenu 1.2.2', icon: 'pi pi-fw pi-bookmark' },
-              ],
-            },
-          ],
         },
         {
-          label: 'Submenu 2',
+          label: 'Registro de empleado',
           icon: 'pi pi-fw pi-bookmark',
-          items: [
-            {
-              label: 'Submenu 2.1',
-              icon: 'pi pi-fw pi-bookmark',
-              items: [
-                { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-                { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' },
-                { label: 'Submenu 2.1.3', icon: 'pi pi-fw pi-bookmark' },
-              ],
-            },
-            {
-              label: 'Submenu 2.2',
-              icon: 'pi pi-fw pi-bookmark',
-              items: [
-                { label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' },
-                { label: 'Submenu 2.2.2', icon: 'pi pi-fw pi-bookmark' },
-              ],
-            },
-          ],
+        },
+      ],
+    },
+    {
+      label: 'Movimientos',
+      icon: 'pi pi-fw pi-search',
+      items: [
+        {
+          label: 'Repositorio de documentos',
+          icon: 'pi pi-fw pi-bookmark',
         },
       ],
     },
