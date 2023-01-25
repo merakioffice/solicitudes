@@ -10,7 +10,7 @@ import {
 export default function AppTopbar() {
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { estado } = useSelector((state) => {
     return state.menuRRHH;
   });
@@ -36,12 +36,6 @@ export default function AppTopbar() {
                 className: 'disabled',
                 command: () => {
                   handleClick();
-                },
-              },
-              {
-                label: 'Página principal',
-                command: () => {
-                  handleClickMain();
                 },
               },
             ],
