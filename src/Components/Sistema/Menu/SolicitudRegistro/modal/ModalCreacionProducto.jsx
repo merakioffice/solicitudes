@@ -1,13 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Toast } from 'primereact/toast';
 
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-
+import { AutoComplete } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { fetchPost } from '../../../../../api';
+import { fetchGet, fetchPost } from '../../../../../api';
 
 export default function ModalCreacionProducto({
   viewProduct,
@@ -16,7 +16,38 @@ export default function ModalCreacionProducto({
   uuid,
 }) {
   const toast = useRef(null);
+  //
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry1, setSelectedCountry1] = useState(null);
+  const [filteredCountries, setFilteredCountries] = useState(null);
 
+  const [descript, setDescript] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [filteredCountrie, setFilteredCountrie] = useState(null);
+
+  const [dataLista, setDataLista] = useState({
+    descripcion: null,
+    partidaPresupuestal: null,
+    nameState: false,
+  });
+
+  const listData = () => {
+    fetchGet('regProyecto').then(({ registroProyecto }) => {
+      const data = registroProyecto.map((element, item) => {
+        return element;
+      });
+      setCountries(data);
+    });
+
+    fetchGet('comision').then(({ lugar }) => {
+      const data = lugar.map((element, item) => {
+        return element;
+      });
+      setDescript(data);
+    });
+  };
+
+  //
   const formik = useFormik({
     initialValues: {
       descripcion: '',
@@ -26,13 +57,16 @@ export default function ModalCreacionProducto({
     onSubmit: (values) => {
       values.importe = Number(values.importe);
       values.solicitudId = uuid;
+      values.descripcion = dataLista.descripcion;
+      values.partidaPresupuestal = dataLista.partidaPresupuestal;
+
       createProduct(values);
     },
     validationSchema: Yup.object({
-      descripcion: Yup.string().required('La descripción es requerida'),
-      partidaPresupuestal: Yup.string().required(
-        'La partida presupuestal es requerido'
-      ),
+      // descripcion: Yup.string().required('La descripción es requerida'),
+      // partidaPresupuestal: Yup.string().required(
+      //   'La partida presupuestal es requerido'
+      // ),
       importe: Yup.number('Solo se ingresan números', (data) => {
         console.log(data);
       })
@@ -42,13 +76,48 @@ export default function ModalCreacionProducto({
   });
 
   const createProduct = (data) => {
-    // console.log(data);
     fetchPost('solicitudProducto', 'POST', data).then(() => {
       setViewProduct(false);
       formik.resetForm();
       listaSolicitudDinero();
     });
   };
+
+  const searchPartidaPresupuestal = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...countries];
+      } else {
+        _filteredCountries = countries.filter((country) => {
+          return country.nombreAbreviado
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+      setFilteredCountries(_filteredCountries);
+    }, 250);
+  };
+
+  const searchDescription = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...descript];
+      } else {
+        _filteredCountries = descript.filter((country) => {
+          return country.descripcion
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+      setFilteredCountrie(_filteredCountries);
+    }, 250);
+  };
+
+  useEffect(() => {
+    listData();
+  }, []);
 
   return (
     <Dialog
@@ -65,8 +134,22 @@ export default function ModalCreacionProducto({
         <div className='p-fluid formgrid grid'>
           <div className='field col-12 md:col-12'>
             <label htmlFor='descripcion'>Descripción</label>
-
-            <InputText
+            <AutoComplete
+              value={selectedCountry}
+              suggestions={filteredCountrie}
+              completeMethod={searchDescription}
+              field='descripcion'
+              name='descripcion'
+              onChange={(e) => {
+                setSelectedCountry(e.value);
+                if (selectedCountry) {
+                  dataLista.descripcion = e.value.id;
+                }
+              }}
+              aria-label='descripcion'
+              dropdownAriaLabel='Seleccionar descripcion'
+            />
+            {/* <InputText
               type='text'
               {...formik.getFieldProps('descripcion')}
               style={{ marginBottom: '5px' }}
@@ -75,23 +158,37 @@ export default function ModalCreacionProducto({
               <span style={{ color: '#e5432d' }}>
                 {formik.errors.descripcion}
               </span>
-            )}
+            )} */}
           </div>
 
           <div className='field col-12 md:col-12'>
             <label htmlFor='partidaPresupuestal'>Partida Presupuestal</label>
-
-            <InputText
+            <AutoComplete
+              value={selectedCountry1}
+              suggestions={filteredCountries}
+              completeMethod={searchPartidaPresupuestal}
+              field='nombreAbreviado'
+              name='partidaPresupuestal'
+              onChange={(e) => {
+                setSelectedCountry1(e.value);
+                if (selectedCountry1) {
+                  dataLista.partidaPresupuestal = e.value.id;
+                }
+              }}
+              aria-label='partidaPresupuestal'
+              dropdownAriaLabel='Seleccionar partida presupuestal'
+            />
+            {/* <InputText
               type='text'
               {...formik.getFieldProps('partidaPresupuestal')}
               style={{ marginBottom: '5px' }}
-            />
-            {formik.touched.partidaPresupuestal &&
+            /> */}
+            {/* {formik.touched.partidaPresupuestal &&
               formik.errors.partidaPresupuestal && (
                 <span style={{ color: '#e5432d' }}>
                   {formik.errors.partidaPresupuestal}
                 </span>
-              )}
+              )} */}
           </div>
 
           <div className='field col-12 md:col-12'>
