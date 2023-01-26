@@ -14,7 +14,7 @@ import { Column } from 'primereact/column';
 
 import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 // import { getEnvVariables } from '../../../../helpers';
 import PDFSolicitud from './PDFSolicitud';
 // import Demostracion from '../../../../pages/Demostracion';
@@ -23,7 +23,7 @@ const RegistroDinero = () => {
   // const { VITE_API_URL } = getEnvVariables();
 
   const toast = useRef(null);
-  const { solicitud } = useSelector((state) => state.solicitudDinero);
+  // const { solicitud } = useSelector((state) => state.solicitudDinero);
   const [dataRegistro, setDataRegistro] = useState([]);
   const [totales, setTotal] = useState(0);
   const [uuid, setUuid] = useState(null);
@@ -31,17 +31,21 @@ const RegistroDinero = () => {
   const [viewProduct, setViewProduct] = useState(false);
   const navigate = useNavigate();
 
-  const [listLugar, setListLugar] = useState([]);
+  // const [listLugar, setListLugar] = useState([]);
+  const [countries, setCountries] = useState([]);
   const [selectedCountry1, setSelectedCountry1] = useState(null);
   const [filteredCountries, setFilteredCountries] = useState(null);
-
+  const [dataLista, setDataLista] = useState({
+    nombreProyecto: null,
+    nameState: false,
+    numeroSolicitud: null,
+  });
   const listData = () => {
-    fetchGet('comision').then(({ lugar }) => {
-      const data = lugar.map((element, item) => {
-        element.index = item + 1;
+    fetchGet('regProyecto').then(({ registroProyecto }) => {
+      const data = registroProyecto.map((element, item) => {
         return element;
       });
-      setListLugar(data);
+      setCountries(data);
     });
   };
 
@@ -96,7 +100,6 @@ const RegistroDinero = () => {
       fechaFin: '',
     },
     onSubmit: (values) => {
-      // console.log(values);
       if (values.fechaRegistro) {
         const datosRegistros =
           values.fechaRegistro.getMonth() +
@@ -128,15 +131,13 @@ const RegistroDinero = () => {
           values.fechaFin.getFullYear();
         values.fechaFin = fechaFin;
       }
+      values.nombreProyecto = dataLista.nombreProyecto;
 
       registreAdd(values);
     },
     validationSchema: Yup.object({
       fechaRegistro: Yup.string().required('La fecha de registro es requerido'),
       nombre: Yup.string().required('El nombre es requerido'),
-      nombreProyecto: Yup.string().required(
-        'El nombre del proyecto es requerido'
-      ),
       lugarComision: Yup.string('Solo se aceptan letras').required(
         'El lugar de comisión es requerido'
       ),
@@ -155,6 +156,10 @@ const RegistroDinero = () => {
     values.lugarComision = selectedCountry1.id.toString();
 
     fetchPost('solicitud', 'POST', values).then(({ personal }) => {
+      // console.log(personal);
+      setDataLista({
+        numeroSolicitud: personal ? personal.numeroSolicitud : '',
+      });
       setUuid(personal.id);
       setBoolCreate(true);
       toast.current.show({
@@ -173,6 +178,22 @@ const RegistroDinero = () => {
     });
   };
 
+  const searchProject = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...countries];
+      } else {
+        _filteredCountries = countries.filter((country) => {
+          return country.nombreAbreviado
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+      setFilteredCountries(_filteredCountries);
+    }, 250);
+  };
+
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -189,7 +210,12 @@ const RegistroDinero = () => {
                 <label htmlFor='numeroSolicitud' className='block'>
                   N. solicitud
                 </label>
-                <InputText name='numeroSolicitud' type='text' disabled />
+                <InputText
+                  name='numeroSolicitud'
+                  type='text'
+                  value={dataLista ? dataLista.numeroSolicitud : ''}
+                  disabled
+                />
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha Registro</label>
@@ -234,21 +260,29 @@ const RegistroDinero = () => {
                 <label htmlFor='nombreProyecto' className='block'>
                   Nombre del proyecto`
                 </label>
-                <InputText
+                <AutoComplete
+                  value={selectedCountry1}
+                  suggestions={filteredCountries}
+                  completeMethod={searchProject}
+                  field='nombreAbreviado'
                   name='nombreProyecto'
-                  type='text'
-                  values={formik.values.nombreProyecto}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
+                  onChange={(e) => {
+                    setSelectedCountry1(e.value);
+                    if (selectedCountry1) {
+                      dataLista.nombreProyecto = e.value.id;
+                    }
+                  }}
+                  aria-label='nombreProyecto'
+                  dropdownAriaLabel='Seleccionar Proyecto'
                   disabled={boolCreate}
                 />
-                {formik.touched.nombreProyecto &&
-                  formik.errors.nombreProyecto && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.nombreProyecto}
-                    </span>
-                  )}
+                {/* {selectedCountry1 === undefined || selectedCountry1 === null ? (
+                  <span style={{ color: 'rgb(229, 67, 45)' }}>
+                    El nombre del proyecto es requerido
+                  </span>
+                ) : (
+                  ''
+                )} */}
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='lugarComision' className='block'>
@@ -359,12 +393,13 @@ const RegistroDinero = () => {
                 style={{ width: '100px', marginLeft: '20px' }}
                 label='Guardar'
                 type='submit'
+                disabled={dataLista.numeroSolicitud ? true : false}
               />
             </div>
           </form>
-          {/*  */}
+
           <hr />
-          {/*  */}
+
           <div
             style={{
               display: 'flex',
@@ -436,16 +471,10 @@ const RegistroDinero = () => {
               listaSolicitudDinero={listaSolicitudDinero}
             />
           )}
-          {/*  */}
-          <hr />
-          {/*  */}
-        </div>
-        {/*  */}
-      </div>
-      {/*  */}
 
-      {/*  */}
-      {/* <PDFSolicitud /> */}
+          <hr />
+        </div>
+      </div>
     </div>
   );
 };

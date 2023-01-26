@@ -13,42 +13,26 @@ import { fetchDelete, fetchGet } from '../../../../api';
 // import { oneIdSolicitud } from '../../../../store/slices/solicitud/solicitudStile';
 import { LeftToolBarTemplate } from '../../../Molecula';
 
-const gastos = [
-  {
-    id: 1,
-    nombre: 'pepe',
-    proyecto: 'pepe',
-    lugar: 'pepe',
-    ObjetoComision: 'pepe',
-  },
-  {
-    id: 2,
-    nombre: 'pepe',
-    proyecto: 'pepe',
-    lugar: 'pepe',
-    ObjetoComision: 'pepe',
-  },
-  {
-    id: 3,
-    nombre: 'pepe',
-    proyecto: 'pepe',
-    lugar: 'pepe',
-    ObjetoComision: 'pepe',
-  },
-];
-
 const RendicionGastos = () => {
   // const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useRef(null);
+  const [addData, setAddData] = useState([]);
+
   // const [dataRegistro, setDataRegistro] = useState([]);
 
-  const listaSolicitud = () => {
-    // fetchGet('solicitud').then(({ personal }) => setDataRegistro(personal));
+  const listData = () => {
+    fetchGet('rendGastos').then(({ rendicionGastos }) => {
+      const data = rendicionGastos.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+      setAddData(data);
+    });
   };
 
   useEffect(() => {
-    listaSolicitud();
+    listData();
   }, []);
 
   const openSolicitud = () => {
@@ -122,7 +106,7 @@ const RendicionGastos = () => {
             })}
           ></Toolbar>
 
-          <DataTable value={gastos} responsiveLayout='scroll'>
+          <DataTable value={addData} responsiveLayout='scroll'>
             <Column field='id' header='Id'></Column>
             <Column field='nombre' header='Nombre'></Column>
             <Column field='proyecto' header='Proyecto'></Column>
