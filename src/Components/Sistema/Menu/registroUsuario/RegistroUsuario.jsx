@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import * as XLSX from 'xlsx';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Toolbar } from 'primereact/toolbar';
-import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
-import { Button } from 'primereact/button';
+import React, { useState } from "react";
+import * as XLSX from "xlsx";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Toolbar } from "primereact/toolbar";
+import { LeftToolBarTemplate, RightToolBarTemplate } from "../../../Molecula";
+import { Button } from "primereact/button";
 // import ModalRegistroProyecto from './Modal/ModalRegistroProyecto';
 // import { FileUpload } from 'primereact/fileupload';
 
 const usuario = [
   {
     id: 1,
-    nombre: 'pepe',
-    correo: 'corre@gmail.com',
-    estado: 'activo',
+    nombre: "pepe",
+    correo: "corre@gmail.com",
+    estado: "activo"
   },
   {
     id: 2,
-    nombre: 'pepe',
-    correo: 'corre@gmail.com',
-    estado: 'activo',
+    nombre: "pepe",
+    correo: "corre@gmail.com",
+    estado: "activo"
   },
   {
     id: 3,
-    nombre: 'pepe',
-    correo: 'corre@gmail.com',
-    estado: 'activo',
-  },
+    nombre: "pepe",
+    correo: "corre@gmail.com",
+    estado: "activo"
+  }
 ];
 
 const RegistroUsuario = () => {
@@ -38,10 +38,10 @@ const RegistroUsuario = () => {
 
   const tableButtonEdit = (rowData) => {
     return (
-      <div className='actions'>
+      <div className="actions">
         <Button
-          icon='pi pi-pencil'
-          className='p-button-rounded p-button-warning'
+          icon="pi pi-pencil"
+          className="p-button-rounded p-button-warning"
           // onClick={() => editData(rowData)}
         />
       </div>
@@ -50,10 +50,10 @@ const RegistroUsuario = () => {
 
   const tableButtonDelete = (rowData) => {
     return (
-      <div className='actions'>
+      <div className="actions">
         <Button
-          icon='pi pi-trash'
-          className='p-button-rounded p-button-danger'
+          icon="pi pi-trash"
+          className="p-button-rounded p-button-danger"
           // onClick={() => deleteData(rowData.id)}
         />
       </div>
@@ -111,28 +111,28 @@ const RegistroUsuario = () => {
   // };
 
   return (
-    <div className='grid crud-demo'>
+    <div className="grid crud-demo">
       {/* <Toast ref={toast} /> */}
-      <div className='col-12'>
-        <div className='card'>
+      <div className="col-12">
+        <div className="card">
           <Toolbar
-            className='mb-4'
+            className="mb-4"
             right={LeftToolBarTemplate({
               openNew: openModal,
-              nameBtn: 'Agregar Usuario',
+              nameBtn: "Agregar Usuario"
             })}
           ></Toolbar>
-          <DataTable value={usuario} responsiveLayout='scroll'>
-            <Column field='id' header='Id'>
+          <DataTable value={usuario} responsiveLayout="scroll">
+            <Column field="id" header="Id">
               {usuario.map((item, index) => {
                 {
                   index + 1;
                 }
               })}
             </Column>
-            <Column field='nombre' header='Nombre'></Column>
-            <Column field='correo' header='Correo'></Column>
-            <Column field='estado' header='estado'></Column>
+            <Column field="nombre" header="Nombre"></Column>
+            <Column field="correo" header="Correo"></Column>
+            <Column field="estado" header="estado"></Column>
             <Column body={tableButtonEdit}></Column>
             <Column body={tableButtonDelete}></Column>
           </DataTable>

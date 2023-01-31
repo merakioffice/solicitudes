@@ -6,20 +6,13 @@ import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-// import './styles.scss';
 import { fetchDelete, fetchGet } from '../../../../api';
-// import { useDispatch } from 'react-redux';
-// import { getSolicitudDinero } from '../../../../store/thunsk';
-// import { oneIdSolicitud } from '../../../../store/slices/solicitud/solicitudStile';
 import { LeftToolBarTemplate } from '../../../Molecula';
 
 const RendicionGastos = () => {
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useRef(null);
   const [addData, setAddData] = useState([]);
-
-  // const [dataRegistro, setDataRegistro] = useState([]);
 
   const listData = () => {
     fetchGet('rendGastos').then(({ rendicionGastos }) => {
@@ -41,8 +34,6 @@ const RendicionGastos = () => {
   };
 
   const editData = (data) => {
-    // dispatch(getSolicitudDinero());
-    // dispatch(oneIdSolicitud(data));
     navigate('/RegistroRendicionGastos');
   };
 

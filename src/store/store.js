@@ -6,7 +6,7 @@ import { solicitudSlice } from './slices/solicitud/solicitudStile';
 const store = configureStore({
   reducer: {
     solicitudDinero: solicitudSlice.reducer,
-    regActividad: regActividadSlice.reducer,
+    // regActividad: regActividadSlice.reducer,
     menuRRHH: MenuSlice.reducer,
   },
 });

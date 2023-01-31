@@ -5,7 +5,6 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { Calendar } from 'primereact/calendar';
-
 import { Toolbar } from 'primereact/toolbar';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -13,25 +12,52 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Row } from 'primereact/row';
 import { ColumnGroup } from 'primereact/columngroup';
-
-// import ModalCreacionProducto from './modal/ModalCreacionProducto';
+import { AutoComplete } from 'primereact/autocomplete';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
-import { getEnvVariables } from '../../../../helpers';
 import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
 const RegistroRendicionGastos = () => {
-  const { VITE_API_URL } = getEnvVariables();
-
   const toast = useRef(null);
-  const { solicitud } = useSelector((state) => state.solicitudDinero);
   const [dataRegistro, setDataRegistro] = useState([]);
   const [totales, setTotal] = useState(0);
   const [uuid, setUuid] = useState(null);
   const [boolCreate, setBoolCreate] = useState(false);
-  // const [viewProduct, setViewProduct] = useState(false);
   const [view, setView] = useState(false);
   const navigate = useNavigate();
+
+  //
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry1, setSelectedCountry1] = useState('');
+  const [filteredCountries, setFilteredCountries] = useState(null);
+
+  const [proyectos, setProyectos] = useState([]);
+  const [selectedProyecto, setSelectedProyecto] = useState(null);
+  const [filteredProyecto, setFilteredProyecto] = useState(null);
+  // const [edit, setEdit] = useState({});
+
+  const [data, setData] = useState([]);
+
+  const validaciones = Object.keys(selectedCountry1).length === 0;
+
+  const listData = () => {
+    fetchGet(`solicitud`).then(({ personal }) => {
+      const data = personal.map((element, item) => {
+        return element;
+      });
+
+      setCountries(data);
+    });
+  };
+
+  const listProject = () => {
+    fetchGet(`regProyecto`).then(({ registroProyecto }) => {
+      const data = registroProyecto.map((element) => {
+        return element;
+      });
+      setProyectos(data);
+    });
+  };
 
   const handleClickRetornar = () => {
     navigate('/rendicion-gastos');
@@ -65,71 +91,6 @@ const RegistroRendicionGastos = () => {
     );
   };
 
-  const formik = useFormik({
-    initialValues: {
-      numeroSolicitud: solicitud ? solicitud?.numeroSolicitud : '',
-      fechaRegistro: solicitud ? solicitud?.fechaRegistro : '',
-      nombre: 'hola',
-      nombreProyecto: '',
-      lugarComision: '',
-      itinerarioTransporte: '',
-      objetoComision: '',
-      fechaInicio: '',
-      fechaFin: '',
-    },
-    onSubmit: (values) => {
-      // console.log(values);
-      if (values.fechaRegistro) {
-        const datosRegistros =
-          values.fechaRegistro.getMonth() +
-          1 +
-          '/' +
-          values.fechaRegistro.getDate() +
-          '/' +
-          values.fechaRegistro.getFullYear();
-        values.fechaRegistro = datosRegistros;
-        console.log(datosRegistros);
-      }
-      if (values.fechaInicio) {
-        const fechaInicio =
-          values.fechaInicio.getMonth() +
-          1 +
-          '-' +
-          values.fechaInicio.getDate() +
-          '-' +
-          values.fechaInicio.getFullYear();
-        values.fechaInicio = fechaInicio;
-      }
-      if (values.fechaFin) {
-        const fechaFin =
-          values.fechaFin.getMonth() +
-          1 +
-          '-' +
-          values.fechaFin.getDate() +
-          '-' +
-          values.fechaFin.getFullYear();
-        values.fechaFin = fechaFin;
-      }
-
-      registreAdd(values);
-    },
-    validationSchema: Yup.object({
-      numeroSolicitud: Yup.number('Solo se permiten números')
-        .min(8)
-        .required('El número de solicitud es requerido'),
-      fechaRegistro: Yup.string().required('La fecha de registro es requerido'),
-      nombre: Yup.string().required('El nombre es requerido'),
-      nombreProyecto: Yup.string().required(
-        'El nombre del proyecto es requerido'
-      ),
-      lugarComision: Yup.string().required('El lugar de comisión es requerido'),
-      itinerarioTransporte: Yup.string().required('El itinerario es requerido'),
-      objetoComision: Yup.string().required('El objeto es requerido'),
-      fechaInicio: Yup.string().required('La fecha de inicio es requerido'),
-      fechaFin: Yup.string().required('La fecha de fin es requerido'),
-    }),
-  });
-
   const registreAdd = (values) => {
     fetchPost('solicitud', 'POST', values).then(({ personal }) => {
       setUuid(personal.id);
@@ -149,23 +110,6 @@ const RegistroRendicionGastos = () => {
       setDataRegistro(personal);
       setTotal(total);
     });
-  };
-
-  useEffect(() => {
-    if (uuid) {
-      listaSolicitudDinero();
-    }
-  }, []);
-
-  const viewPDF = () => {
-    // console.log('pdf');
-    navigate(`${VITE_API_URL}/solicitud/pdf`);
-    // fetchGet('solicitud/pdf')
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((err) => console.log(err));
-    // // setView(true)
   };
 
   let headerGroup = (
@@ -230,7 +174,95 @@ const RegistroRendicionGastos = () => {
       </Row>
     </ColumnGroup>
   );
-  console.log('=>', view);
+
+  const searchProject = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...countries];
+      } else {
+        _filteredCountries = countries.filter((country) => {
+          return country.nombre
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+      setFilteredCountries(_filteredCountries);
+    }, 250);
+  };
+
+  const searchProyecto = (event) => {
+    // setTimeout(() => {
+    let _filteredCountries;
+    if (!event.query.trim().length) {
+      _filteredCountries = [...proyectos];
+    } else {
+      _filteredCountries = proyectos.filter((country) => {
+        console.log('country =>', country);
+        return country.nombreAbreviado
+          .toLowerCase()
+          .startsWith(event.query.toLowerCase());
+      });
+    }
+    console.log(_filteredCountries);
+    setFilteredProyecto(_filteredCountries);
+    // }, 250);
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      proyecto: '',
+      nombreApellido: !validaciones ? selectedCountry1?.nombre : '',
+      lugarComision: '',
+      objetoComision: '',
+      fechaInicio: '',
+      fechaFin: '',
+    },
+    onSubmit: (values) => {
+      console.log(data);
+
+      if (values.fechaInicio) {
+        const fechaInicio =
+          values.fechaInicio.getMonth() +
+          1 +
+          '-' +
+          values.fechaInicio.getDate() +
+          '-' +
+          values.fechaInicio.getFullYear();
+        values.fechaInicio = fechaInicio;
+      }
+      if (values.fechaFin) {
+        const fechaFin =
+          values.fechaFin.getMonth() +
+          1 +
+          '-' +
+          values.fechaFin.getDate() +
+          '-' +
+          values.fechaFin.getFullYear();
+        values.fechaFin = fechaFin;
+      }
+      console.log('=>', values);
+      // registreAdd(values);
+    },
+    validationSchema: Yup.object({
+      nombreApellido: Yup.string().required(
+        'El nombre del proyecto es requerido'
+      ),
+      lugarComision: Yup.string().required('El lugar de comisión es requerido'),
+      objetoComision: Yup.string().required('El itinerario es requerido'),
+      fechaInicio: Yup.string().required('La fecha de inicio es requerido'),
+      fechaFin: Yup.string().required('La fecha de fin es requerido'),
+    }),
+  });
+
+  useEffect(() => {
+    if (uuid) {
+      listaSolicitudDinero();
+    }
+    listData();
+    listProject();
+  }, []);
+
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -240,130 +272,160 @@ const RegistroRendicionGastos = () => {
           <Toolbar className='mb-4' right={<PDFRendicionGastos />}></Toolbar>
 
           <form onSubmit={formik.handleSubmit} noValidate>
-            <h4>Datos Personales</h4>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <h4>Datos Personales</h4>
+              <div>
+                <AutoComplete
+                  value={selectedCountry1}
+                  suggestions={filteredCountries}
+                  completeMethod={searchProject}
+                  field='nombre'
+                  name='nombreProyecto'
+                  onChange={(e) => {
+                    console.log(e.value);
+                    setSelectedCountry1(e.value);
+                    // if (selectedCountry1) {
+                    //   setData(e.value);
+                    // }
+                  }}
+                  aria-label='nombreProyecto'
+                  dropdownAriaLabel='Seleccionar Proyecto'
+                  // disabled={boolCreate}
+                />
+              </div>
+            </div>
 
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='numeroSolicitud' className='block'>
-                  Nombre y apellidos
+                  N. solicitud
                 </label>
                 <InputText
                   name='numeroSolicitud'
                   type='text'
-                  // values={formik.values.numeroSolicitud}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
+                  // value={dataLista ? dataLista.numeroSolicitud : ''}
+                  disabled
                 />
-                {/* {formik.touched.numeroSolicitud &&
-                  formik.errors.numeroSolicitud && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.numeroSolicitud}
-                    </span>
-                  )} */}
               </div>
 
               <div className='field col-12 md:col-6'>
-                <label htmlFor='nombre' className='block'>
+                <label htmlFor='proyecto' className='block'>
                   Proyecto
                 </label>
-                <InputText
-                  name='nombre'
-                  type='text'
-                  // values={formik.values.nombre}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
+                <AutoComplete
+                  value={selectedProyecto}
+                  suggestions={filteredProyecto}
+                  completeMethod={searchProyecto}
+                  field='nombreAbreviado'
+                  name='proyecto'
+                  onChange={(e) => {
+                    setSelectedProyecto(e.value);
+                  }}
+                  aria-label='nombreAbreviado'
+                  dropdownAriaLabel='Seleccionar Proyecto'
                 />
-                {/* {formik.touched.nombre && formik.errors.nombre && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.nombre}
-                  </span>
-                )} */}
               </div>
+              <div className='field col-12 md:col-12'>
+                <label htmlFor='nombreApellido' className='block'>
+                  Nombre y apellidos
+                </label>
+
+                <InputText
+                  name='nombreApellido'
+                  type='text'
+                  value={formik.values.nombreApellido}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  // disabled
+                />
+                {formik.touched.nombreApellido &&
+                  formik.errors.nombreApellido && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.nombreApellido}
+                    </span>
+                  )}
+              </div>
+
               <div className='field col-12 md:col-6'>
-                <label htmlFor='nombre' className='block'>
+                <label htmlFor='lugarComision' className='block'>
                   Lugar Comisión
                 </label>
                 <InputText
-                  name='nombre'
+                  name='lugarComision'
                   type='text'
-                  // values={formik.values.nombre}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  value={formik.values.lugarComision}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
                 />
-                {/* {formik.touched.nombre && formik.errors.nombre && (
-                  <span style={{ color: '#e5432d' }}>
-                    {formik.errors.nombre}
-                  </span>
-                )} */}
+                {formik.touched.lugarComision &&
+                  formik.errors.lugarComision && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.lugarComision}
+                    </span>
+                  )}
               </div>
               <div className='field col-12 md:col-6'>
-                <label htmlFor='nombre' className='block'>
+                <label htmlFor='objetoComision' className='block'>
                   Objeto de la Comisión
                 </label>
                 <InputText
-                  name='nombre'
+                  name='objetoComision'
                   type='text'
-                  // values={formik.values.nombre}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  value={formik.values.objetoComision}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   // disabled={boolCreate}
                 />
-                {/* {formik.touched.nombre && formik.errors.nombre && (
+                {formik.touched.objetoComision &&
+                  formik.errors.objetoComision && (
+                    <span style={{ color: '#e5432d' }}>
+                      {formik.errors.objetoComision}
+                    </span>
+                  )}
+              </div>
+              <div className='field col-12 md:col-6'>
+                <label htmlFor='fechaInicio'>Fecha inicio</label>
+                <Calendar
+                  value={formik.values.fechaInicio}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  style={{ marginBottom: '5px' }}
+                  name='fechaInicio'
+                  disabled={boolCreate}
+                ></Calendar>
+                {formik.touched.fechaInicio && formik.errors.fechaInicio && (
                   <span style={{ color: '#e5432d' }}>
-                    {formik.errors.nombre}
+                    {formik.errors.fechaInicio}
                   </span>
-                )} */}
+                )}
               </div>
               <div className='field col-12 md:col-6'>
-                <label htmlFor='fechaRegistro'>Fecha inicio</label>
+                <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
-                  // values={formik.values.fechaRegistro}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  value={formik.values.fechaFin}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  name='fechaRegistro'
-                  disabled={boolCreate}
+                  name='fechaFin'
                 ></Calendar>
-                {/* {formik.touched.fechaRegistro &&
-                  formik.errors.fechaRegistro && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.fechaRegistro}
-                    </span>
-                  )} */}
-              </div>
-              <div className='field col-12 md:col-6'>
-                <label htmlFor='fechaRegistro'>Fecha fin</label>
-                <Calendar
-                  // values={formik.values.fechaRegistro}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  style={{ marginBottom: '5px' }}
-                  name='fechaRegistro'
-                  disabled={boolCreate}
-                ></Calendar>
-                {/* {formik.touched.fechaRegistro &&
-                  formik.errors.fechaRegistro && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.fechaRegistro}
-                    </span>
-                  )} */}
+                {formik.touched.fechaFin && formik.errors.fechaFin && (
+                  <span style={{ color: '#e5432d' }}>
+                    {formik.errors.fechaFin}
+                  </span>
+                )}
               </div>
             </div>
             <h4>Resumen de la rendición de las cuentas</h4>
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-4'>
-                <label htmlFor='nombreProyecto' className='block'>
+                <label htmlFor='recibido' className='block'>
                   Recibido $/
                 </label>
                 <InputText
-                  name='nombreProyecto'
+                  name='recibido'
                   type='text'
                   // values={formik.values.nombreProyecto}
                   // onChange={formik.handleChange}
@@ -379,11 +441,11 @@ const RegistroRendicionGastos = () => {
                   )} */}
               </div>
               <div className='field col-12 md:col-4'>
-                <label htmlFor='lugarComision' className='block'>
+                <label htmlFor='rendido' className='block'>
                   Rendido $/
                 </label>
                 <InputText
-                  name='lugarComision'
+                  name='rendido'
                   type='text'
                   // values={formik.values.lugarComision}
                   // onChange={formik.handleChange}
@@ -399,11 +461,11 @@ const RegistroRendicionGastos = () => {
                   )} */}
               </div>
               <div className='field col-12 md:col-4'>
-                <label htmlFor='itinerarioTransporte' className='block'>
+                <label htmlFor='saldo' className='block'>
                   Saldo $/
                 </label>
                 <InputText
-                  name='itinerarioTransporte'
+                  name='saldo'
                   type='text'
                   // values={formik.values.itinerarioTransporte}
                   // onChange={formik.handleChange}
