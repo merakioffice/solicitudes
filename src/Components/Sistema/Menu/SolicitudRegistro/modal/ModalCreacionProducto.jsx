@@ -28,7 +28,6 @@ export default function ModalCreacionProducto({
   const [dataLista, setDataLista] = useState({
     descripcion: null,
     partidaPresupuestal: null,
-    nameState: false,
   });
 
   const listData = () => {
@@ -50,15 +49,15 @@ export default function ModalCreacionProducto({
   //
   const formik = useFormik({
     initialValues: {
-      descripcion: '',
-      partidaPresupuestal: '',
+      // descripcion: '',
+      // partidaPresupuestal: '',
       importe: '',
     },
     onSubmit: (values) => {
       values.importe = Number(values.importe);
       values.solicitudId = uuid;
-      values.descripcion = dataLista.descripcion;
-      values.partidaPresupuestal = dataLista.partidaPresupuestal;
+      values.descripcion = selectedCountry.id;
+      values.partidaPresupuestal = selectedCountry1.id;
 
       createProduct(values);
     },
@@ -118,7 +117,7 @@ export default function ModalCreacionProducto({
   useEffect(() => {
     listData();
   }, []);
-
+  console.log(selectedCountry1);
   return (
     <Dialog
       visible={viewProduct}
@@ -135,10 +134,12 @@ export default function ModalCreacionProducto({
           <div className='field col-12 md:col-12'>
             <label htmlFor='descripcion'>Descripción</label>
             <AutoComplete
-              value={selectedCountry}
-              suggestions={filteredCountrie}
+              aria-label='descripcion'
               completeMethod={searchDescription}
+              dropdown
+              dropdownAriaLabel='Seleccionar descripcion'
               field='descripcion'
+              id='descripcion'
               name='descripcion'
               onChange={(e) => {
                 setSelectedCountry(e.value);
@@ -146,19 +147,9 @@ export default function ModalCreacionProducto({
                   dataLista.descripcion = e.value.id;
                 }
               }}
-              aria-label='descripcion'
-              dropdownAriaLabel='Seleccionar descripcion'
+              suggestions={filteredCountrie}
+              value={selectedCountry}
             />
-            {/* <InputText
-              type='text'
-              {...formik.getFieldProps('descripcion')}
-              style={{ marginBottom: '5px' }}
-            />
-            {formik.touched.descripcion && formik.errors.descripcion && (
-              <span style={{ color: '#e5432d' }}>
-                {formik.errors.descripcion}
-              </span>
-            )} */}
           </div>
 
           <div className='field col-12 md:col-12'>
@@ -169,26 +160,17 @@ export default function ModalCreacionProducto({
               completeMethod={searchPartidaPresupuestal}
               field='nombreAbreviado'
               name='partidaPresupuestal'
+              id='partidaPresupuestal'
               onChange={(e) => {
                 setSelectedCountry1(e.value);
                 if (selectedCountry1) {
                   dataLista.partidaPresupuestal = e.value.id;
                 }
               }}
+              dropdown
               aria-label='partidaPresupuestal'
               dropdownAriaLabel='Seleccionar partida presupuestal'
             />
-            {/* <InputText
-              type='text'
-              {...formik.getFieldProps('partidaPresupuestal')}
-              style={{ marginBottom: '5px' }}
-            /> */}
-            {/* {formik.touched.partidaPresupuestal &&
-              formik.errors.partidaPresupuestal && (
-                <span style={{ color: '#e5432d' }}>
-                  {formik.errors.partidaPresupuestal}
-                </span>
-              )} */}
           </div>
 
           <div className='field col-12 md:col-12'>
@@ -226,22 +208,4 @@ export default function ModalCreacionProducto({
       </form>
     </Dialog>
   );
-
-  // autoTable(doc, {
-  //   // columnStyles: { europe: { halign: 'center' } }, // European countries centered
-  //   body: [
-  //     solicitud?.solicitud_productos?.map(
-  //       ({ descripcion, partidaPresupuestal, importe }) => {
-  //         return [descripcion, partidaPresupuestal, importe];
-  //         // return [  'Id'= index + 1,  'descripcion' = item.description,  'partidaPresupuestal'= item.partidaPresupuestal, 'importe'= item.importe  ]
-  //       }
-  //     ),
-  //   ],
-  //   columns: [
-  //     // { header: 'Id', dataKey: 'Id' },
-  //     { header: 'Descripcion', dataKey: 'descripcion' },
-  //     { header: 'Partida Presupuestal', dataKey: 'partidaPresupuestal' },
-  //     { header: 'Importe', dataKey: 'importe' },
-  //   ],
-  // });
 }

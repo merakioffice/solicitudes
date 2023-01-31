@@ -2,14 +2,15 @@ import React from 'react';
 
 import './styles.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { notEditSolicitud } from '../../../../../store/slices/solicitud/solicitudStile';
 export default function AppMenu() {
   const navigate = useNavigate();
   const { estado } = useSelector((state) => {
     return state.menuRRHH;
   });
 
-  console.log(estado);
+  const dispatch = useDispatch();
 
   let menu = [
     {
@@ -54,6 +55,7 @@ export default function AppMenu() {
           icon: 'pi pi-fw pi-eye',
           to: '/solicitud-dinero',
           command: () => {
+            dispatch(notEditSolicitud());
             navigate('/solicitud-dinero');
           },
         },
