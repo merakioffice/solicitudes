@@ -17,6 +17,7 @@ import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
 import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
+
 const RegistroRendicionGastos = () => {
   const toast = useRef(null);
   const [dataRegistro, setDataRegistro] = useState([]);
@@ -38,7 +39,13 @@ const RegistroRendicionGastos = () => {
 
   const [data, setData] = useState([]);
 
-  const validaciones = Object.keys(selectedCountry1).length === 0;
+  const [dataLista, setDataLista] = useState({
+    nombreProyecto: null,
+    nameState: false,
+    numeroSolicitud: null,
+  });
+
+  const validaciones = Object.keys(data).length === 0;
 
   const listData = () => {
     fetchGet(`solicitud`).then(({ personal }) => {
@@ -89,20 +96,6 @@ const RegistroRendicionGastos = () => {
         />
       </div>
     );
-  };
-
-  const registreAdd = (values) => {
-    fetchPost('solicitud', 'POST', values).then(({ personal }) => {
-      setUuid(personal.id);
-      console.log(personal);
-      setBoolCreate(true);
-      toast.current.show({
-        severity: 'success',
-        summary: 'Creado',
-        detail: 'Se ha creado correctamente',
-        life: 3000,
-      });
-    });
   };
 
   const listaSolicitudDinero = () => {
@@ -192,68 +185,107 @@ const RegistroRendicionGastos = () => {
   };
 
   const searchProyecto = (event) => {
-    // setTimeout(() => {
-    let _filteredCountries;
-    if (!event.query.trim().length) {
-      _filteredCountries = [...proyectos];
-    } else {
-      _filteredCountries = proyectos.filter((country) => {
-        console.log('country =>', country);
-        return country.nombreAbreviado
-          .toLowerCase()
-          .startsWith(event.query.toLowerCase());
-      });
-    }
-    console.log(_filteredCountries);
-    setFilteredProyecto(_filteredCountries);
-    // }, 250);
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...proyectos];
+      } else {
+        _filteredCountries = proyectos.filter((country) => {
+          return country.nombreAbreviado
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+
+      setFilteredProyecto(_filteredCountries);
+    }, 200);
   };
 
   const formik = useFormik({
     initialValues: {
       proyecto: '',
-      nombreApellido: !validaciones ? selectedCountry1?.nombre : '',
+      // nombreApellido: '',
       lugarComision: '',
       objetoComision: '',
       fechaInicio: '',
       fechaFin: '',
     },
     onSubmit: (values) => {
-      console.log(data);
+      // console.log(data);
 
-      if (values.fechaInicio) {
-        const fechaInicio =
-          values.fechaInicio.getMonth() +
-          1 +
-          '-' +
-          values.fechaInicio.getDate() +
-          '-' +
-          values.fechaInicio.getFullYear();
-        values.fechaInicio = fechaInicio;
-      }
-      if (values.fechaFin) {
-        const fechaFin =
-          values.fechaFin.getMonth() +
-          1 +
-          '-' +
-          values.fechaFin.getDate() +
-          '-' +
-          values.fechaFin.getFullYear();
-        values.fechaFin = fechaFin;
-      }
-      console.log('=>', values);
-      // registreAdd(values);
+      // if (values.fechaInicio) {
+      //   const fechaInicio =
+      //     values.fechaInicio.getMonth() +
+      //     1 +
+      //     '-' +
+      //     values.fechaInicio.getDate() +
+      //     '-' +
+      //     values.fechaInicio.getFullYear();
+      //   values.fechaInicio = fechaInicio;
+      // }
+      // if (values.fechaFin) {
+      //   const fechaFin =
+      //     values.fechaFin.getMonth() +
+      //     1 +
+      //     '-' +
+      //     values.fechaFin.getDate() +
+      //     '-' +
+      //     values.fechaFin.getFullYear();
+      //   values.fechaFin = fechaFin;
+      // }
+      values.nombreApellido = data.nombre;
+      values.proyecto = selectedProyecto.id;
+      // console.log('=>', values);
+      registreAdd(values);
     },
     validationSchema: Yup.object({
-      nombreApellido: Yup.string().required(
-        'El nombre del proyecto es requerido'
-      ),
-      lugarComision: Yup.string().required('El lugar de comisión es requerido'),
-      objetoComision: Yup.string().required('El itinerario es requerido'),
-      fechaInicio: Yup.string().required('La fecha de inicio es requerido'),
-      fechaFin: Yup.string().required('La fecha de fin es requerido'),
+      // lugarComision: Yup.string().required('El lugar de comisión es requerido'),
+      // objetoComision: Yup.string().required('El itinerario es requerido'),
+      // fechaInicio: Yup.string().required('La fecha de inicio es requerido'),
+      // fechaFin: Yup.string().required('La fecha de fin es requerido'),
     }),
   });
+
+  const registreAdd = (values) => {
+    fetchPost('rendGastos', 'POST', values).then((response) => {
+      if (response.rendicionGastos) {
+        setDataLista({
+          numeroSolicitud: response.rendicionGastos
+            ? response.rendicionGastos.numeroRendicion
+            : '',
+        });
+        setUuid(response.rendicionGastos.id);
+
+        setBoolCreate(true);
+        toast.current.show({
+          severity: 'success',
+          summary: 'Creado',
+          detail: 'Se ha creado correctamente',
+          life: 3000,
+        });
+      } else {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Hubo un error',
+          detail: `${response.message}`,
+          life: 3000,
+        });
+      }
+    });
+  };
+
+  const sumRecibido = () => {
+    if (!validaciones && selectedCountry1.solicitud_productos.length > 0) {
+      const suma = selectedCountry1.solicitud_productos
+        .map((item) => {
+          let variable = Number(item.importe);
+          return variable;
+        })
+        .reduce((prev, curr) => prev + curr, 0);
+
+      setTotal(suma);
+    }
+  };
 
   useEffect(() => {
     if (uuid) {
@@ -262,6 +294,15 @@ const RegistroRendicionGastos = () => {
     listData();
     listProject();
   }, []);
+
+  useEffect(() => {
+    setData(selectedCountry1);
+    sumRecibido();
+  }, [selectedCountry1]);
+
+  useEffect(() => {
+    sumRecibido();
+  }, [data]);
 
   return (
     <div className='grid crud-demo'>
@@ -282,15 +323,16 @@ const RegistroRendicionGastos = () => {
                   field='nombre'
                   name='nombreProyecto'
                   onChange={(e) => {
-                    console.log(e.value);
                     setSelectedCountry1(e.value);
                     // if (selectedCountry1) {
+                    //   // sumRecibido();
                     //   setData(e.value);
                     // }
                   }}
+                  dropdown
                   aria-label='nombreProyecto'
                   dropdownAriaLabel='Seleccionar Proyecto'
-                  // disabled={boolCreate}
+                  disabled={boolCreate}
                 />
               </div>
             </div>
@@ -303,7 +345,7 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='numeroSolicitud'
                   type='text'
-                  // value={dataLista ? dataLista.numeroSolicitud : ''}
+                  value={dataLista ? dataLista.numeroSolicitud : ''}
                   disabled
                 />
               </div>
@@ -318,11 +360,14 @@ const RegistroRendicionGastos = () => {
                   completeMethod={searchProyecto}
                   field='nombreAbreviado'
                   name='proyecto'
+                  id='proyecto'
                   onChange={(e) => {
                     setSelectedProyecto(e.value);
                   }}
+                  dropdown
                   aria-label='nombreAbreviado'
                   dropdownAriaLabel='Seleccionar Proyecto'
+                  disabled={boolCreate}
                 />
               </div>
               <div className='field col-12 md:col-12'>
@@ -331,20 +376,21 @@ const RegistroRendicionGastos = () => {
                 </label>
 
                 <InputText
+                  id='nombreApellido'
                   name='nombreApellido'
-                  type='text'
-                  value={formik.values.nombreApellido}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // onBlur={formik.handleBlur}
+                  // onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  // disabled
+                  type='text'
+                  value={!validaciones ? data.nombre : ''}
+                  disabled
                 />
-                {formik.touched.nombreApellido &&
+                {/* {formik.touched.nombreApellido &&
                   formik.errors.nombreApellido && (
                     <span style={{ color: '#e5432d' }}>
                       {formik.errors.nombreApellido}
                     </span>
-                  )}
+                  )} */}
               </div>
 
               <div className='field col-12 md:col-6'>
@@ -358,6 +404,7 @@ const RegistroRendicionGastos = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
+                  disabled={boolCreate}
                 />
                 {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
@@ -377,7 +424,7 @@ const RegistroRendicionGastos = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
+                  disabled={boolCreate}
                 />
                 {formik.touched.objetoComision &&
                   formik.errors.objetoComision && (
@@ -395,6 +442,7 @@ const RegistroRendicionGastos = () => {
                   style={{ marginBottom: '5px' }}
                   name='fechaInicio'
                   disabled={boolCreate}
+                  showIcon
                 ></Calendar>
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
                   <span style={{ color: '#e5432d' }}>
@@ -410,6 +458,8 @@ const RegistroRendicionGastos = () => {
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaFin'
+                  showIcon
+                  disabled={boolCreate}
                 ></Calendar>
                 {formik.touched.fechaFin && formik.errors.fechaFin && (
                   <span style={{ color: '#e5432d' }}>
@@ -427,11 +477,9 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='recibido'
                   type='text'
-                  // values={formik.values.nombreProyecto}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  value={totales.toFixed(2)}
                   style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
+                  disabled
                 />
                 {/* {formik.touched.nombreProyecto &&
                   formik.errors.nombreProyecto && (
