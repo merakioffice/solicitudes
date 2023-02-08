@@ -1,89 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { fetchDelete, fetchGet } from '../../../../api';
 import { LeftToolBarTemplate } from '../../../Molecula';
+import useRendicionSolicitud from '../../../../hooks/useRendicionSolicitud';
 
 const RendicionGastos = () => {
-  const navigate = useNavigate();
-  const toast = useRef(null);
-  const [addData, setAddData] = useState([]);
-
-  const listData = () => {
-    fetchGet('rendGastos').then(({ rendicionGastos }) => {
-      const data = rendicionGastos.map((element, item) => {
-        element.index = item + 1;
-        return element;
-      });
-      setAddData(data);
-    });
-  };
+  const [
+    addData,
+    listData,
+    toast,
+    openSolicitud,
+    tableButtonEdit,
+    tableButtonAutomatization,
+    tableButtonDelete,
+  ] = useRendicionSolicitud();
 
   useEffect(() => {
     listData();
   }, []);
 
-  const openSolicitud = () => {
-    console.log('click');
-    navigate('/RegistroRendicionGastos');
-  };
-
-  const editData = (data) => {
-    navigate('/RegistroRendicionGastos');
-  };
-
-  const tableButtonEdit = (rowData) => {
-    return (
-      <div className='actions'>
-        <Button
-          icon='pi pi-pencil'
-          className='p-button-rounded p-button-warning'
-          onClick={() => editData(rowData)}
-        />
-      </div>
-    );
-  };
-
-  const tableButtonAutomatization = (rowData) => {
-    return (
-      <div className='actions'>
-        <Button
-          icon='pi pi-cog'
-          className='p-button-rounded p-button-info'
-          onClick={() => editData(rowData)}
-        />
-      </div>
-    );
-  };
-
-  const deleteData = (data) => {
-    fetchDelete(`solicitud/${data}`).then(() => {
-      listaSolicitud();
-      toast.current.show({
-        severity: 'success',
-        summary: 'Eliminado',
-        detail: 'Se ha eliminado correctamente',
-        life: 3000,
-      });
-    });
-  };
-
-  const tableButtonDelete = (rowData) => {
-    return (
-      <div className='actions'>
-        <Button
-          icon='pi pi-trash'
-          className='p-button-rounded p-button-danger'
-          onClick={() => deleteData(rowData.id)}
-        />
-      </div>
-    );
-  };
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
@@ -98,12 +36,12 @@ const RendicionGastos = () => {
           ></Toolbar>
 
           <DataTable value={addData} responsiveLayout='scroll'>
-            <Column field='id' header='Id'></Column>
-            <Column field='nombre' header='Nombre'></Column>
+            <Column field='index' header='Id'></Column>
+            <Column field='nombreApellido' header='Nombre'></Column>
             <Column field='proyecto' header='Proyecto'></Column>
-            <Column field='lugar' header='Lugar'></Column>
+            <Column field='lugarComision' header='Lugar Comisión'></Column>
             <Column
-              field='ObjetoComision'
+              field='objetoComision'
               header='Objeto de la comisión'
             ></Column>
             <Column

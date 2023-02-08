@@ -46,7 +46,6 @@ export default function ModalCreacionProducto({
     });
   };
 
-  //
   const formik = useFormik({
     initialValues: {
       // descripcion: '',
@@ -56,8 +55,8 @@ export default function ModalCreacionProducto({
     onSubmit: (values) => {
       values.importe = Number(values.importe);
       values.solicitudId = uuid;
-      values.descripcion = selectedCountry.id;
-      values.partidaPresupuestal = selectedCountry1.id;
+      values.descripcion = selectedCountry.descripcion;
+      values.partidaPresupuestal = selectedCountry1.nombreAbreviado;
 
       createProduct(values);
     },
@@ -117,7 +116,7 @@ export default function ModalCreacionProducto({
   useEffect(() => {
     listData();
   }, []);
-  console.log(selectedCountry1);
+
   return (
     <Dialog
       visible={viewProduct}

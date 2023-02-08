@@ -39,7 +39,6 @@ function SolicitudDinero() {
           <DataTable value={dataRegistro} responsiveLayout='scroll'>
             <Column field='index' header='Item' />
             <Column field='nombre' header='Nombre' />
-            {/* <Column field='nombreProyecto' header='Nombre Proyecto' /> */}
             <Column field='fechaInicio' header='Fecha Inicio' />
             <Column field='fechaFin' header='Fecha Fin' />
             <Column
