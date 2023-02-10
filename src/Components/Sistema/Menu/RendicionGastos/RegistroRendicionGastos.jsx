@@ -19,10 +19,14 @@ import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
 
 const RegistroRendicionGastos = () => {
+  const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
+  const [edit, setEdit] = useState(rendicionGastos);
+  const validation = Object.keys(edit).length === 0;
+
   const toast = useRef(null);
   const [dataRegistro, setDataRegistro] = useState([]);
   const [totales, setTotal] = useState(0);
-  const [uuid, setUuid] = useState(null);
+  const [uuid, setUuid] = useState(!validation ? edit.id : null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [view, setView] = useState(false);
   const navigate = useNavigate();
@@ -33,16 +37,17 @@ const RegistroRendicionGastos = () => {
   const [filteredCountries, setFilteredCountries] = useState(null);
 
   const [proyectos, setProyectos] = useState([]);
-  const [selectedProyecto, setSelectedProyecto] = useState(null);
+  const [selectedProyecto, setSelectedProyecto] = useState(
+    !validation ? edit.proyecto : null
+  );
   const [filteredProyecto, setFilteredProyecto] = useState(null);
-  // const [edit, setEdit] = useState({});
 
   const [data, setData] = useState([]);
 
   const [dataLista, setDataLista] = useState({
     nombreProyecto: null,
     nameState: false,
-    numeroSolicitud: null,
+    numeroSolicitud: rendicionGastos ? rendicionGastos.numeroRendicion : null,
   });
 
   const validaciones = Object.keys(data).length === 0;
@@ -75,7 +80,7 @@ const RegistroRendicionGastos = () => {
   };
 
   const deleteData = (data) => {
-    fetchDelete(`solicitudProducto/${data.id}`).then(() => {
+    fetchDelete(`rendGastosProducts/${data.id}`).then(() => {
       listaSolicitudDinero();
       toast.current.show({
         severity: 'success',
@@ -99,8 +104,8 @@ const RegistroRendicionGastos = () => {
   };
 
   const listaSolicitudDinero = () => {
-    fetchGet(`solicitud/${uuid}`).then(({ personal, total }) => {
-      setDataRegistro(personal);
+    fetchGet(`rendGastos/${uuid}`).then(({ rendGastosProducts, total }) => {
+      setDataRegistro(rendGastosProducts);
       setTotal(total);
     });
   };
@@ -111,20 +116,23 @@ const RegistroRendicionGastos = () => {
         <Column header='Documento' colSpan={5} />
         <Column
           header='Descripción'
-          alignHeader='center'
+          field='descripcion'
+          // alignHeader='center'
           style={{ width: '150px' }}
         />
         <Column
           header='Actividad'
-          alignHeader='center'
+          field='actividad'
+          // alignHeader='center'
           style={{ width: '120px' }}
         />
         <Column
           header='Importe'
+          field='importe'
           style={{
             width: '110px',
           }}
-          alignHeader='center'
+          // alignHeader='center'
           // colSpan={5}
         />
       </Row>
@@ -133,36 +141,36 @@ const RegistroRendicionGastos = () => {
           header='Fecha'
           style={{ width: '70px' }}
           sortable
-          alignHeader='center'
-          field='lastYearSale'
+          // alignHeader='center'
+          field='fecha'
         />
         <Column
           header='Serie'
           style={{ width: '90px' }}
           sortable
-          alignHeader='center'
-          field='lastYearProfit'
+          // alignHeader='center'
+          field='serie'
         />
         <Column
           header='Numero'
           style={{ width: '90px' }}
           sortable
-          alignHeader='center'
-          field='lastYearProfit'
+          // alignHeader='center'
+          field='numero'
         />
         <Column
           header='Tipo'
           style={{ width: '90px' }}
           sortable
-          alignHeader='center'
-          field='thisYearSale'
+          // alignHeader='center'
+          field='tipo'
         />
         <Column
           header='RUC'
           style={{ width: '90px' }}
           sortable
-          alignHeader='center'
-          field='lastYearProfit'
+          // alignHeader='center'
+          field='ruc'
         />
       </Row>
     </ColumnGroup>
@@ -204,38 +212,16 @@ const RegistroRendicionGastos = () => {
   const formik = useFormik({
     initialValues: {
       proyecto: '',
-      // nombreApellido: '',
-      lugarComision: '',
-      objetoComision: '',
-      fechaInicio: '',
+      nombreApellido: !validation ? edit.nombreApellido : '',
+      lugarComision: !validation ? edit.lugarComision : '',
+      objetoComision: !validation ? edit.objetoComision : '',
+      fechaInicio: !validation ? edit.fechaInicio : '',
       fechaFin: '',
     },
     onSubmit: (values) => {
-      // console.log(data);
-
-      // if (values.fechaInicio) {
-      //   const fechaInicio =
-      //     values.fechaInicio.getMonth() +
-      //     1 +
-      //     '-' +
-      //     values.fechaInicio.getDate() +
-      //     '-' +
-      //     values.fechaInicio.getFullYear();
-      //   values.fechaInicio = fechaInicio;
-      // }
-      // if (values.fechaFin) {
-      //   const fechaFin =
-      //     values.fechaFin.getMonth() +
-      //     1 +
-      //     '-' +
-      //     values.fechaFin.getDate() +
-      //     '-' +
-      //     values.fechaFin.getFullYear();
-      //   values.fechaFin = fechaFin;
-      // }
       values.nombreApellido = data.nombre;
       values.proyecto = selectedProyecto.id;
-      // console.log('=>', values);
+
       registreAdd(values);
     },
     validationSchema: Yup.object({
@@ -382,15 +368,15 @@ const RegistroRendicionGastos = () => {
                   // onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
                   type='text'
-                  value={!validaciones ? data.nombre : ''}
+                  value={
+                    !validaciones
+                      ? data.nombre
+                      : !validation
+                      ? edit.nombreApellido
+                      : ''
+                  }
                   disabled
                 />
-                {/* {formik.touched.nombreApellido &&
-                  formik.errors.nombreApellido && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.nombreApellido}
-                    </span>
-                  )} */}
               </div>
 
               <div className='field col-12 md:col-6'>
@@ -481,12 +467,6 @@ const RegistroRendicionGastos = () => {
                   style={{ marginBottom: '5px' }}
                   disabled
                 />
-                {/* {formik.touched.nombreProyecto &&
-                  formik.errors.nombreProyecto && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.nombreProyecto}
-                    </span>
-                  )} */}
               </div>
               <div className='field col-12 md:col-4'>
                 <label htmlFor='rendido' className='block'>
@@ -501,12 +481,6 @@ const RegistroRendicionGastos = () => {
                   style={{ marginBottom: '5px' }}
                   // disabled={boolCreate}
                 />
-                {/* {formik.touched.lugarComision &&
-                  formik.errors.lugarComision && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.lugarComision}
-                    </span>
-                  )} */}
               </div>
               <div className='field col-12 md:col-4'>
                 <label htmlFor='saldo' className='block'>
@@ -521,12 +495,6 @@ const RegistroRendicionGastos = () => {
                   style={{ marginBottom: '5px' }}
                   // disabled={boolCreate}
                 />
-                {/* {formik.touched.itinerarioTransporte &&
-                  formik.errors.itinerarioTransporte && (
-                    <span style={{ color: '#e5432d' }}>
-                      {formik.errors.itinerarioTransporte}
-                    </span>
-                  )} */}
               </div>
             </div>
             <h4>
@@ -577,14 +545,26 @@ const RegistroRendicionGastos = () => {
             headerColumnGroup={headerGroup}
             responsiveLayout='scroll'
           >
-            <Column field='id' header='Item'></Column>
+            {/* <Column field='id' header='Item'></Column> */}
+            <Column field='fecha' header='Fecha'></Column>
+            <Column field='serie' header='Serie'></Column>
+            <Column field='numero' header='Numero'></Column>
+            <Column field='tipo' header='Tipo'></Column>
+            <Column field='ruc' header='Ruc'></Column>
             <Column field='descripcion' header='Descripción'></Column>
             <Column field='partidaPresupuestal' header='Actividad'></Column>
             <Column field='importe' header='Importe'></Column>
 
-            <Column body={tableButtonDelete}></Column>
+            <Column body={tableButtonDelete} style={{ width: '20px' }}></Column>
           </DataTable>
-          {view && <ModalRendicionGastos view={view} setView={setView} />}
+          {view && (
+            <ModalRendicionGastos
+              view={view}
+              setView={setView}
+              uuid={uuid}
+              listaSolicitudDinero={listaSolicitudDinero}
+            />
+          )}
           {/* <ModalCreacionProducto
             viewProduct={viewProduct}
             setViewProduct={setViewProduct}

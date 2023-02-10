@@ -9,13 +9,14 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Calendar } from 'primereact/calendar';
 import { AutoComplete } from 'primereact/autocomplete';
-import { fetchGet } from '../../../../../api';
+import { fetchGet, fetchPost } from '../../../../../api';
 const ModalRendicionGastos = ({
   view,
   setView,
   listaSolicitudDinero,
   uuid,
 }) => {
+  // console.log(uuid);
   const toast = useRef(null);
   const [proyectos, setProyectos] = useState([]);
   const [selectedProyecto, setSelectedProyecto] = useState(null);
@@ -62,7 +63,8 @@ const ModalRendicionGastos = ({
       // values.importe = Number(values.importe);
       // values.solicitudId = uuid;
       console.log(values);
-      // createProduct(values);
+
+      createProduct(values);
     },
     validationSchema: Yup.object({
       fecha: Yup.string().required('La fecha es requerida'),
@@ -90,12 +92,23 @@ const ModalRendicionGastos = ({
   });
 
   const createProduct = (data) => {
+    const datosRegistros =
+      data.fecha.getMonth() +
+      1 +
+      '/' +
+      data.fecha.getDate() +
+      '/' +
+      data.fecha.getFullYear();
+
+    data.fecha = datosRegistros;
+    data.rendicionGastosId = uuid;
+    data.tipo = selectedProyecto.id;
     // console.log(data);
-    //  fetchPost('solicitudProducto', 'POST', data).then(() => {
-    //    setView(false);
-    //    formik.resetForm();
-    //    listaSolicitudDinero();
-    //  });
+    fetchPost('rendGastosProducts', 'POST', data).then(() => {
+      setView(false);
+      formik.resetForm();
+      listaSolicitudDinero();
+    });
   };
 
   useEffect(() => {
