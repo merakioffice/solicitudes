@@ -1,9 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { fetchDelete, fetchGet } from '../api';
 import { Button } from 'primereact/button';
+import {
+  oneIdRendicion,
+  startEditRendicion,
+} from '../store/slices/rendicionGastos';
 
 const useRendicionSolicitud = () => {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const toast = useRef(null);
   const [addData, setAddData] = useState([]);
@@ -24,6 +31,8 @@ const useRendicionSolicitud = () => {
   };
 
   const editData = (data) => {
+    dispatch(startEditRendicion());
+    dispatch(oneIdRendicion(data));
     navigate('/RegistroRendicionGastos');
   };
 
