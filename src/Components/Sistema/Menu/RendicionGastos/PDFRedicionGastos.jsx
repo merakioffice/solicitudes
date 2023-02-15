@@ -1,9 +1,34 @@
 import { Button } from 'primereact/button';
 
 import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { useSelector } from 'react-redux';
 
 const PDFRendicionGastos = () => {
+  const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
   const descarga = () => {
+    const data = [];
+    rendicionGastos?.rendicionGastosProducts.map((item, index) => {
+      const data1 = [
+        `${index + 1}`,
+        `${item.tipo}`,
+        `${item.serie}`,
+        `${item.numero}`,
+        // `${item.ruc}`,
+        `${item.descripcion}`,
+        `${item.partidaPresupuestal}`,
+        `${item.importe}`,
+      ];
+      data.push(data1);
+    });
+
+    const suma = rendicionGastos.rendicionGastosProducts
+      .map((item) => {
+        let variable = Number(item.importe);
+        return variable;
+      })
+      .reduce((prev, curr) => prev + curr, 0);
+
     const doc = new jsPDF();
     doc.setFontSize(10);
     doc.setDrawColor(195, 195, 195);
@@ -14,37 +39,45 @@ const PDFRendicionGastos = () => {
 
     doc.setFontSize(9);
     doc.rect(138, 15, 51, 10);
-    doc.text('FORMATO - 001', 149, 21.5);
+    doc.text(`FORMATO - ${rendicionGastos.numeroRendicion}`, 149, 21.5);
 
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.text('INSTITUCIÓN: descocentro', 140, 32);
 
     doc.rect(20, 36, 169, 6);
-    doc.text('Nombres y Apellidos:  LAURENTE SORIANO ROCIO EDITH', 25, 40);
+    doc.text(`Nombres y Apellidos: ${rendicionGastos.nombreApellido}`, 25, 40);
 
     doc.rect(20, 42, 169, 6);
-    doc.text('Proyecto: Ingresos propios', 25, 46);
+    doc.text(`Proyecto: ${rendicionGastos.proyecto}`, 25, 46);
 
     doc.rect(20, 47.95, 169, 6);
-    doc.text('Lugar de comisión: Huancayo ', 25, 52);
+    doc.text(`Lugar de comisión: ${rendicionGastos.lugarComision} `, 25, 52);
 
     doc.rect(20, 53.9, 169, 6);
     doc.text(
-      'Objeto de la comisión: REUNION DE COORDINACION DIRECCION EJECUTIVA -ADMINISTRACION',
+      `Objeto de la comisión: ${rendicionGastos.objetoComision}`,
       25,
       58
     );
 
     doc.rect(20, 60, 169, 6);
-    doc.text('Fecha  Inicio:__/__/20__', 25, 64);
-    doc.text('Termino: __/__/20__', 120, 64);
+    doc.text(
+      `Fecha  Inicio: ${rendicionGastos.fechaInicio.split('T')[0]}`,
+      25,
+      64
+    );
+    doc.text(`Termino: ${rendicionGastos.fechaFin.split('T')[0]}`, 120, 64);
 
     doc.rect(20, 66, 169, 11);
     doc.text('Resumen de la rendición de cuentas', 25, 70);
-    doc.text('RECIBIDO S/1234423.', 25, 75);
-    doc.text('RENDIDO S/4234134', 90, 75);
-    doc.text('SALDO S/4213412412.', 150, 75);
+    doc.text(`RECIBIDO: $/ ${rendicionGastos.recibido}`, 25, 75);
+    doc.text(`RENDIDO: $/ ${suma}`, 90, 75);
+    doc.text(
+      `SALDO: $/ ${Number(rendicionGastos.recibido) + Number(suma)}`,
+      150,
+      75
+    );
 
     doc.rect(20, 77, 169, 11);
     doc.text(
@@ -53,6 +86,7 @@ const PDFRendicionGastos = () => {
       81
     );
     doc.text('movilidad local, pasajes y gastos de transporte, otros)', 25, 85);
+    //
 
     doc.text('Id', 25, 97);
     doc.rect(20, 90, 13, 12);
@@ -60,10 +94,10 @@ const PDFRendicionGastos = () => {
     doc.text('Documento', 52, 94);
     doc.rect(33, 90, 53, 6);
 
-    doc.text('Fecha', 37, 100);
+    doc.text('Tipo', 37, 100);
     doc.rect(33, 96, 18, 6);
 
-    doc.text('Tipo', 57, 100);
+    doc.text('Fecha', 57, 100);
     doc.rect(51, 96, 18, 6);
 
     doc.text('Numero', 72, 100);
@@ -78,27 +112,21 @@ const PDFRendicionGastos = () => {
     doc.text('Importe', 171, 97);
     doc.rect(164, 90, 25, 12);
     //
-    doc.text('10/10/2022', 35, 106);
-    doc.text('Boleta', 55, 106);
-    doc.text('002-6879', 71, 106);
-    doc.text('Descripcion', 105, 106);
-    doc.text('1000.00', 170, 106);
-
-    doc.rect(20, 102, 169, 6);
-
-    doc.text('10/10/2022', 35, 112);
-    doc.text('Boleta', 55, 112);
-    doc.text('002-000006', 71, 112);
-    doc.text('movilidad local, pasajes', 105, 112);
-    doc.text('1000.00', 170, 112);
-    doc.rect(20, 108, 169, 6);
-
-    //
-    doc.text('Total', 146, 118);
-    doc.rect(139, 114, 25, 6);
-
-    doc.text('2000.00', 171, 118);
-    doc.rect(164, 114, 25, 6);
+    autoTable(doc, {
+      styles: { fontSize: 8, width: 50 },
+      columnStyles: {
+        0: { halign: 'center', cellWidth: 13 },
+        1: { halign: 'center', cellWidth: 18 },
+        2: { halign: 'center', cellWidth: 18 },
+        3: { halign: 'center', cellWidth: 17 },
+        4: { halign: 'center', cellWidth: 53 },
+        5: { halign: 'center', cellWidth: 25.1 },
+        6: { halign: 'center', cellWidth: 25.1 },
+      },
+      body: data,
+      startY: 102,
+      margin: 20,
+    });
     //
 
     doc.text('_________________________', 40, 278);

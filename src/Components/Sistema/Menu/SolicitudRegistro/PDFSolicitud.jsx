@@ -8,6 +8,17 @@ const PDFSolicitud = () => {
   const { solicitud } = useSelector((state) => state.solicitudDinero);
 
   const descarga = () => {
+    const data = [];
+    solicitud?.solicitud_productos.map((item, index) => {
+      const data1 = [
+        `${index + 1}`,
+        `${item.descripcion}`,
+        `${item.partidaPresupuestal}`,
+        `${item.importe}`,
+      ];
+      data.push(data1);
+    });
+
     const doc = new jsPDF();
     doc.setFontSize(10);
     doc.setDrawColor(195, 195, 195);
@@ -47,59 +58,30 @@ const PDFSolicitud = () => {
     doc.rect(20, 79, 169, 6);
     doc.text('Detalle de gastos de viaje', 25, 83);
 
-    //
     doc.setFontSize(8);
 
     autoTable(doc, {
-      // columnStyles: { europe: { halign: 'center' } }, // European countries centered
-      head: [['Descripcion', 'Partida Presupuestal', 'Importe']],
-      body: [
-        solicitud?.solicitud_productos?.map(
-          ({ descripcion, partidaPresupuestal, importe }) => {
-            return [descripcion, partidaPresupuestal, importe];
-            // return [  'Id'= index + 1,  'descripcion' = item.description,  'partidaPresupuestal'= item.partidaPresupuestal, 'importe'= item.importe  ]
-          }
-        ),
-      ],
+      styles: { fontSize: 8, width: 50 },
+      columnStyles: {
+        0: { halign: 'center', cellWidth: 13.6 },
+        1: { halign: 'center', cellWidth: 92.5 },
+        2: { halign: 'center', cellWidth: 37.9 },
+        3: { halign: 'center', cellWidth: 25.1 },
+      },
+      body: data,
+      startY: 96,
+      margin: 20,
     });
 
-    // let columns = ['Id', 'Descripcion', 'Partida Presupuestal', 'Importe'];
-    // let data = [];
-    // let headers = {
-    //   Id: 'Id',
-    //   Descripcion: 'Descripcion',
-    //   'Partida Presupuestal': 'Partida Presupuestal',
-    //   Importe: 'Importe',
-    // };
-    // data.push(headers);
-    // solicitud.solicitud_productos.map((item, index) => {
-    //   const data1 = {
-    //     Id: index + 1,
-    //     Descripcion: item.descripcion,
-    //     'Partida Presupuestal': item.partidaPresupuestal,
-    //     Importe: item.importe,
-    //   };
-    //   data.push(data1);
-    // });
-
-    // let config = {
-    //   autoSize: true,
-    //   printHeaders: false,
-    //   columnWidths: 70,
-    // };
-
-    // doc.table(20, 90, data, columns, config);
-
-    // });
     doc.setFontSize(8);
-    // doc.text('Id', 25, 94);
-    // doc.rect(20, 90, 13, 6);
-    // doc.text('Descripción', 72, 94);
-    // doc.rect(33, 90, 93, 6);
-    // doc.text('Partida Presupuestal', 132, 94);
-    // doc.rect(126, 90, 38, 6);
-    // doc.text('Importe', 171, 94);
-    // doc.rect(164, 90, 25, 6);
+    doc.text('Id', 25, 94);
+    doc.rect(20, 90, 13.5, 6);
+    doc.text('Descripción', 72, 94);
+    doc.rect(33.5, 90, 92.5, 6);
+    doc.text('Partida Presupuestal', 132, 94);
+    doc.rect(126, 90, 38, 6);
+    doc.text('Importe', 171, 94);
+    doc.rect(164, 90, 25, 6);
     //
     doc.text(
       'En caso de no cumplir con la rendición de cuentas dentro',
