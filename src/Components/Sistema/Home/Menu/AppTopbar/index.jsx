@@ -29,7 +29,7 @@ export default function AppTopbar() {
       items: [
         [
           {
-            label: 'Fe y Alegría',
+            label: 'RR.HH',
             items: [
               {
                 label: 'Ir a menu',
@@ -51,7 +51,7 @@ export default function AppTopbar() {
       items: [
         [
           {
-            label: 'Fe y Alegría',
+            label: 'Solicitud rendiciones',
             items: [
               {
                 label: 'Página principal',
