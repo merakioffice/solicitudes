@@ -20,12 +20,16 @@ import ModalRendicionGastos from './modal/ModalRendicionGastos';
 
 const RegistroRendicionGastos = () => {
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
-  const [edit, setEdit] = useState(rendicionGastos);
+  const [edit] = useState(rendicionGastos);
   const validation = Object.keys(edit).length === 0;
 
   const toast = useRef(null);
   const [dataRegistro, setDataRegistro] = useState([]);
-  const [totales, setTotal] = useState(0);
+  // const [countTotal, setCountTotal] = useState(0);
+  // const [total, setTotal] = useState(0);
+  const [countSaldo, setCountSaldo] = useState(0);
+  const [countRecibido, setCountRecibido] = useState(0);
+  const [countRendido, setCountRendido] = useState(0);
   const [uuid, setUuid] = useState(!validation ? edit.id : null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [view, setView] = useState(false);
@@ -106,7 +110,8 @@ const RegistroRendicionGastos = () => {
   const listaSolicitudDinero = () => {
     fetchGet(`rendGastos/${uuid}`).then(({ rendGastosProducts, total }) => {
       setDataRegistro(rendGastosProducts);
-      setTotal(total);
+      setCountRecibido(rendGastosProducts.recibido);
+      setCountRendido(total);
     });
   };
 
@@ -145,6 +150,13 @@ const RegistroRendicionGastos = () => {
           field='fecha'
         />
         <Column
+          header='Tipo'
+          style={{ width: '90px' }}
+          sortable
+          // alignHeader='center'
+          field='tipo'
+        />
+        <Column
           header='Serie'
           style={{ width: '90px' }}
           sortable
@@ -158,13 +170,7 @@ const RegistroRendicionGastos = () => {
           // alignHeader='center'
           field='numero'
         />
-        <Column
-          header='Tipo'
-          style={{ width: '90px' }}
-          sortable
-          // alignHeader='center'
-          field='tipo'
-        />
+
         <Column
           header='RUC'
           style={{ width: '90px' }}
@@ -221,7 +227,7 @@ const RegistroRendicionGastos = () => {
     onSubmit: (values) => {
       values.nombreApellido = data.nombre;
       values.proyecto = selectedProyecto.id;
-
+      // values.recibido = countRecibido.toString();
       registreAdd(values);
     },
     validationSchema: Yup.object({
@@ -268,8 +274,7 @@ const RegistroRendicionGastos = () => {
           return variable;
         })
         .reduce((prev, curr) => prev + curr, 0);
-
-      setTotal(suma);
+      setCountRecibido(suma);
     }
   };
 
@@ -279,6 +284,10 @@ const RegistroRendicionGastos = () => {
     }
     listData();
     listProject();
+    const suma1 = Number(countRecibido);
+    const suma2 = Number(countRendido);
+    const resultado = suma1 + suma2;
+    setCountSaldo(resultado);
   }, []);
 
   useEffect(() => {
@@ -300,7 +309,7 @@ const RegistroRendicionGastos = () => {
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <h4>Datos Personales</h4>
+              <h4>Rendicion Gastos</h4>
               <div>
                 <AutoComplete
                   value={selectedCountry1}
@@ -310,10 +319,6 @@ const RegistroRendicionGastos = () => {
                   name='nombreProyecto'
                   onChange={(e) => {
                     setSelectedCountry1(e.value);
-                    // if (selectedCountry1) {
-                    //   // sumRecibido();
-                    //   setData(e.value);
-                    // }
                   }}
                   dropdown
                   aria-label='nombreProyecto'
@@ -463,7 +468,7 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='recibido'
                   type='text'
-                  value={totales.toFixed(2)}
+                  value={Number(countRecibido).toFixed(2)}
                   style={{ marginBottom: '5px' }}
                   disabled
                 />
@@ -475,11 +480,9 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='rendido'
                   type='text'
-                  // values={formik.values.lugarComision}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  disabled
+                  value={countRendido.toFixed(2)}
                   style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
                 />
               </div>
               <div className='field col-12 md:col-4'>
@@ -489,11 +492,9 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='saldo'
                   type='text'
-                  // values={formik.values.itinerarioTransporte}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
+                  disabled
+                  value={countSaldo.toFixed(2)}
                   style={{ marginBottom: '5px' }}
-                  // disabled={boolCreate}
                 />
               </div>
             </div>

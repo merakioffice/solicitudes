@@ -4,6 +4,7 @@ import './styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { notEditSolicitud } from '../../../../../store/slices/solicitud/solicitudStile';
+import { notEditRendicion } from '../../../../../store/slices/rendicionGastos';
 export default function AppMenu() {
   const navigate = useNavigate();
   const { estado } = useSelector((state) => {
@@ -64,6 +65,7 @@ export default function AppMenu() {
           icon: 'pi pi-fw pi-eye',
           to: '/rendicion-gastos',
           command: () => {
+            dispatch(notEditRendicion());
             navigate('/rendicion-gastos');
           },
         },
@@ -150,6 +152,10 @@ export default function AppMenu() {
       label: 'Base de información',
       icon: 'pi pi-fw pi-search',
       items: [
+        {
+          label: 'Dashboard',
+          icon: 'pi pi-fw pi-bookmark',
+        },
         {
           label: 'Registro de usuario',
           icon: 'pi pi-fw pi-bookmark',
