@@ -1,6 +1,6 @@
 import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
-const { VITE_API_URL } = getEnvVariables();
+const VITE_API_URL  = 'http://144.126.158.45:8002/api';
 
 const fetchGet = async (url = '', method = 'GET') => {
   const response = await fetch(`${VITE_API_URL}/${url}`, { method });
