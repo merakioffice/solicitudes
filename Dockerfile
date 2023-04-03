@@ -1,10 +1,23 @@
-FROM node:18-alpine
+FROM node
+ 
+# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
-COPY package.json ./
-#RUN npm install --force
-#RUN npm i -g http-service
-COPY . .
-RUN ls
+
+# Copia los archivos package.json y package-lock.json a la imagen de contenedor
+COPY package*.json ./
+
+# Instala las dependencias de la aplicación
+RUN npm install --force
+
+# Copia el resto de los archivos del proyecto al contenedor
+COPY ["./", "./"]
+RUN rm -f ./yarn.lock
+
+# Construye la aplicación React
 RUN npm run build
+
+# Expone el puerto 5173 para la aplicación
 EXPOSE 5173
-CMD ["npm", "run", "http"]
+
+# Establece el comando que se ejecutará cuando se inicie el contenedor
+CMD ["npm","run", "dev"]
