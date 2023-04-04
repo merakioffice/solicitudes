@@ -8,6 +8,10 @@ import { CSSTransition } from 'react-transition-group';
 import './styles.scss';
 import { useState } from 'react';
 export default function Home() {
+
+
+
+  
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   return (
     <div>

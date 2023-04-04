@@ -66,6 +66,29 @@ export default function AppTopbar() {
     },
   ];
 
+
+
+  const megaMenuaddUser = [
+    {
+      label: 'RR.HH',
+      items: [
+        [
+          {
+            label: 'Solicitud rendiciones',
+            items: [
+              {
+                label: 'Página principal',
+                command: () => {
+                  handleClickMain();
+                },
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  ];
+
   return (
     <div className='layout-topbar '>
       <Link to='/Dashboard' className='layout-topbar-logo'>
@@ -90,12 +113,12 @@ export default function AppTopbar() {
           ) : (
             <MegaMenu model={megaMenuMain} />
           )}
-          {/* <MegaMenu model={megamenuItems} /> */}
+
         </li>
         <li>
           <button
             className='p-link layout-topbar-button'
-            //  onClick={props.onMobileSubTopbarMenuClick}
+        
           >
             <i className='pi pi-cog' />
             <span>Settings</span>

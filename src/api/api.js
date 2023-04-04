@@ -2,7 +2,7 @@ import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
 const { VITE_API_URL }  = import.meta.env;
 
-console.log(VITE_API_URL)
+const token = localStorage.getItem('token')
 
 const fetchGet = async (url = '', method = 'GET') => {
   const response = await fetch(`${VITE_API_URL}/${url}`, { method });
@@ -44,7 +44,42 @@ const fetchPut = async (url = '', method = '', data) => {
 
   const result = await response.json();
 
-  return result;
+     return result;
 };
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut };
+
+const fetchLogin = async (url = '', method = '', data)=> {
+  const res = await fetch(`${VITE_API_URL}/${url}`, {
+    method: method,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .catch(error => console.error(error));
+     const result = await res.json();
+ 
+     return result;
+
+}
+
+
+const fetchSearchUser = async (url = '', method = '', id)=> {
+  const res = await fetch(`${VITE_API_URL}/${url}/${id}`, {
+    method: method,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      
+    }
+  })
+  .catch(error => console.error(error));
+     const result = await res.json();
+ 
+     return result;
+
+}
+
+export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser };

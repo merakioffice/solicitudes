@@ -1,12 +1,35 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import './styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { notEditSolicitud } from '../../../../../store/slices/solicitud/solicitudStile';
 import { notEditRendicion } from '../../../../../store/slices/rendicionGastos';
+import { getUser } from "../../../../../utils/getUser";
 export default function AppMenu() {
   const navigate = useNavigate();
+
+  const [dataUser, setDataUser] = useState({});
+  useEffect( () => {
+
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+      
+
+    }
+
+    doIt()
+
+
+  }, [])
+
+  
+
+
   const { estado } = useSelector((state) => {
     return state.menuRRHH;
   });
@@ -242,7 +265,7 @@ export default function AppMenu() {
   };
   return (
     <div className='layout-menu-container eliminar-li'>
-      <ul className='layout-menu'>{!estado ? main() : fyaMain()}</ul>
+      <ul className='layout-menu'>{dataUser?.usuario?.rol == "ADMIN_ROLE" ? main() : fyaMain()}</ul>
     </div>
   );
 }

@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
 import { Chart } from "primereact/chart";
+import { fetchSearchUser } from "../../../../api/api";
+import { getUser } from "../../../../utils/getUser";
+
+
+
 
 const lineData = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -26,6 +31,25 @@ const lineData = {
 };
 
 export default function Dashboard(props) {
+
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
+
+  
+
   const menu2 = useRef(null);
   const [lineOptions, setLineOptions] = useState(null);
 
@@ -192,7 +216,7 @@ export default function Dashboard(props) {
       <div className="col-12 xl:col-6">
         <div className="card">
           <div className="flex align-items-center justify-content-between mb-4">
-            <h5>Mensajes</h5>
+            <h5>Mensajes  </h5>
             <div>
               <Button
                 type="button"
