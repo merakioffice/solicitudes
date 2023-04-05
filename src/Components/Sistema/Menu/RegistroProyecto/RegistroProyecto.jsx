@@ -8,22 +8,31 @@ import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroProyecto from './Modal/ModalRegistroProyecto';
 import { FileUpload } from 'primereact/fileupload';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { createFormData, fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const RegistroProyecto = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
   const [edit, setEdit] = useState(null);
-  const toast = useRef(null);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const listData = () => {
-    fetchGet('regProyecto').then(({ registroProyecto }) => {
+  const toast = useRef(null);
+  const listData = (filters = {page: 0, rows: 10}) => {
+    const {page, rows} = filters;
+    setLoading(true);
+    
+    fetchGet(`regProyecto?page=${page + 1}&pageSize=${rows}`).then(( { registroProyecto, count } ) => {
+      setTotalRecords(count);
+
       const data = registroProyecto.map((element, item) => {
         element.index = item + 1;
         return element;
       });
+
       setAddData(data);
+      setLoading(false);
     });
   };
 
@@ -100,17 +109,23 @@ const RegistroProyecto = () => {
     );
   };
 
-  const readExcel = ({ files }) => {
+  const readExcel = async ({ files }) => {
     const [File] = files;
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const bstr = e.target.result;
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+      const formData = new FormData();
+
+      formData.append('file', File);
+
+      await createFormData("regProyectoAddAll", 'POST' , formData);
 
       const list = (data) => {
         const newData = [];
@@ -123,34 +138,7 @@ const RegistroProyecto = () => {
           };
           newData.push(items);
         }
-        fetchPost('regProyectoAddAll', 'POST', newData).then((data) => {
-          if (data.error) {
-            toast.current.show({
-              severity: 'error',
-              summary: 'Error al subir el archivo',
-              detail: data.error,
-              life: 3000,
-            });
-          }
-          if (data.repeat) {
-            toast.current.show({
-              severity: 'warn',
-              summary: 'Datos duplicados',
-              detail: 'Se esta ingresando datos existentes',
-              life: 3000,
-            });
-          }
-          if (data.message) {
-            toast.current.show({
-              severity: 'success',
-              summary: 'Registro de proyecto con éxito',
-              detail: data.message,
-              life: 3000,
-            });
 
-            listData();
-          }
-        });
         return newData;
       };
       list(data);
@@ -178,7 +166,15 @@ const RegistroProyecto = () => {
             })}
             right={RightToolBarTemplate}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData} 
+                    responsiveLayout='scroll'
+                    paginator
+                    lazy
+                    rows={10} 
+                    totalRecords={totalRecords}
+                    onPage={listData}
+                    loading={loading}
+          >
             <Column field='index' header='Id'></Column>
             <Column field='codigo' header='Código Contable'></Column>
             <Column field='nombreAbreviado' header='Nombre Abreviado'></Column>
