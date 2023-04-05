@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MegaMenu } from 'primereact/megamenu';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import {
   stateMenu,
   stateMenuMain,
 } from '../../../../../store/slices/solicitud/MenuRRHHSlice';
 
-export default function AppTopbar() {
-  const dispatch = useDispatch();
 
-  // const navigate = useNavigate();
+export default function AppTopbar({}) {
+
+   const navigate = useNavigate();
   const { estado } = useSelector((state) => {
     return state.menuRRHH;
   });
@@ -23,63 +23,30 @@ export default function AppTopbar() {
     dispatch(stateMenuMain());
   };
 
-  const megamenuItems = [
-    {
-      label: 'RR.HH',
-      items: [
-        [
-          {
-            label: 'RR.HH',
-            items: [
-              {
-                label: 'Ir a menu',
-                className: 'disabled',
-                command: () => {
-                  handleClick();
-                },
-              },
-            ],
-          },
-        ],
-      ],
-    },
-  ];
-
-  const megaMenuMain = [
-    {
-      label: 'RR.HH',
-      items: [
-        [
-          {
-            label: 'Solicitud rendiciones',
-            items: [
-              {
-                label: 'Página principal',
-                command: () => {
-                  handleClickMain();
-                },
-              },
-            ],
-          },
-        ],
-      ],
-    },
-  ];
-
 
 
   const megaMenuaddUser = [
     {
-      label: 'RR.HH',
+      label: <i className='pi pi-cog' />,
       items: [
         [
           {
             label: 'Solicitud rendiciones',
-            items: [
+            items:[
               {
-                label: 'Página principal',
+                label: 'Registro de Usuarios',
+                icon: 'pi pi-fw pi-user',
+                to: '/Dashboard',
                 command: () => {
-                  handleClickMain();
+                  navigate('/registro-usuario');
+                },
+              },
+              {
+                label: 'Registro de Empleados',
+                icon: 'pi pi-fw pi-user',
+                to: '/Dashboard',
+                command: () => {
+                  navigate('/registro-empleado');
                 },
               },
             ],
@@ -88,6 +55,38 @@ export default function AppTopbar() {
       ],
     },
   ];
+
+  const megaMenulogout = [
+    {
+      label: <i className='pi pi-user' />,
+      items: [
+        [
+          {
+            label: '',
+            items:[
+              {
+                label: 'Cerrar sesion',
+                icon: 'pi pi-sign-out',
+                to: '/Dashboard',
+                command: () => {
+                  localStorage.removeItem('token');
+                  navigate('/')
+                },
+              },
+            ],
+          },
+        ],
+      ],
+      
+      
+    },
+    
+  ];
+
+
+
+
+  
 
   return (
     <div className='layout-topbar '>
@@ -107,31 +106,12 @@ export default function AppTopbar() {
         <i className='pi pi-ellipsis-v' />
       </button>
       <ul className='layout-topbar-menu lg:flex origin-top'>
-        <li>
-          {!estado ? (
-            <MegaMenu model={megamenuItems} />
-          ) : (
-            <MegaMenu model={megaMenuMain} />
-          )}
-
+                <li className='mr-5'>     
+            <MegaMenu model={megaMenuaddUser} /> 
         </li>
-        <li>
-          <button
-            className='p-link layout-topbar-button'
-        
-          >
-            <i className='pi pi-cog' />
-            <span>Settings</span>
-          </button>
-        </li>
-        <li>
-          <button
-            className='p-link layout-topbar-button'
-            // onClick={handleSeccion}
-          >
-            <i className='pi pi-user' />
-            <span>Profile</span>
-          </button>
+      
+        <li className='mr-5'>     
+            <MegaMenu model={megaMenulogout} /> 
         </li>
       </ul>
     </div>

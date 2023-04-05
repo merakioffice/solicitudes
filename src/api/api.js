@@ -1,5 +1,6 @@
 import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
+import { useNavigate } from 'react-router-dom';
 const { VITE_API_URL }  = import.meta.env;
 
 const token = localStorage.getItem('token')
@@ -66,6 +67,7 @@ const fetchLogin = async (url = '', method = '', data)=> {
 
 
 const fetchSearchUser = async (url = '', method = '', id)=> {
+  const token = localStorage.getItem('token')
   const res = await fetch(`${VITE_API_URL}/${url}/${id}`, {
     method: method,
     headers: {
@@ -75,11 +77,24 @@ const fetchSearchUser = async (url = '', method = '', id)=> {
       
     }
   })
-  .catch(error => console.error(error));
+   
      const result = await res.json();
  
      return result;
 
 }
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser };
+
+const fetchUserLogout=  ()=> {
+  const navigate = useNavigate();
+  localStorage.removeItem('token');
+  navigate('/')
+
+
+}
+
+
+
+
+
+export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout };

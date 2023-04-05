@@ -4,7 +4,7 @@ import { Button } from "primereact/button";
 import { Chart } from "primereact/chart";
 import { fetchSearchUser } from "../../../../api/api";
 import { getUser } from "../../../../utils/getUser";
-
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -30,9 +30,15 @@ const lineData = {
   ],
 };
 
-export default function Dashboard(props) {
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
-  const [dataUser, setDataUser] = useState();
+  if(!token){
+    navigate('/')
+  }
+
+/*   const [dataUser, setDataUser] = useState();
 
   useEffect( () =>  {
     async function doIt(){
@@ -47,7 +53,7 @@ export default function Dashboard(props) {
     doIt();
 
   }, [])
-
+ */
   
 
   const menu2 = useRef(null);
@@ -117,13 +123,13 @@ export default function Dashboard(props) {
     setLineOptions(lineOptions);
   };
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (props.colorMode === "light") {
       applyLightTheme();
     } else {
       applyDarkTheme();
     }
-  }, [props.colorMode]);
+  }, [props.colorMode]); */
   return (
     <div className="grid  crud-demo">
       <div className="col-12 lg:col-6 xl:col-3">

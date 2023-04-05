@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 // import AppFooter from './Menu/AppFooter';
@@ -7,12 +7,27 @@ import AppTopbar from './Menu/AppTopbar';
 import { CSSTransition } from 'react-transition-group';
 import './styles.scss';
 import { useState } from 'react';
-export default function Home() {
+import { useNavigate } from 'react-router-dom';
+export default function Home({isLogged}) {
 
+/*   const navigate = useNavigate();
+
+  useEffect(()=> {
+
+    if(isLogged == false){
+
+      navigate('/')
+  
+    }
+
+  }, [isLogged])
+
+console.log(isLogged)  */
 
 
   
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
+
   return (
     <div>
       <AppTopbar />
