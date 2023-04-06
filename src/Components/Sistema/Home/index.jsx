@@ -10,19 +10,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 export default function Home({isLogged}) {
 
-/*   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
-  useEffect(()=> {
-
-    if(isLogged == false){
-
-      navigate('/')
-  
-    }
-
-  }, [isLogged])
-
-console.log(isLogged)  */
+  if(!token){
+    navigate('/')
+  }
 
 
   

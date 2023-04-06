@@ -27,9 +27,7 @@ const navigate = useNavigate();
 
       if(data.token){
         localStorage.setItem('token', data.token);
-        setTimeout(()=> {
-           navigate(`/Dashboard`)
-        }, 2000)
+        navigate(`/Dashboard`)
        
       }
    

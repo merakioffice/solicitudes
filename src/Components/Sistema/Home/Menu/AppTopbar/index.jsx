@@ -1,19 +1,40 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MegaMenu } from 'primereact/megamenu';
 import {  useSelector } from 'react-redux';
 import {
   stateMenu,
   stateMenuMain,
+  
 } from '../../../../../store/slices/solicitud/MenuRRHHSlice';
-
-
+import { getUser } from "../../../../../utils/getUser";
+import { useDispatch } from 'react-redux'
 export default function AppTopbar({}) {
-
+  const dispatch = useDispatch();
    const navigate = useNavigate();
   const { estado } = useSelector((state) => {
     return state.menuRRHH;
   });
+
+
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
+
+
+  console.log(dataUser?.rol)
 
   const handleClick = () => {
     dispatch(stateMenu());
@@ -22,7 +43,6 @@ export default function AppTopbar({}) {
   const handleClickMain = () => {
     dispatch(stateMenuMain());
   };
-
 
 
   const megaMenuaddUser = [
@@ -84,9 +104,49 @@ export default function AppTopbar({}) {
   ];
 
 
+  const megamenuItems = [
+    {
+      label: 'RR.HH',
+      items: [
+        [
+          {
+            label: 'RR.HH',
+            items: [
+              {
+                label: 'Ir a menu',
+                className: 'disabled',
+                command: () => {
+                  handleClick();
+                },
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  ];
 
+  const megaMenuMain = [
+    {
+      label: 'RR.HH',
+      items: [
+        [
+          {
+            label: 'Solicitud rendiciones',
+            items: [
+              {
+                label: 'Página principal',
+                command: () => {
+                  handleClickMain();
+                },
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  ];
 
-  
 
   return (
     <div className='layout-topbar '>
@@ -106,8 +166,23 @@ export default function AppTopbar({}) {
         <i className='pi pi-ellipsis-v' />
       </button>
       <ul className='layout-topbar-menu lg:flex origin-top'>
-                <li className='mr-5'>     
+      <li className='mr-5'>
+          {!estado ? (
+            <MegaMenu model={megamenuItems} />
+          ) : (
+            <MegaMenu model={megaMenuMain} />
+          )}
+ 
+        </li>
+
+        <li className='mr-5'>  
+        {dataUser?.rol == "ADMIN_ROLE"  ? (
             <MegaMenu model={megaMenuaddUser} /> 
+          ) : (
+            ''
+          )}
+         
+            
         </li>
       
         <li className='mr-5'>     

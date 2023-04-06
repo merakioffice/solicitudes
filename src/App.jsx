@@ -39,6 +39,7 @@ import {
   RepositorioDocumentos
 
 } from './Components/Sistema/Menu';
+import { RegistroPresupuestoFinanciero } from './Components/Sistema/Menu/RegistroPresupuestoFinanciero';
 
 
 
@@ -61,11 +62,7 @@ function App() {
       <Routes>
         <Route exact path={'/'} element={<Login />} />
         <Route exact path={'/'} element={<Home />}>
-           <Route exact path={'Dashboard'}  element={<Dashboard isLog={isUserLoggedIn}/>} /> 
-
-
-       
-
+           <Route exact path={'Dashboard'}  element={<Dashboard />} /> 
 
           <Route exact path={'repositorio-documentos'} element={<RepositorioDocumentos />} />
           <Route
@@ -117,6 +114,11 @@ function App() {
             exact
             path={'registro-presupuesto'}
             element={<RegistroPresupuesto />}
+          />
+            <Route
+            exact
+            path={'registro-presupuesto-financiero'}
+            element={<RegistroPresupuestoFinanciero />}
           />
           <Route
             exact

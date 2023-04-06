@@ -8,7 +8,7 @@ import { notEditRendicion } from '../../../../../store/slices/rendicionGastos';
 import { getUser } from "../../../../../utils/getUser";
 export default  function  AppMenu() {
   const navigate = useNavigate();
-  
+
 
   const [dataUser, setDataUser] = useState({});
   const [dataUserRol, setDataUserRol] = useState({});
@@ -116,7 +116,7 @@ export default  function  AppMenu() {
       ],
     },
     {
-      label: `Movimientos ${dataUser?.rol}`,
+      label: `Movimientos`,
       items: [
         {
           label: 'Registro de Proyectos',
@@ -139,7 +139,7 @@ export default  function  AppMenu() {
           icon: 'pi pi-fw pi-eye',
           to: '/Visor',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-presupuesto-financiero');
           },
         },
         {
@@ -193,7 +193,7 @@ export default  function  AppMenu() {
       ],
     },
     {
-      label: `Movimientos ${dataUser?.rol}`,
+      label: `Movimientos`,
       icon: 'pi pi-fw pi-search',
       items: [
         {
@@ -210,9 +210,13 @@ export default  function  AppMenu() {
   const main = () => {
     return menu
       ? menu.map((item, index) => {
+        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
+          return
+        }
           return (
             <div key={index}>
               <li>
+                
                 <p>{item.label}</p>
               </li>
               <ul>
@@ -272,7 +276,7 @@ export default  function  AppMenu() {
   };
   return (
     <div className='layout-menu-container eliminar-li'>
-      <ul className='layout-menu'>{dataUserRol == "ADMIN_ROLE" ? main() : fyaMain()}</ul>
+      <ul className='layout-menu'>{!estado ? main() : fyaMain()}</ul>
     </div>
   );
 }
