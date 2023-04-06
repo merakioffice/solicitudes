@@ -6,26 +6,41 @@ const { VITE_API_URL }  = import.meta.env;
 const token = localStorage.getItem('token')
 
 const fetchGet = async (url = '', method = 'GET') => {
-  const response = await fetch(`${VITE_API_URL}/${url}`, { method });
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${VITE_API_URL}/${url}`, { method, headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+    
+  } });
 
   const result = response.json();
   return result;
 };
 
 const fetchDelete = async (url = '', method = 'DELETE') => {
-  const response = await fetch(`${VITE_API_URL}/${url}`, { method });
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${VITE_API_URL}/${url}`, { method,  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+    
+  }  });
 
   const result = response.json();
   return result;
 };
 
 const fetchPost = async (url = '', method = '', data) => {
+  const token = localStorage.getItem('token')
   const response = await fetch(`${VITE_API_URL}/${url}`, {
     method,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-    },
+      Authorization: `Bearer ${token}`,
+      
+    }, 
     body: JSON.stringify(data),
   });
 
@@ -34,11 +49,14 @@ const fetchPost = async (url = '', method = '', data) => {
 };
 
 const fetchPut = async (url = '', method = '', data) => {
+  const token = localStorage.getItem('token')
   const response = await fetch(`${VITE_API_URL}/${url}`, {
     method,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      
     },
     body: JSON.stringify(data),
   });
@@ -49,10 +67,18 @@ const fetchPut = async (url = '', method = '', data) => {
 };
 
 const createFormData = async  (url = '', method = '', data) =>  {
+  
+  const token = localStorage.getItem('token')
     try {
       const response = await fetch(`${VITE_API_URL}/${url}`, {
         method: 'POST',
-        body: data
+        body: data,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          
+        }
       });
         const jsonData = await response.json();
         console.log(jsonData)
