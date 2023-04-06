@@ -62,7 +62,7 @@ const createFormData = async  (url = '', method = '', data) =>  {
     }
   }
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut, createFormData };
+
 
 const fetchLogin = async (url = '', method = '', data)=> {
   const res = await fetch(`${VITE_API_URL}/${url}`, {
@@ -109,19 +109,6 @@ const fetchUserLogout=  ()=> {
 }
 
 
-const createFormData = async  (url = '', method = '', data) =>  {
-    try {
-      const response = await fetch(`${VITE_API_URL}/${url}`, {
-        method: 'POST',
-        body: data
-      });
-        const jsonData = await response.json();
-        console.log(jsonData)
-        return jsonData;
-    } catch (error) {
-        console.error("CREATE FORMDATA ERROR ", error)
-    }
-  }
 
 
 
