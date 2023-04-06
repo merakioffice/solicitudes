@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
 import { Chart } from "primereact/chart";
+import { fetchSearchUser } from "../../../../api/api";
+import { getUser } from "../../../../utils/getUser";
+
+
+
 
 const lineData = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -25,7 +30,26 @@ const lineData = {
   ],
 };
 
-export default function Dashboard(props) {
+export default function Dashboard() {
+
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
+ 
+  
+
   const menu2 = useRef(null);
   const [lineOptions, setLineOptions] = useState(null);
 
@@ -93,17 +117,38 @@ export default function Dashboard(props) {
     setLineOptions(lineOptions);
   };
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (props.colorMode === "light") {
       applyLightTheme();
     } else {
       applyDarkTheme();
     }
-  }, [props.colorMode]);
+  }, [props.colorMode]); */
   return (
     <div className="grid  crud-demo">
       <div className="col-12 lg:col-6 xl:col-3">
-        <div className="card mb-0">
+        <div name="bienvenida" className="card mb-0">
+          <div className="flex justify-content-between mb-3">
+            <div>
+              <span className="block text-500 font-medium mb-3 ah">
+                  Bienvenido
+              </span>
+              <div className="d-flex">
+              <div className="text-900 font-medium text-xl mr-2">{dataUser?.nombre}</div>
+              <div className="text-900 font-medium text-xl">{dataUser?.apellido}</div>
+              </div>
+              <span className="text-500 ">{dataUser?.email}</span>
+
+            </div>
+            <div
+              className="flex align-items-center justify-content-center bg-red-100 border-round"
+              style={{ width: "2.5rem", height: "2.5rem" }}
+            >
+              <i className="pi pi-user text-red-500 text-xl" />
+            </div>
+          </div>
+        </div>
+        <div  className="card mb-0 mt-5">
           <div className="flex justify-content-between mb-3">
             <div>
               <span className="block text-500 font-medium mb-3">
@@ -192,7 +237,7 @@ export default function Dashboard(props) {
       <div className="col-12 xl:col-6">
         <div className="card">
           <div className="flex align-items-center justify-content-between mb-4">
-            <h5>Mensajes</h5>
+            <h5>Mensajes  </h5>
             <div>
               <Button
                 type="button"

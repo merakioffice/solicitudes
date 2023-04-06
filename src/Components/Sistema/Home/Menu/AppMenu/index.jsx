@@ -1,12 +1,43 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import './styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { notEditSolicitud } from '../../../../../store/slices/solicitud/solicitudStile';
 import { notEditRendicion } from '../../../../../store/slices/rendicionGastos';
-export default function AppMenu() {
+import { getUser } from "../../../../../utils/getUser";
+export default  function  AppMenu() {
   const navigate = useNavigate();
+
+
+  const [dataUser, setDataUser] = useState({});
+  const [dataUserRol, setDataUserRol] = useState({});
+  useEffect( () => {
+
+    async function doIt(){
+
+      const userData = await getUser();
+
+      console.log(userData)
+      
+      setDataUser(userData);
+
+
+      
+      setDataUserRol(userData.rol)
+
+    
+    }
+
+    doIt()
+
+
+  }, [])
+
+
+
+
+
   const { estado } = useSelector((state) => {
     return state.menuRRHH;
   });
@@ -27,7 +58,7 @@ export default function AppMenu() {
         },
       ],
     },
-    {
+/*     {
       label: 'Personal',
       items: [
         {
@@ -47,7 +78,7 @@ export default function AppMenu() {
           },
         },
       ],
-    },
+    }, */
     {
       label: 'Solicitudes',
       items: [
@@ -85,7 +116,7 @@ export default function AppMenu() {
       ],
     },
     {
-      label: 'Catalogo',
+      label: `Movimientos`,
       items: [
         {
           label: 'Registro de Proyectos',
@@ -108,7 +139,7 @@ export default function AppMenu() {
           icon: 'pi pi-fw pi-eye',
           to: '/Visor',
           command: () => {
-            navigate('/Visor');
+            navigate('/registro-presupuesto-financiero');
           },
         },
         {
@@ -149,30 +180,29 @@ export default function AppMenu() {
 
   const menuFyA = [
     {
-      label: 'Base de información',
-      icon: 'pi pi-fw pi-search',
+      label: 'Base de Información',
       items: [
         {
           label: 'Dashboard',
-          icon: 'pi pi-fw pi-bookmark',
-        },
-        {
-          label: 'Registro de usuario',
-          icon: 'pi pi-fw pi-bookmark',
-        },
-        {
-          label: 'Registro de empleado',
-          icon: 'pi pi-fw pi-bookmark',
+          icon: 'pi pi-fw pi-chart-bar',
+          to: '/Dashboard',
+          command: () => {
+            navigate('/Dashboard');
+          },
         },
       ],
     },
     {
-      label: 'Movimientos',
+      label: `Movimientos`,
       icon: 'pi pi-fw pi-search',
       items: [
         {
           label: 'Repositorio de documentos',
           icon: 'pi pi-fw pi-bookmark',
+          to: '/repositorio-documentos',
+          command: () => {
+            navigate('/repositorio-documentos');
+          },
         },
       ],
     },
@@ -180,9 +210,13 @@ export default function AppMenu() {
   const main = () => {
     return menu
       ? menu.map((item, index) => {
+        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
+          return
+        }
           return (
             <div key={index}>
               <li>
+                
                 <p>{item.label}</p>
               </li>
               <ul>

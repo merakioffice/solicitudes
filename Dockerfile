@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala las dependencias de la aplicación
-RUN npm install --force
+RUN yarn
 
 # Copia el resto de los archivos del proyecto al contenedor
 COPY ["./", "./"]
