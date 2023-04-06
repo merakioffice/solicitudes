@@ -2,8 +2,6 @@ import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
 const { VITE_API_URL }  = import.meta.env;
 
-console.log(VITE_API_URL)
-
 const fetchGet = async (url = '', method = 'GET') => {
   const response = await fetch(`${VITE_API_URL}/${url}`, { method });
 
@@ -47,4 +45,18 @@ const fetchPut = async (url = '', method = '', data) => {
   return result;
 };
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut };
+const createFormData = async  (url = '', method = '', data) =>  {
+    try {
+      const response = await fetch(`${VITE_API_URL}/${url}`, {
+        method: 'POST',
+        body: data
+      });
+        const jsonData = await response.json();
+        console.log(jsonData)
+        return jsonData;
+    } catch (error) {
+        console.error("CREATE FORMDATA ERROR ", error)
+    }
+  }
+
+export { fetchGet, fetchDelete, fetchPost, fetchPut, createFormData };
