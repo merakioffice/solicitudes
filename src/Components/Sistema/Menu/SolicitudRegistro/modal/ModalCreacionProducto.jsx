@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Toast } from 'primereact/toast';
-
+import { getUser } from "../../../../../utils/getUser";
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { AutoComplete } from 'primereact/autocomplete';
@@ -24,12 +24,29 @@ export default function ModalCreacionProducto({
   const [descript, setDescript] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filteredCountrie, setFilteredCountrie] = useState(null);
+ 
 
   const [dataLista, setDataLista] = useState({
     descripcion: null,
     partidaPresupuestal: null,
   });
 
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
+ 
   const listData = () => {
     fetchGet('regProyecto').then(({ registroProyecto }) => {
       const data = registroProyecto.map((element, item) => {
@@ -55,10 +72,16 @@ export default function ModalCreacionProducto({
     onSubmit: (values) => {
       values.importe = Number(values.importe);
       values.solicitudId = uuid;
-      values.descripcion = selectedCountry.descripcion;
+      values.descripcion = dataLista.descripcion;
       values.partidaPresupuestal = selectedCountry1.nombreAbreviado;
+      
 
-      createProduct(values);
+        createProduct(values);  
+
+
+   
+
+   
     },
     validationSchema: Yup.object({
       // descripcion: Yup.string().required('La descripción es requerida'),
@@ -135,6 +158,7 @@ export default function ModalCreacionProducto({
             <AutoComplete
               aria-label='descripcion'
               completeMethod={searchDescription}
+              value={selectedCountry}
               dropdown
               dropdownAriaLabel='Seleccionar descripcion'
               field='descripcion'
@@ -142,12 +166,14 @@ export default function ModalCreacionProducto({
               name='descripcion'
               onChange={(e) => {
                 setSelectedCountry(e.value);
+               
                 if (selectedCountry) {
-                  dataLista.descripcion = e.value.id;
+                  
+                  dataLista.descripcion = e.value;
                 }
               }}
               suggestions={filteredCountrie}
-              value={selectedCountry}
+             
             />
           </div>
 

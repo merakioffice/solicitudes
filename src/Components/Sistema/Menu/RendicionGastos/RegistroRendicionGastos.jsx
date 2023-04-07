@@ -11,6 +11,9 @@ import { useFormik } from 'formik';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Row } from 'primereact/row';
+
+import {getUser} from '../../../../utils/getUser';
+
 import { ColumnGroup } from 'primereact/columngroup';
 import { AutoComplete } from 'primereact/autocomplete';
 import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
@@ -19,12 +22,34 @@ import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
 
 const RegistroRendicionGastos = () => {
+
+
+
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
+
+
+
+
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
   const [edit] = useState(rendicionGastos);
   const validation = Object.keys(edit).length === 0;
 
   const toast = useRef(null);
-  const [dataRegistro, setDataRegistro] = useState([]);
+  const [ dataRegistro, setDataRegistro] = useState([]);
   // const [countTotal, setCountTotal] = useState(0);
   // const [total, setTotal] = useState(0);
   const [countSaldo, setCountSaldo] = useState(0);
@@ -56,11 +81,14 @@ const RegistroRendicionGastos = () => {
 
   const validaciones = Object.keys(data).length === 0;
 
-  const listData = () => {
-    fetchGet(`solicitud`).then(({ personal }) => {
+  const listData = async() => {
+    const user = await getUser()
+    fetchGet(`solicitud/user/${user?.id}`).then(({ personal }) => {
       const data = personal.map((element, item) => {
         return element;
       });
+
+      console.log(data)
 
       setCountries(data);
     });
@@ -336,7 +364,11 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='numeroSolicitud'
                   type='text'
-                  value={dataLista ? dataLista.numeroSolicitud : ''}
+                  value={
+                    !validaciones
+                      ? data?.numeroSolicitud
+                      : ''
+                  }
                   disabled
                 />
               </div>
@@ -391,7 +423,11 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='lugarComision'
                   type='text'
-                  value={formik.values.lugarComision}
+                  value={
+                    !validaciones
+                      ? data?.lugarComision
+                      : ''
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -411,7 +447,11 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='objetoComision'
                   type='text'
-                  value={formik.values.objetoComision}
+                  value={
+                    !validaciones
+                      ? data?.lugarComision
+                      : ''
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -427,7 +467,13 @@ const RegistroRendicionGastos = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaInicio'>Fecha inicio</label>
                 <Calendar
-                  value={formik.values.fechaInicio}
+         
+                  value={
+                    !validaciones
+                      ? new Date(data?.fechaInicio)
+                      : ''
+                  }
+            
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -444,14 +490,21 @@ const RegistroRendicionGastos = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
-                  value={formik.values.fechaFin}
+               
+                  value={
+                    !validaciones
+                      ? new Date(data?.fechaFin)
+                      : ''
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaFin'
                   showIcon
                   disabled={boolCreate}
-                ></Calendar>
+                >
+                  
+                </Calendar>
                 {formik.touched.fechaFin && formik.errors.fechaFin && (
                   <span style={{ color: '#e5432d' }}>
                     {formik.errors.fechaFin}

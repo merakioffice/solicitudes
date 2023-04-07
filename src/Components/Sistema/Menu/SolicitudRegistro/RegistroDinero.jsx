@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-
+import { getUser } from "../../../../utils/getUser";
 import { useSelector } from 'react-redux';
 import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost, fetchPut } from '../../../../api';
@@ -72,6 +72,22 @@ function RegistroDinero() {
       });
     });
   };
+
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
 
   const tableButtonDelete = (rowData) => (
     <div className='actions'>
@@ -162,11 +178,13 @@ function RegistroDinero() {
       itinerarioTransporte: !validaciones ? edit.itinerarioTransporte : '',
       lugarComision: !validaciones ? edit.lugarComision : '',
       nombre: !validaciones ? edit.nombre : '',
+     
       // nombreProyecto: !validaciones ? edit.nombreProyecto : '',
       objetoComision: !validaciones ? edit.objetoComision : '',
     },
     onSubmit: (values) => {
       values.nombreProyecto = selectedCountry1.id;
+      values.user_id = dataUser?.id ;
 
       if (validaciones) {
         registreAdd(values);
@@ -191,6 +209,8 @@ function RegistroDinero() {
       ),
     }),
   });
+
+
 
   useEffect(() => {
     if (uuid) {
@@ -430,7 +450,7 @@ function RegistroDinero() {
               icon='pi pi-plus'
               className='p-button-success'
               style={{ width: '120px' }}
-              label='Crear Producto'
+              label='Agregar ITEM'
               onClick={handleClickProduct}
             />
           </div>
