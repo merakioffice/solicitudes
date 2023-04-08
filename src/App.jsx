@@ -1,4 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route} from 'react-router-dom';
+import  {useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import Login from './Components/Sistema/Login';
 import Dashboard from './Components/Sistema/Menu/Dashboard';
 
@@ -16,7 +19,7 @@ import 'primeflex/primeflex.css';
 import './assets/demo/flags/flags.css';
 import './assets/demo/Demos.scss';
 import './assets/layout/layout.scss';
-import Demostracion from './pages/Demostracion';
+
 
 import {
   InformeRegistroActividad,
@@ -33,16 +36,35 @@ import {
   RegistroUsuario,
   RendicionGastos,
   SolicitudDinero,
+  RepositorioDocumentos
 
 } from './Components/Sistema/Menu';
+import { RegistroPresupuestoFinanciero } from './Components/Sistema/Menu/RegistroPresupuestoFinanciero';
+
+
+
 
 function App() {
+ 
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(token){
+      setIsUserLoggedIn(true);  
+    } else {
+      setIsUserLoggedIn(false)
+    }
+    
+  }, [localStorage.getItem('token')]);
+
   return (
     <div>
       <Routes>
         <Route exact path={'/'} element={<Login />} />
         <Route exact path={'/'} element={<Home />}>
-          <Route exact path={'Dashboard'} element={<Dashboard />} />
+           <Route exact path={'Dashboard'}  element={<Dashboard />} /> 
+
+          <Route exact path={'repositorio-documentos'} element={<RepositorioDocumentos />} />
           <Route
             exact
             path={'registro-usuario'}
@@ -92,6 +114,11 @@ function App() {
             exact
             path={'registro-presupuesto'}
             element={<RegistroPresupuesto />}
+          />
+            <Route
+            exact
+            path={'registro-presupuesto-financiero'}
+            element={<RegistroPresupuestoFinanciero />}
           />
           <Route
             exact

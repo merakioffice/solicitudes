@@ -1,16 +1,37 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // PrimeReact
 import sd from './logo.jpeg';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
+
+import { fetchLogin } from "../../../api/api";
+
 import { Button } from 'primereact/button';
 import { Image } from 'primereact/image';
 import './Login.scss';
+
 export default function Login() {
   const [login, setLogin] = useState({
     email: '',
     password: '',
   });
+
+
+const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    
+    e.preventDefault();
+   const data = await fetchLogin('login', 'POST', login);
+
+
+      if(data.token){
+        localStorage.setItem('token', data.token);
+        navigate(`/Dashboard`)
+       
+      }
+   
+  }
   return (
     <div className={`containerLogin`}>
       <div className={`imgLogin`}>
@@ -31,15 +52,17 @@ export default function Login() {
         </div>
       </div>
       <div className={`formLogin`}>
-        <form action='/Dashboard' className='p-fluid'>
+        <form  onSubmit={handleSubmit}  className='p-fluid'>
           <h2 className='text-center'>BIENVENIDO</h2>
           <div className='field'>
             <label htmlFor='Correo electronico'>Correo electronico</label>
             <InputText
               className=''
               value={login.email}
+              type='email'
               onChange={(e) => setLogin({ ...login, email: e.target.value })}
             />
+            
           </div>
           <div className='field'>
             <label htmlFor='Contraseña'>Contraseña</label>
