@@ -34,7 +34,6 @@ const RegistroActividad = () => {
   };
 
   const editData = (data) => {
-    console.log(data);
     // dispatch(getSolicitudDinero());
     // dispatch(oneIdSolicitud(data));
     navigate('/registro-actividad');

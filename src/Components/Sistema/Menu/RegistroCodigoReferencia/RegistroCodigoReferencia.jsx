@@ -7,7 +7,7 @@ import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroCodigoReferencia from './Modal/ModalRegistroCodigoReferencia';
 import { FileUpload } from 'primereact/fileupload';
-import { fetchGet } from '../../../../api';
+import { createFormData, fetchGet } from '../../../../api';
 
 const RegistroCodigoReferencia = () => {
   const [view, setView] = useState(false);

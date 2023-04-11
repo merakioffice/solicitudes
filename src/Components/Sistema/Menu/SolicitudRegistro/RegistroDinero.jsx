@@ -20,7 +20,9 @@ import PDFSolicitud from './PDFSolicitud';
 
 function RegistroDinero() {
   const { solicitud, isEditSolicitud } = useSelector(
-    (state) => state.solicitudDinero
+    (state) => {
+      return state.solicitudDinero
+    }
   );
   const [edit, setEdit] = useState(solicitud);
 
@@ -112,7 +114,6 @@ function RegistroDinero() {
 
   const editAdd = (values) => {
     fetchPut(`solicitud/${edit.id}`, 'PUT', values).then((response) => {
-      console.log(response);
       if (response.personal) {
         toast.current.show({
           severity: 'success',
