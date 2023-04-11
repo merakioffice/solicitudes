@@ -184,6 +184,7 @@ function RegistroDinero() {
     },
     onSubmit: (values) => {
       values.nombreProyecto = selectedCountry1.id;
+      values.proyectoId = selectedCountry1.id;
       values.user_id = dataUser?.id ;
 
       if (validaciones) {

@@ -16,7 +16,7 @@ import {getUser} from '../../../../utils/getUser';
 
 import { ColumnGroup } from 'primereact/columngroup';
 import { AutoComplete } from 'primereact/autocomplete';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { fetchDelete, fetchGet, fetchPost, fetchGetproject } from '../../../../api';
 import { useSelector } from 'react-redux';
 import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
@@ -78,6 +78,8 @@ const RegistroRendicionGastos = () => {
     nameState: false,
     numeroSolicitud: rendicionGastos ? rendicionGastos.numeroRendicion : null,
   });
+
+  const [proyecto, setProyecto] = useState([]);
 
   const validaciones = Object.keys(data).length === 0;
 
@@ -318,8 +320,18 @@ const RegistroRendicionGastos = () => {
     setCountSaldo(resultado);
   }, []);
 
-  useEffect(() => {
+  useEffect( () => {
+
     setData(selectedCountry1);
+    
+      async function project() {
+          const project = await fetchGetproject(selectedCountry1.nombreProyecto)
+          setProyecto(project)
+          console.log(project)
+         
+        }
+        project()
+ 
     sumRecibido();
   }, [selectedCountry1]);
 
@@ -378,7 +390,8 @@ const RegistroRendicionGastos = () => {
                   Proyecto
                 </label>
                 <AutoComplete
-                  value={selectedProyecto}
+                  value={proyecto?.registroProyecto?.nombreAbreviado}
+                
                   suggestions={filteredProyecto}
                   completeMethod={searchProyecto}
                   field='nombreAbreviado'
