@@ -66,9 +66,11 @@ const RegistroRendicionGastos = () => {
   const [filteredCountries, setFilteredCountries] = useState(null);
 
   const [proyectos, setProyectos] = useState([]);
+  
   const [selectedProyecto, setSelectedProyecto] = useState(
     !validation ? edit.proyecto : null
   );
+  
   const [filteredProyecto, setFilteredProyecto] = useState(null);
 
   const [data, setData] = useState([]);
@@ -124,6 +126,9 @@ const RegistroRendicionGastos = () => {
       });
     });
   };
+
+
+
 
   const tableButtonDelete = (rowData) => {
     return (
@@ -351,14 +356,16 @@ const RegistroRendicionGastos = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h4>Rendicion Gastos</h4>
               <div>
+
+                {/* TODO hacer funcionar el buscador */}
                 <AutoComplete
                   value={selectedCountry1}
                   suggestions={filteredCountries}
                   completeMethod={searchProject}
-                  field='nombre'
+                  field='numeroSolicitud'
                   name='nombreProyecto'
                   onChange={(e) => {
-                    setSelectedCountry1(e.value);
+                    setSelectedProyecto(e.value);
                   }}
                   dropdown
                   aria-label='nombreProyecto'
@@ -371,7 +378,7 @@ const RegistroRendicionGastos = () => {
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='numeroSolicitud' className='block'>
-                  N. solicitud
+                  N.de Rendicion
                 </label>
                 <InputText
                   name='numeroSolicitud'
