@@ -64,7 +64,6 @@ const ModalRegistroDocumentos = ({
 
   const updateAdd = (data) => {
     fetchPut(`regdoc/${edit.id}`, 'PUT', data).then(({ message }) => {
-      console.log(data);
       if (message === '"El código ya existe"') {
         toast.current.show({
           severity: 'warn',

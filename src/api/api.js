@@ -86,7 +86,7 @@ const createFormData = async  (url = '', method = '', data) =>  {
     try {
       const response = await fetch(`${VITE_API_URL}/${url}`, {
         method: 'POST',
-        body: data,
+        body: data
       });
         const jsonData = await response.json();
         console.log(jsonData)
