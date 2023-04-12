@@ -19,6 +19,19 @@ const fetchGet = async (url = '', method = 'GET') => {
 };
 
 
+const postUser = async (user) => {
+  console.log(user)
+  const response = await fetch(`${VITE_API_URL}/usuario`, { method: 'POST', body: JSON.stringify(user), headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+      
+  } });
+
+  const result = response.json();
+  return result;
+};
+
+
 const fetchGetproject = async (id, method = 'GET') => {
   const token = localStorage.getItem('token')
   const response = await fetch(`${VITE_API_URL}/regProyecto/${id}`, { method, headers: {
@@ -151,4 +164,4 @@ const fetchUserLogout=  ()=> {
 
 
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject };
+export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject, postUser };
