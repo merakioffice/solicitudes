@@ -87,6 +87,10 @@ const createFormData = async  (url = '', method = '', data) =>  {
       const response = await fetch(`${VITE_API_URL}/${url}`, {
         method: 'POST',
         body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+
+        }
       });
         const jsonData = await response.json();
         console.log(jsonData)
