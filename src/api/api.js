@@ -18,6 +18,33 @@ const fetchGet = async (url = '', method = 'GET') => {
   return result;
 };
 
+
+const postUser = async (user) => {
+  console.log(user)
+  const response = await fetch(`${VITE_API_URL}/usuario`, { method: 'POST', body: JSON.stringify(user), headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+      
+  } });
+
+  const result = response.json();
+  return result;
+};
+
+
+const fetchGetproject = async (id, method = 'GET') => {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${VITE_API_URL}/regProyecto/${id}`, { method, headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+    
+  } });
+
+  const result = response.json();
+  return result;
+}
+
 const fetchDelete = async (url = '', method = 'DELETE') => {
   const token = localStorage.getItem('token')
   const response = await fetch(`${VITE_API_URL}/${url}`, { method,  headers: {
@@ -75,7 +102,7 @@ const createFormData = async  (url = '', method = '', data) =>  {
         body: data,
         headers: {
           Authorization: `Bearer ${token}`,
-          
+
         }
       });
         const jsonData = await response.json();
@@ -137,4 +164,4 @@ const fetchUserLogout=  ()=> {
 
 
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData };
+export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject, postUser };

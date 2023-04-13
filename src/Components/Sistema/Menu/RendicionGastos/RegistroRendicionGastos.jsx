@@ -11,20 +11,45 @@ import { useFormik } from 'formik';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Row } from 'primereact/row';
+
+import {getUser} from '../../../../utils/getUser';
+
 import { ColumnGroup } from 'primereact/columngroup';
 import { AutoComplete } from 'primereact/autocomplete';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { fetchDelete, fetchGet, fetchPost, fetchGetproject } from '../../../../api';
 import { useSelector } from 'react-redux';
 import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
 
 const RegistroRendicionGastos = () => {
+
+
+
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+    
+    }
+
+    doIt();
+
+  }, [])
+
+
+
+
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
   const [edit] = useState(rendicionGastos);
   const validation = Object.keys(edit).length === 0;
 
   const toast = useRef(null);
-  const [dataRegistro, setDataRegistro] = useState([]);
+  const [ dataRegistro, setDataRegistro] = useState([]);
   // const [countTotal, setCountTotal] = useState(0);
   // const [total, setTotal] = useState(0);
   const [countSaldo, setCountSaldo] = useState(0);
@@ -41,9 +66,11 @@ const RegistroRendicionGastos = () => {
   const [filteredCountries, setFilteredCountries] = useState(null);
 
   const [proyectos, setProyectos] = useState([]);
+  
   const [selectedProyecto, setSelectedProyecto] = useState(
     !validation ? edit.proyecto : null
   );
+  
   const [filteredProyecto, setFilteredProyecto] = useState(null);
 
   const [data, setData] = useState([]);
@@ -54,13 +81,18 @@ const RegistroRendicionGastos = () => {
     numeroSolicitud: rendicionGastos ? rendicionGastos.numeroRendicion : null,
   });
 
+  const [proyecto, setProyecto] = useState([]);
+
   const validaciones = Object.keys(data).length === 0;
 
-  const listData = () => {
-    fetchGet(`solicitud`).then(({ personal }) => {
+  const listData = async() => {
+    const user = await getUser()
+    fetchGet(`solicitud/user/${user?.id}`).then(({ personal }) => {
       const data = personal.map((element, item) => {
         return element;
       });
+
+      console.log(data)
 
       setCountries(data);
     });
@@ -94,6 +126,9 @@ const RegistroRendicionGastos = () => {
       });
     });
   };
+
+
+
 
   const tableButtonDelete = (rowData) => {
     return (
@@ -290,8 +325,18 @@ const RegistroRendicionGastos = () => {
     setCountSaldo(resultado);
   }, []);
 
-  useEffect(() => {
+  useEffect( () => {
+
     setData(selectedCountry1);
+    
+      async function project() {
+          const project = await fetchGetproject(selectedCountry1.nombreProyecto)
+          setProyecto(project)
+          console.log(project)
+         
+        }
+        project()
+ 
     sumRecibido();
   }, [selectedCountry1]);
 
@@ -311,14 +356,16 @@ const RegistroRendicionGastos = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h4>Rendicion Gastos</h4>
               <div>
+
+                {/* TODO hacer funcionar el buscador */}
                 <AutoComplete
                   value={selectedCountry1}
                   suggestions={filteredCountries}
                   completeMethod={searchProject}
-                  field='nombre'
+                  field='numeroSolicitud'
                   name='nombreProyecto'
                   onChange={(e) => {
-                    setSelectedCountry1(e.value);
+                    setSelectedProyecto(e.value);
                   }}
                   dropdown
                   aria-label='nombreProyecto'
@@ -331,12 +378,16 @@ const RegistroRendicionGastos = () => {
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='numeroSolicitud' className='block'>
-                  N. solicitud
+                  N.de Rendicion
                 </label>
                 <InputText
                   name='numeroSolicitud'
                   type='text'
-                  value={dataLista ? dataLista.numeroSolicitud : ''}
+                  value={
+                    !validaciones
+                      ? data?.numeroSolicitud
+                      : ''
+                  }
                   disabled
                 />
               </div>
@@ -346,7 +397,8 @@ const RegistroRendicionGastos = () => {
                   Proyecto
                 </label>
                 <AutoComplete
-                  value={selectedProyecto}
+                  value={proyecto?.registroProyecto?.nombreAbreviado}
+                
                   suggestions={filteredProyecto}
                   completeMethod={searchProyecto}
                   field='nombreAbreviado'
@@ -391,7 +443,11 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='lugarComision'
                   type='text'
-                  value={formik.values.lugarComision}
+                  value={
+                    !validaciones
+                      ? data?.lugarComision
+                      : ''
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -411,7 +467,11 @@ const RegistroRendicionGastos = () => {
                 <InputText
                   name='objetoComision'
                   type='text'
-                  value={formik.values.objetoComision}
+                  value={
+                    !validaciones
+                      ? data?.lugarComision
+                      : ''
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -427,7 +487,13 @@ const RegistroRendicionGastos = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaInicio'>Fecha inicio</label>
                 <Calendar
-                  value={formik.values.fechaInicio}
+         
+                  value={
+                    !validaciones
+                      ? new Date(data?.fechaInicio)
+                      : ''
+                  }
+            
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -444,14 +510,21 @@ const RegistroRendicionGastos = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
-                  value={formik.values.fechaFin}
+               
+                  value={
+                    !validaciones
+                      ? new Date(data?.fechaFin)
+                      : ''
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaFin'
                   showIcon
                   disabled={boolCreate}
-                ></Calendar>
+                >
+                  
+                </Calendar>
                 {formik.touched.fechaFin && formik.errors.fechaFin && (
                   <span style={{ color: '#e5432d' }}>
                     {formik.errors.fechaFin}

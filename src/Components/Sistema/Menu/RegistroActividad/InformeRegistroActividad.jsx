@@ -77,8 +77,9 @@ const InformeRegistroActividad = () => {
   });
 
   const registreAdd = (values) => {
-
+    console.log(values);
     fetchPost('regActividad', 'POST', values).then((data) => {
+      console.log(data);
       if (data.registroActividad) {
         toast.current.show({
           severity: 'success',
