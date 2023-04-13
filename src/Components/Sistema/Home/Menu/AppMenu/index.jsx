@@ -18,6 +18,8 @@ export default  function  AppMenu() {
 
       const userData = await getUser();
 
+      console.log(userData)
+      
       setDataUser(userData);
 
 
