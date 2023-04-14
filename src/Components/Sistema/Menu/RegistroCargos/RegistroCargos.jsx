@@ -7,22 +7,32 @@ import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroCargo from './Modal/ModalRegistroCargo';
 import { FileUpload } from 'primereact/fileupload';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { createFormData, fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 const RegistroCargos = () => {
   const [view, setView] = useState(false);
   const [edit, setEdit] = useState(null);
   const [addData, setAddData] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const toast = useRef(null);
 
-  const listData = () => {
-    fetchGet('registrocargo').then(({ registroCargo }) => {
+  const listData = (filters = {page: 0, rows: 10}) => {
+    const {page, rows} = filters;
+    setLoading(true);
+    
+    fetchGet(`registrocargo?page=${page + 1}&pageSize=${rows}`).then(( { registroCargo, count } ) => {
+      setTotalRecords(count);
+
       const data = registroCargo.map((element, item) => {
         element.index = item + 1;
         return element;
       });
+
       setAddData(data);
+      setLoading(false);
     });
   };
 
@@ -35,7 +45,7 @@ const RegistroCargos = () => {
           onClick={() => editData(rowData)}
         />
       </div>
-    );
+    );  
   };
 
   const editData = (data) => {
@@ -104,55 +114,33 @@ const RegistroCargos = () => {
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const bstr = e.target.result;
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const list = (data) => {
-        const newData = [];
-        for (let i = 1; i < data.length - 1; i++) {
-          const element = data[i];
-          const items = {
-            codigo: element[0].toString(),
-            descripcion: element[1].toString(),
-          };
-          newData.push(items);
-        }
+      try {
+        const formData = new FormData();
 
-        fetchPost('registrocargoAddAll', 'POST', newData).then((data) => {
-          if (data.error) {
-            toast.current.show({
-              severity: 'error',
-              summary: 'Error al subir el archivo',
-              detail: data.error,
-              life: 3000,
-            });
-          }
-          if (data.repeat) {
-            toast.current.show({
-              severity: 'warn',
-              summary: 'Datos duplicados',
-              detail: 'Se esta ingresando datos existentes',
-              life: 3000,
-            });
-          }
-          if (data.message) {
-            toast.current.show({
-              severity: 'success',
-              summary: 'Registro lugar comisión',
-              detail: data.message,
-              life: 3000,
-            });
-
-            listData();
-          }
+        formData.append('file', File);
+  
+        await createFormData("registrocargoAddAll", 'POST' , formData);  
+        listData();
+        toast.current.show({
+          severity: 'success',
+          summary: 'Registro lugar comisión',
+          life: 3000,
         });
-        return newData;
-      };
-      list(data);
+      } catch (error) {
+        console.log(error)
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error al subir el archivo',
+          life: 3000,
+        });
+      }
     };
 
     if (rABS) reader.readAsBinaryString(File);
@@ -177,7 +165,15 @@ const RegistroCargos = () => {
             })}
             right={RightToolBarTemplate}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+            <DataTable value={addData} 
+                      responsiveLayout='scroll'
+                      paginator
+                      lazy
+                      rows={10} 
+                      totalRecords={totalRecords}
+                      onPage={listData}
+                      loading={loading}
+              >
             <Column field='index' header='Id'></Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='descripcion' header='Descripción'></Column>
