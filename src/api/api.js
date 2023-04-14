@@ -106,7 +106,7 @@ const createFormData = async  (url = '', method = '', data) =>  {
         }
       });
         const jsonData = await response.json();
-        console.log(jsonData)
+       
         return jsonData;
     } catch (error) {
         console.error("CREATE FORMDATA ERROR ", error)
