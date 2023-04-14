@@ -8,7 +8,7 @@ import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalLugarComision from './Modal/ModalLugarComision';
 import { FileUpload } from 'primereact/fileupload';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { createFormData, fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const LugarComision = () => {
@@ -26,7 +26,7 @@ const LugarComision = () => {
     
     fetchGet(`comision?page=${page + 1}&pageSize=${rows}`).then(( { comisiones, count } ) => {
       setTotalRecords(count);
-
+      console.log("c", comisiones)
       const data = comisiones.map((element, item) => {
         element.index = item + 1;
         return element;
@@ -127,7 +127,7 @@ const LugarComision = () => {
 
         formData.append('file', File);
   
-        await createFormData("registrocargoAddAll", 'POST' , formData);  
+        await createFormData("comisionAddAll", 'POST' , formData);  
         listData();
         toast.current.show({
           severity: 'success',
