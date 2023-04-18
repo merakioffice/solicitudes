@@ -6,7 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 
 import { fetchLogin } from "../../../api/api";
-
+import Swal from 'sweetalert2'
 import { Button } from 'primereact/button';
 import { Image } from 'primereact/image';
 import './Login.scss';
@@ -22,6 +22,7 @@ const navigate = useNavigate();
   const handleSubmit = async (e) => {
     
     e.preventDefault();
+    
    const data = await fetchLogin('login', 'POST', login);
 
 
@@ -29,6 +30,17 @@ const navigate = useNavigate();
         localStorage.setItem('token', data.token);
         navigate(`/Dashboard`)
        
+      }
+
+
+    
+      if(data.message){
+        Swal.fire({
+          title: 'Error!',
+          text: 'Correo o contraseña invalida',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
       }
    
   }
