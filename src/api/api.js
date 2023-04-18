@@ -26,6 +26,25 @@ const fetchGet = async (url = '', method = 'GET') => {
 };
 
 
+const firmarDoc = async (data) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${VITE_API_URL}/firmar_doc`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      
+    }, 
+    body: JSON.stringify(data),
+  });
+
+
+  return response
+  
+}
+
+
 const postUser = async (user) => {
 
   const response = await fetch(`${VITE_API_URL}/usuario`, { method: 'POST', body: JSON.stringify(user), headers: {
@@ -52,6 +71,8 @@ const fetchGetproject = async (id, method = 'GET') => {
   const result = response.json();
   return result;
 }
+
+
 
 const fetchDelete = async (url = '', method = 'DELETE') => {
   const token = localStorage.getItem('token')
@@ -118,11 +139,13 @@ const createFormData = async  (url = '', method = '', data) =>  {
         }
       });
         const jsonData = await response.json();
+
         handle401(response.status);
 
         return jsonData;
     } catch (error) {
         console.error("CREATE FORMDATA ERROR ", error)
+        console.log(error)
     }
   }
 
@@ -180,4 +203,4 @@ const fetchUserLogout=  ()=> {
 
 
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject, postUser };
+export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject, postUser,firmarDoc };

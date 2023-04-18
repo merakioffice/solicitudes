@@ -18,7 +18,7 @@ export default  function  AppMenu() {
 
       const userData = await getUser();
 
-      console.log(userData)
+    
       
       setDataUser(userData);
 
@@ -55,6 +55,22 @@ export default  function  AppMenu() {
           command: () => {
             navigate('/Dashboard');
           },
+        },
+        {
+          label: 'Mis Datos',
+          icon: 'pi pi-fw pi-chart-bar',
+          to: '/mis-datos',
+          command: () => {
+            navigate('/mis-datos');
+          },  
+        },
+        {
+          label: 'Visor Documentos',
+          icon: 'pi pi-eye',
+          to: '/visor-documento',
+          command: () => {
+            navigate('/visor-documento');
+          },      
         },
       ],
     },
