@@ -121,11 +121,26 @@ const RegistroProyecto = () => {
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const formData = new FormData();
 
-      formData.append('file', File);
+      try {
+        const formData = new FormData();
 
-      await createFormData("regProyectoAddAll", 'POST' , formData);
+        formData.append('file', File);
+  
+        await createFormData("regProyectoAddAll", 'POST' , formData);  
+
+        toast.current.show({
+          severity: 'success',
+          summary: 'Registro lugar comisión',
+          life: 3000,
+        });
+      } catch (error) {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error al subir el archivo',
+          life: 3000,
+        });
+      }
 
       const list = (data) => {
         const newData = [];
@@ -167,13 +182,13 @@ const RegistroProyecto = () => {
             right={RightToolBarTemplate}
           ></Toolbar>
           <DataTable value={addData} 
-                    responsiveLayout='scroll'
-                    paginator
-                    lazy
-                    rows={10} 
-                    totalRecords={totalRecords}
-                    onPage={listData}
-                    loading={loading}
+                responsiveLayout='scroll'
+                paginator
+                lazy
+                rows={10} 
+                totalRecords={totalRecords}
+                onPage={listData}
+                loading={loading}
           >
             <Column field='index' header='Id'></Column>
             <Column field='codigo' header='Código Contable'></Column>

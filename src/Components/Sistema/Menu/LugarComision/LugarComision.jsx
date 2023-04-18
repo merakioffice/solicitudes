@@ -8,7 +8,7 @@ import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalLugarComision from './Modal/ModalLugarComision';
 import { FileUpload } from 'primereact/fileupload';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { createFormData, fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const LugarComision = () => {
@@ -17,14 +17,23 @@ const LugarComision = () => {
   const [addData, setAddData] = useState([]);
   const [edit, setEdit] = useState(null);
   const toast = useRef(null);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const listData = () => {
-    fetchGet('comision').then(({ lugar }) => {
-      const data = lugar.map((element, item) => {
+  const listData = (filters = {page: 0, rows: 10}) => {
+    const {page, rows} = filters;
+    setLoading(true);
+    
+    fetchGet(`comision?page=${page + 1}&pageSize=${rows}`).then(( { comisiones, count } ) => {
+      setTotalRecords(count);
+      console.log("c", comisiones)
+      const data = comisiones.map((element, item) => {
         element.index = item + 1;
         return element;
       });
+
       setAddData(data);
+      setLoading(false);
     });
   };
 
@@ -106,56 +115,33 @@ const LugarComision = () => {
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const bstr = e.target.result;
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const list = (data) => {
-        const newData = [];
-        for (let i = 1; i < data.length - 1; i++) {
-          const element = data[i];
-          const items = {
-            codigo: element[0].toString(),
-            descripcion: element[1].toString(),
-          };
-          newData.push(items);
-        }
-        // console.log(newData);
-        fetchPost('comisionAddAll', 'POST', newData).then((data) => {
-          if (data.error) {
-            toast.current.show({
-              severity: 'error',
-              summary: 'Error al subir el archivo',
-              detail: data.error,
-              life: 3000,
-            });
-          }
-          if (data.repiet) {
-            toast.current.show({
-              severity: 'warn',
-              summary: 'Datos duplicados',
-              detail: 'Se esta ingresando datos existentes',
-              life: 3000,
-            });
-          }
-          if (data.message) {
-            toast.current.show({
-              severity: 'success',
-              summary: 'Registro lugar comisión',
-              detail: data.message,
-              life: 3000,
-            });
+      try {
+        const formData = new FormData();
 
-            listData();
-          }
+        formData.append('file', File);
+  
+        await createFormData("comisionAddAll", 'POST' , formData);  
+        listData();
+        toast.current.show({
+          severity: 'success',
+          summary: 'Registro lugar comisión',
+          life: 3000,
         });
-
-        return newData;
-      };
-      list(data);
+      } catch (error) {
+        console.log(error)
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error al subir el archivo',
+          life: 3000,
+        });
+      }
     };
 
     if (rABS) reader.readAsBinaryString(File);
@@ -180,7 +166,15 @@ const LugarComision = () => {
               nameBtn: 'Crear Comisión',
             })}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData} 
+                  responsiveLayout='scroll'
+                  paginator
+                  lazy
+                  rows={10} 
+                  totalRecords={totalRecords}
+                  onPage={listData}
+                  loading={loading}
+          >
             <Column field='index' header='Id'></Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='descripcion' header='Descripción'></Column>
