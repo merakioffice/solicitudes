@@ -199,7 +199,7 @@ const RegistroEmpleado = () => {
                 life: 3000,
               });
 
-              resolve(result);
+              resolve(res);
               return res;
             } catch (error) {
               console.log(error)

@@ -5,12 +5,14 @@ import { InputText } from 'primereact/inputtext';
 import { PDFViewer } from '@react-pdf/renderer';
 
 
-
+import { useNavigate } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
+import { getUser } from '../../../../utils/getUser';
+import { fetchPost, firmarDoc } from '../../../../api';
 
 const Pdf = (match) => {
   const toast = useRef(null);
-
+  const navigate = useNavigate();
   const [viewFoto, setViewFoto] = useState(null);
   const [dataFirma, setDataFirma] = useState(null);
   const data1 = localStorage.getItem('pdfdetalle');
@@ -18,12 +20,29 @@ const Pdf = (match) => {
   //const data3 = localStorage.getItem('pass');
   const origen = localStorage.getItem('origen');
   console.log(origen);
+  const { VITE_API_URL }  = import.meta.env;
   const pdfdetalle = JSON.parse(data1);
-  const str = "http://localhost:8002/api"
+ const mainUrlmin = VITE_API_URL.slice(0, -4);
   const visor = JSON.parse(data2);
   const usuario_ndocumento = localStorage.getItem('ndocumento');
-  const mainUrlmin = str.slice(0, -4);
-  console.log(mainUrlmin)
+ 
+  const [dataUser, setDataUser] = useState();
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const userData = await getUser();
+      
+      setDataUser(userData);
+
+      console.log(userData?.rol)
+      
+    
+    }
+
+    doIt();
+
+  }, [])
 
 /*   const mainUrlmin = str.slice(0, -4); */
 /*   useEffect(() => {
@@ -44,8 +63,13 @@ const Pdf = (match) => {
   
   }, []); */
 
-  const firmaDoc = (product) => {
-    if (viewFoto === null) {
+  const firmaDoc = async (product) => {
+   
+    const data = {user: dataUser, doc: product}
+
+    console.log('data', data)
+      
+    if (dataUser?.imgfirma == null) {
       toast.current.show({
         severity: 'warn',
         summary: 'Hubo un error',
@@ -53,7 +77,18 @@ const Pdf = (match) => {
         life: 3000,
       });
     } else {
-/* s */
+   const result = await  firmarDoc(data)
+   toast.current.show({
+    severity: 'success',
+    summary: 'Successful',
+    detail: 'Documento Firmado',
+    life: 3000,
+  });
+
+localStorage.removeItem('pdfdetalle')
+  localStorage.setItem('pdfdetalle', JSON.stringify(result.newdoc));
+navigate('/visor-documento')
+  
     }
     //   //var url = '/firmadocumento';
     //   //history.push(url, { detail: product });
@@ -103,13 +138,14 @@ const Pdf = (match) => {
   }, []);
   
   const viewPerfil = async () => {
+    
 /*     const response = await axios.get(
       `${mainUrlmin}/api/imagePerson/firma_${usuario_ndocumento}`
     );
 
-    const result = await response.data;
+    const result = await response.data;*/
 
-    setViewFoto(result.msg); */
+    setViewFoto(dataUser?.imgfirma); 
   };
   console.log(viewFoto);
   console.log(match);
@@ -144,22 +180,19 @@ const Pdf = (match) => {
       </div>
       <div className='m-auto '>{Print({ match })}</div>
       <div>
-        {dataFirma === null && origen === 'usuarios' ? (
-          ''
-        ) : dataFirma === null &&
-          origen === 'empleados' &&
-          pdfdetalle.estado === false ? (
+
+
+
+
+        {
+          pdfdetalle?.estado == false && dataUser?.rol == "USER_ROLE" ? (
           <Button
             label='Firmar Documento'
             onClick={() => firmaDoc(pdfdetalle)}
             className='p-button-success mr-2 mt-2'
           />
         ) : (
-          <Button
-            label='Documento Firmado'
-            disabled
-            className='p-button-success mr-2 mt-2'
-          />
+''
         )}
         {url !== '/viewpdf' && (
           <Button

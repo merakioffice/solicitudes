@@ -37,7 +37,9 @@ import {
   RendicionGastos,
   SolicitudDinero,
   RepositorioDocumentos,
-  Pdf
+  Pdf,
+  MisDatos,
+  VisorDocumento
   
 
 } from './Components/Sistema/Menu';
@@ -107,6 +109,16 @@ function App() {
             exact
             path={'informe-actividad'}
             element={<RegistroActividad />}
+          />
+          <Route
+            exact
+            path={'mis-datos'}
+            element={<MisDatos />}
+          />
+          <Route
+            exact
+            path={'visor-documento'}
+            element={<VisorDocumento />}
           />
           <Route
             exact

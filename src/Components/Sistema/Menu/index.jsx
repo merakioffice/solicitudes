@@ -13,6 +13,8 @@ import { RendicionGastos } from './RendicionGastos/RendicionGastos';
 import { RegistroDinero } from './SolicitudRegistro/RegistroDinero';
 import { SolicitudDinero } from './SolicitudRegistro/SolicitudDinero';
 import RepositorioDocumentos from './RepositorioDocumentos/index';
+import {MisDatos} from './MisDatos/index';
+import {VisorDocumento} from './VisorDocumento/index';
 import { Pdf } from "./Pdf/Pdf";
 
 export {
@@ -31,5 +33,7 @@ export {
   RegistroDocumentos,
   LugarComision,
   RepositorioDocumentos,
-  Pdf
+  Pdf,
+  MisDatos,
+  VisorDocumento
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+/* import React, { useState, useEffect, useRef } from "react";
 import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
 import { Chart } from "primereact/chart";
@@ -38,8 +38,7 @@ export default function Dashboard() {
     async function doIt(){
 
       const userData = await getUser();
-     
-    
+      
       setDataUser(userData);
 
     
@@ -118,13 +117,7 @@ export default function Dashboard() {
     setLineOptions(lineOptions);
   };
 
-/*   useEffect(() => {
-    if (props.colorMode === "light") {
-      applyLightTheme();
-    } else {
-      applyDarkTheme();
-    }
-  }, [props.colorMode]); */
+
   return (
     <div className="grid  crud-demo">
       <div className="col-12 lg:col-6 xl:col-3">
@@ -312,4 +305,200 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}
+} */
+
+import React, { useState, useRef, useEffect } from 'react';
+import { InputText } from 'primereact/inputtext';
+import { FileUpload } from 'primereact/fileupload';
+
+import { getUser } from "../../../../utils/getUser";
+import { Toast } from 'primereact/toast';
+import { Image } from 'primereact/image';
+import { Password } from 'primereact/password';
+import { Button } from 'primereact/button';
+
+
+const MisDatos = () => {
+/*   let empty = {
+    codigo: '',
+    nombre: null,
+    email: '',
+    ndocumento: '',
+    rol: '',
+    estado: 'ACTIVO',
+  }; */
+
+/*   const Urluploading = mainUrl + '/uploadimg'; */
+
+const { VITE_API_URL }  = import.meta.env;
+
+const mainUrlmin = VITE_API_URL.slice(0, -4);
+const [dataUser, setDataUser] = useState();
+console.log(mainUrlmin, 'firma')
+
+useEffect( () =>  {
+  async function doIt(){
+
+    const userData = await getUser();
+    
+    setDataUser(userData);
+
+  
+  }
+
+  doIt();
+
+}, [])
+
+
+
+  const toast = useRef(null);
+  const [viewImage, setViewImage] = useState(null);
+  const [viewFoto, setViewFoto] = useState(null);
+  const [value3, setValue3] = useState('');
+
+/*   const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _product = { ...products };
+    _product[`${name}`] = val;
+
+    setProducts(_product);
+  }; */
+
+  const onUpload = ({ files }) => {
+    // console.log(files);
+    setViewImage(files[0].objectURL);
+    viewPerfil();
+  };
+
+  var usuario_nombre = localStorage.getItem('nombre');
+  var usuario_codigo = localStorage.getItem('codigo');
+  var usuario_correo = localStorage.getItem('correo');
+  var usuario_ndocumento = localStorage.getItem('ndocumento');
+  /* const firma = `firma_${usuario_codigo}.jpg`; */
+
+/*   const str = mainUrl;
+  const mainUrlmin = str.slice(0, -4);
+ */
+  const viewPerfil = async () => {
+/*     const response = await axios.get(
+      `${mainUrlmin}/api/imagePerson/firma_${usuario_ndocumento}`
+    ); */
+
+   /*  const result = await response.data; */
+
+   
+  };
+  // console.log(viewFoto);
+  const handleUpdatePassword = async () => {
+    const data = {
+      correo: usuario_correo,
+      password: value3,
+    };
+
+    if (data.password.length === 0) {
+      toast.current.show({
+        severity: 'warn',
+        summary: 'Hubo un error',
+        detail: 'El campo no debe estar vació',
+        life: 3000,
+      });
+    } else {
+/*       const res = await axios.put(`${mainUrl}/updatePassword`, data);
+      if (res.data) {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: 'La contraseña se ha cambiado',
+          life: 3000,
+        });
+      } */
+    }
+  };
+  useEffect(() => {
+    viewPerfil();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className='card p-fluid'>
+      <Toast ref={toast}></Toast>
+      <h5>Mis Datos</h5>
+
+      <div className='field'>
+        <label htmlFor='ndocumento'>DNI</label>
+        <InputText disabled id='ndocumento' value={dataUser?.dni}  />
+      </div>
+      <div className='field'>
+        <label htmlFor='nombre'>Nombre</label>
+        <InputText disabled id='nombre' value={dataUser?.nombre} />
+      </div>
+      <div className='field'>
+        <label htmlFor='email'>Correo</label>
+        <InputText disabled id='email' value={dataUser?.email} />
+      </div>
+      {/* <div className='field'>
+        <label>Repetir contraseña</label>
+        <Password
+          value={value3}
+          onChange={(e) => setValue3(e.target.value)}
+          toggleMask
+        />
+      </div> */}
+      <div className='field'>
+        <label>Nueva contraseña</label>
+        <Password
+          value={value3}
+          onChange={(e) => setValue3(e.target.value)}
+          toggleMask
+          required
+        />
+        <Button
+          label='Cambiar contraseña'
+          onClick={handleUpdatePassword}
+          style={{
+            width: '200px',
+            margin: ' 10px 0px',
+            // display: 'block',
+            // left: '80%',
+            // alignItems: 'flex-end',
+            // justifyContent: 'flex-end',
+          }}
+        />
+      </div>
+      <div className='card'>
+        <h5>
+          Seleccionar Firma{' '}
+          <span
+            style={{ fontSize: '13px', color: '#939393', fontWeight: '300' }}
+          >
+            (Formato *.jpg / Tamaño maximo 500px)
+          </span>
+        </h5>
+        <FileUpload
+          name='image'
+           url={`${mainUrlmin}/api/subir_firma/${dataUser?.dni}`} 
+          accept='.jpg'
+          onUpload={onUpload}
+          maxFileSize={1000000}
+        />
+        <br />
+        <center>
+          {dataUser?.imgfirma === null ? (
+            ''
+          ) : dataUser?.imgfirma  === null ? (
+            <Image
+               width='80px'
+               height='100px'
+               src={`${mainUrlmin}/uploads/firmas/${dataUser?.imgfirma}.jpg `} 
+            ></Image>
+          ) : (
+            <Image src={`${mainUrlmin}/uploads/firmas/${dataUser?.imgfirma}.jpg `}></Image>
+          )}
+        </center>
+      </div>
+    </div>
+  );
+};
+
+export  {MisDatos};

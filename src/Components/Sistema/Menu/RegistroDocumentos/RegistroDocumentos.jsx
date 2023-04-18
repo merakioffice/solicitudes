@@ -352,6 +352,32 @@ const RegistroDocumentos = () => {
       // listarDatos();
     };
 
+    const customBaseUploader = (e) => {
+      
+      let formData = new FormData();
+      e.files.map((e) => formData.append('file', e));
+      createFormData(`regdocfirmAddAll`, 
+         'POST',
+        formData,
+      ).then((res) => {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Documento Subido',
+          life: 3000,
+        });
+      
+        listarDatos();
+      })
+        .catch((error) => {
+          // listarDatos();
+          console.log(error);
+        });
+      // listarDatos();
+    };
+    
+
+
     return (
       <div className='grid crud-demo'>
         <Button
@@ -405,7 +431,7 @@ const RegistroDocumentos = () => {
               name='image'
              /*  url={urlfirmado} */
               accept='pdf/*'
-              uploadHandler={onUpload}
+              uploadHandler={customBaseUploader}
               // onUpload={onUpload}
               maxFileSize={1000000}
             />
