@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -7,28 +7,31 @@ import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroCodigoReferencia from './Modal/ModalRegistroCodigoReferencia';
 import { FileUpload } from 'primereact/fileupload';
-
-// const datos = [
-//   {
-//     id: 1,
-//     codigo: 654332,
-//     nombre: 'Mateo',
-//   },
-//   {
-//     id: 2,
-//     codigo: 234592,
-//     nombre: 'Enrique',
-//   },
-//   {
-//     id: 3,
-//     codigo: 536278,
-//     nombre: 'Juan',
-//   },
-// ];
-
+import { createFormData, fetchGet } from '../../../../api';
+import { Toast } from 'primereact/toast';
 const RegistroCodigoReferencia = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const toast = useRef(null);
+  const listData = (filters = {page: 0, rows: 10}) => {
+    const {page, rows} = filters;
+    setLoading(true);
+    
+    fetchGet(`/registroReferenciaAll?page=${page + 1}&pageSize=${rows}`).then(( { codigoReferencias, count } ) => {
+      setTotalRecords(count);
+
+      const data = codigoReferencias.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+
+      setAddData(data);
+      setLoading(false);
+    });
+  };
+
 
   const tableButtonEdit = (rowData) => {
     return (
@@ -80,36 +83,47 @@ const RegistroCodigoReferencia = () => {
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const bstr = e.target.result;
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const listData = (data) => {
-        const newData = [];
-        for (let i = 1; i < data.length - 1; i++) {
-          const element = data[i];
-          const items = {
-            id: i,
-            codigo: element[0],
-            nombre: element[1],
-          };
-          newData.push(items);
-        }
-        return newData;
-      };
-      setAddData(listData(data));
+      try {
+        const formData = new FormData();
+
+        formData.append('file', File);
+  
+        await createFormData("registroReferenciaAddAll", 'POST' , formData);  
+
+        listData();
+        toast.current.show({
+          severity: 'success',
+          summary: 'Registro lugar comisión',
+          life: 3000,
+        });
+      } catch (error) {
+        console.log(error)
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error al subir el archivo',
+          life: 3000,
+        });
+      }
     };
 
     if (rABS) reader.readAsBinaryString(File);
     else reader.readAsArrayBuffer(File);
   };
 
+  useEffect(() => {
+    listData();
+  }, []);
+
   return (
     <div className='grid crud-demo'>
-      {/* <Toast ref={toast} /> */}
+      <Toast ref={toast} />
       <div className='col-12'>
         <div className='card'>
           <Toolbar

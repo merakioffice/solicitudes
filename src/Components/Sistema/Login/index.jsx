@@ -6,10 +6,11 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
 import { fetchLogin } from "../../../api/api";
+import Swal from 'sweetalert2'
+import { Button } from 'primereact/button';
+import { Image } from 'primereact/image';
+import './Login.scss';
 
-import { Button } from "primereact/button";
-import { Image } from "primereact/image";
-import "./login.scss";
 
 export default function Login() {
   const [login, setLogin] = useState({
@@ -27,6 +28,28 @@ export default function Login() {
       navigate(`/Dashboard`);
     }
   };
+    
+   const data = await fetchLogin('login', 'POST', login);
+
+
+      if(data.token){
+        localStorage.setItem('token', data.token);
+        navigate(`/Dashboard`)
+       
+      }
+
+
+    
+      if(data.message){
+        Swal.fire({
+          title: 'Error!',
+          text: 'Correo o contraseña invalida',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
+      }
+   
+  }
   return (
     <div className={`containerLogin`}>
       <div className={`imgLogin`}>

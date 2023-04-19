@@ -8,12 +8,22 @@ import { CSSTransition } from 'react-transition-group';
 import './styles.scss';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
 export default function Home({isLogged}) {
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   if(!token){
+
+    Swal.fire({
+      title: 'Error!',
+      text: 'Necesitas Iniciar Session',
+      icon: 'error',
+      confirmButtonText: 'Ok'
+    })
+
+    
     navigate('/')
   }
 

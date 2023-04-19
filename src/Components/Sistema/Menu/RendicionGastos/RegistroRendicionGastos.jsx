@@ -253,15 +253,22 @@ const RegistroRendicionGastos = () => {
   const formik = useFormik({
     initialValues: {
       proyecto: '',
-      nombreApellido: !validation ? edit.nombreApellido : '',
-      lugarComision: !validation ? edit.lugarComision : '',
-      objetoComision: !validation ? edit.objetoComision : '',
-      fechaInicio: !validation ? edit.fechaInicio : '',
+      nombreApellido: '',
+      lugarComision: '',
+      objetoComision: '',
+      fechaInicio: '',
       fechaFin: '',
     },
     onSubmit: (values) => {
       values.nombreApellido = data.nombre;
+      values.lugarComision = data.lugarComision;
+      values.objetoComision = data.objetoComision;
+      values.fechaInicio = data.fechaInicio;
+      values.fechaFin = data.fechaFin;
       values.proyecto = selectedProyecto.id;
+      values.recibido = Number(countRecibido).toFixed(2)
+    
+     /*  console.log(values) */
       // values.recibido = countRecibido.toString();
       registreAdd(values);
     },
@@ -365,7 +372,7 @@ const RegistroRendicionGastos = () => {
                   field='numeroSolicitud'
                   name='nombreProyecto'
                   onChange={(e) => {
-                    setSelectedProyecto(e.value);
+                    setSelectedCountry1(e.value);
                   }}
                   dropdown
                   aria-label='nombreProyecto'
@@ -397,8 +404,10 @@ const RegistroRendicionGastos = () => {
                   Proyecto
                 </label>
                 <AutoComplete
-                  value={proyecto?.registroProyecto?.nombreAbreviado}
-                
+         /*          value={selectedProyecto} */
+
+                 /*  vaue={proyecto ? proyecto?.registroProyecto?.nombreAbreviado: selectedProyecto } */
+                   value={proyecto?.registroProyecto?.nombreAbreviado} 
                   suggestions={filteredProyecto}
                   completeMethod={searchProyecto}
                   field='nombreAbreviado'
@@ -469,7 +478,7 @@ const RegistroRendicionGastos = () => {
                   type='text'
                   value={
                     !validaciones
-                      ? data?.lugarComision
+                      ? data?.objetoComision
                       : ''
                   }
                   onChange={formik.handleChange}

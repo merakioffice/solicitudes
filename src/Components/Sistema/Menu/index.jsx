@@ -13,6 +13,9 @@ import { RendicionGastos } from './RendicionGastos/RendicionGastos';
 import { RegistroDinero } from './SolicitudRegistro/RegistroDinero';
 import { SolicitudDinero } from './SolicitudRegistro/SolicitudDinero';
 import RepositorioDocumentos from './RepositorioDocumentos/index';
+import {MisDatos} from './MisDatos/index';
+import {VisorDocumento} from './VisorDocumento/index';
+import { Pdf } from "./Pdf/Pdf";
 
 export {
   InformeRegistroActividad,
@@ -29,5 +32,8 @@ export {
   RegistroCargos,
   RegistroDocumentos,
   LugarComision,
-  RepositorioDocumentos
+  RepositorioDocumentos,
+  Pdf,
+  MisDatos,
+  VisorDocumento
 };

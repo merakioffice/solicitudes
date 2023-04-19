@@ -36,10 +36,15 @@ import {
   RegistroUsuario,
   RendicionGastos,
   SolicitudDinero,
-  RepositorioDocumentos
+  RepositorioDocumentos,
+  Pdf,
+  MisDatos,
+  VisorDocumento
+  
 
 } from './Components/Sistema/Menu';
 import { RegistroPresupuestoFinanciero } from './Components/Sistema/Menu/RegistroPresupuestoFinanciero';
+
 
 
 
@@ -61,9 +66,13 @@ function App() {
     <div>
       <Routes>
         <Route exact path={'/'} element={<Login />} />
+
         <Route exact path={'/'} element={<Home />}>
            <Route exact path={'Dashboard'}  element={<Dashboard />} /> 
-
+           <Route
+            path={'viewpdf'}
+            element={<Pdf />}
+          />
           <Route exact path={'repositorio-documentos'} element={<RepositorioDocumentos />} />
           <Route
             exact
@@ -75,6 +84,7 @@ function App() {
             path={'registro-empleado'}
             element={<RegistroEmpleado />}
           />
+
           <Route
             exact
             path={'solicitud-dinero'}
@@ -99,6 +109,16 @@ function App() {
             exact
             path={'informe-actividad'}
             element={<RegistroActividad />}
+          />
+          <Route
+            exact
+            path={'mis-datos'}
+            element={<MisDatos />}
+          />
+          <Route
+            exact
+            path={'visor-documento'}
+            element={<VisorDocumento />}
           />
           <Route
             exact

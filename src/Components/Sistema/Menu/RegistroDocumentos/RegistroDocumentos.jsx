@@ -214,7 +214,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
-import { fetchDelete, fetchGet, fetchPost } from '../../../../api';
+import { fetchDelete, fetchGet, createFormData } from '../../../../api';
 
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
@@ -253,6 +253,7 @@ const RegistroDocumentos = () => {
    const listarDatos = async  () => {
 
     const response =  await fetchGet('empleados')
+    console.log(response.registroEmpleados)
     setProducts(response.registroEmpleados);
 
 /*     empleadoService
@@ -328,38 +329,54 @@ const RegistroDocumentos = () => {
     };
 
     const customBase64Uploader = (e) => {
+      
       let formData = new FormData();
-      e.files.map((e) => formData.append('image', e));
-      fetch(`ad`, {
-        method: 'POST',
-        body: formData,
+      e.files.map((e) => formData.append('file', e));
+      createFormData(`regdocAddAll`, 
+         'POST',
+        formData,
+      ).then((res) => {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Documento Subido',
+          life: 3000,
+        });
+      
+        listarDatos();
       })
-        .then((response) => response.json())
-        .then((result) => {
-          toast.current.show({
-            severity: 'success',
-            summary: 'Successful',
-            detail: `Documentos subidos correctamente`,
-            life: 3000,
-          });
-          // setLista(result.data);
-          result.data.map((item, index) => {
-            setLista(item);
-            return toast.current.show({
-              severity: 'error',
-              summary: 'Este archivos no se ha subido',
-              detail: `El documento con DNI: ${item} no pertenece a ningún usuario`,
-              life: 5000,
-            });
-          });
-          listarDatos();
-        })
         .catch((error) => {
           // listarDatos();
           console.log(error);
         });
       // listarDatos();
     };
+
+    const customBaseUploader = (e) => {
+      
+      let formData = new FormData();
+      e.files.map((e) => formData.append('file', e));
+      createFormData(`regdocfirmAddAll`, 
+         'POST',
+        formData,
+      ).then((res) => {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Documento Subido',
+          life: 3000,
+        });
+      
+        listarDatos();
+      })
+        .catch((error) => {
+          // listarDatos();
+          console.log(error);
+        });
+      // listarDatos();
+    };
+    
+
 
     return (
       <div className='grid crud-demo'>
@@ -414,7 +431,7 @@ const RegistroDocumentos = () => {
               name='image'
              /*  url={urlfirmado} */
               accept='pdf/*'
-              uploadHandler={onUpload}
+              uploadHandler={customBaseUploader}
               // onUpload={onUpload}
               maxFileSize={1000000}
             />
@@ -429,15 +446,16 @@ const RegistroDocumentos = () => {
     // console.log('=>xx', rowData);
     return (
       <span
-        className={`order-badge order-${rowData.activo ? 'activo' : 'cesado'}`}
+        className={`order-badge order-${rowData.estado ? 'activo' : 'cesado'}`}
       >
-        {rowData.activo ? 'Activo' : 'Inactivo'}
+        {rowData.estado ? 'Activo' : 'Inactivo'}
       </span>
     );
   };
 
   const statusOrderBody = (rowData) => {
     // console.log('row => ', rowData.estado);
+   
     const data = rowData.estado === true ? '#8ff484' : '#f4d484';
     return (
       <span
@@ -489,6 +507,8 @@ const RegistroDocumentos = () => {
     );
   };
 
+  
+
   const obtenerId = (e) => {
     setSelectedDocuments(e.value);
     let data;
@@ -496,7 +516,7 @@ const RegistroDocumentos = () => {
     setDeleteId(data);
   };
 
-  const fetchDelete = async (method = '', data) => {
+/*   const fetchDelete = async (method = '', data) => {
     const response = await fetch(`${mainUrl}/documentosall`, {
       method,
       headers: {
@@ -508,7 +528,7 @@ const RegistroDocumentos = () => {
     const result = await response.json();
 
     return result;
-  };
+  }; */
 
   const deleteAll = () => {
     fetchDelete('DELETE', deleteId)
@@ -586,7 +606,7 @@ const RegistroDocumentos = () => {
         <h5>Detalle de Documentos para: {data.nombre}</h5>
         <DataTable
           ref={dt}
-          value={data.documents}
+          value={data.registroDocumentos}
           selection={selectedDocuments}
           onSelectionChange={(e, index) => obtenerId(e, index)}
           dataKey='id'
@@ -771,18 +791,19 @@ const RegistroDocumentos = () => {
   };
   const eliminarDocumentos = () => {
     setIsCloseModal(false);
-    axios
-      .delete(`${mainUrl}/documentos/${product.id}`)
-      .then((res) => {
+    console.log(product.id)
+    fetchDelete(`regdoc/${product.id}`).then((res) => {
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
           detail: 'Documento eliminado',
           life: 3000,
         });
+        
         listarDatos();
       })
       .catch((error) => {
+        console.log(error)
         toast.current.show({
           severity: 'error',
           summary: 'Successful',

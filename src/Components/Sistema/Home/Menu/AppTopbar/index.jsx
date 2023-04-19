@@ -113,7 +113,7 @@ export default function AppTopbar({}) {
             label: 'RR.HH',
             items: [
               {
-                label: 'Ir a menu',
+                label: 'Solicitudes',
                 className: 'disabled',
                 command: () => {
                   handleClick();

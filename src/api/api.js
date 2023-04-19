@@ -3,6 +3,12 @@ import { getEnvVariables } from '../helpers';
 import { useNavigate } from 'react-router-dom';
 const { VITE_API_URL }  = import.meta.env;
 
+function handle401(status) {
+  if(status === 401 && window.location.pathname  !== "/") {
+    fetchUserLogout();
+  }
+} 
+
 const token = localStorage.getItem('token')
 
 const fetchGet = async (url = '', method = 'GET') => {
@@ -13,19 +19,40 @@ const fetchGet = async (url = '', method = 'GET') => {
     Authorization: `Bearer ${token}`,
     
   } });
+  handle401(response.status);
 
   const result = response.json();
   return result;
 };
 
 
+const firmarDoc = async (data) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${VITE_API_URL}/firmar_doc`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      
+    }, 
+    body: JSON.stringify(data),
+  });
+
+
+  return response
+  
+}
+
+
 const postUser = async (user) => {
-  console.log(user)
+
   const response = await fetch(`${VITE_API_URL}/usuario`, { method: 'POST', body: JSON.stringify(user), headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
       
   } });
+  handle401(response.status);
 
   const result = response.json();
   return result;
@@ -40,10 +67,12 @@ const fetchGetproject = async (id, method = 'GET') => {
     Authorization: `Bearer ${token}`,
     
   } });
-
+  handle401(response.status);
   const result = response.json();
   return result;
 }
+
+
 
 const fetchDelete = async (url = '', method = 'DELETE') => {
   const token = localStorage.getItem('token')
@@ -54,6 +83,7 @@ const fetchDelete = async (url = '', method = 'DELETE') => {
     
   }  });
 
+  handle401(response.status);
   const result = response.json();
   return result;
 };
@@ -71,6 +101,7 @@ const fetchPost = async (url = '', method = '', data) => {
     body: JSON.stringify(data),
   });
 
+  handle401(response.status);
   const result = response.json();
   return result;
 };
@@ -87,6 +118,8 @@ const fetchPut = async (url = '', method = '', data) => {
     },
     body: JSON.stringify(data),
   });
+
+  handle401(response.status);
 
   const result = await response.json();
 
@@ -106,10 +139,13 @@ const createFormData = async  (url = '', method = '', data) =>  {
         }
       });
         const jsonData = await response.json();
-        console.log(jsonData)
+
+        handle401(response.status);
+
         return jsonData;
     } catch (error) {
         console.error("CREATE FORMDATA ERROR ", error)
+        console.log(error)
     }
   }
 
@@ -125,8 +161,10 @@ const fetchLogin = async (url = '', method = '', data)=> {
     body: JSON.stringify(data),
   })
   .catch(error => console.error(error));
+  handle401(res.status);
+
      const result = await res.json();
- 
+
      return result;
 
 }
@@ -143,9 +181,10 @@ const fetchSearchUser = async (url = '', method = '', id)=> {
       
     }
   })
-   
+     handle401(res.status);
+
      const result = await res.json();
- 
+
      return result;
 
 }
@@ -164,4 +203,4 @@ const fetchUserLogout=  ()=> {
 
 
 
-export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject, postUser };
+export { fetchGet, fetchDelete, fetchPost, fetchPut, fetchLogin, fetchSearchUser, fetchUserLogout, createFormData, fetchGetproject, postUser,firmarDoc };
