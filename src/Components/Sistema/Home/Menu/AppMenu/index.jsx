@@ -56,6 +56,7 @@ export default  function  AppMenu() {
             navigate('/Dashboard');
           },
         },
+
         {
           label: 'Mis Datos',
           icon: 'pi pi-fw pi-chart-bar',
@@ -229,6 +230,8 @@ export default  function  AppMenu() {
         if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
           return
         }
+
+       
           return (
             <div key={index}>
               <li>
@@ -238,6 +241,9 @@ export default  function  AppMenu() {
               <ul>
                 {item.items
                   ? item.items.map((item2, index2) => {
+                    if(dataUser.rol == 'ADMIN_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos'){
+                      return
+                    }
                       return (
                         <li
                           key={index2}

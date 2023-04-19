@@ -46,6 +46,7 @@ const RegistroRendicionGastos = () => {
 
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
   const [edit] = useState(rendicionGastos);
+  console.log(edit,'edirt')
   const validation = Object.keys(edit).length === 0;
 
   const toast = useRef(null);
@@ -260,12 +261,18 @@ const RegistroRendicionGastos = () => {
       fechaFin: '',
     },
     onSubmit: (values) => {
+
+      console.log(data)
+
+      /* fetchGet(`regProyectos/${}`) */
+
+
       values.nombreApellido = data.nombre;
       values.lugarComision = data.lugarComision;
       values.objetoComision = data.objetoComision;
       values.fechaInicio = data.fechaInicio;
       values.fechaFin = data.fechaFin;
-      values.proyecto = selectedProyecto.id;
+      values.proyecto = data.nombreProyecto;
       values.recibido = Number(countRecibido).toFixed(2)
     
      /*  console.log(values) */
@@ -339,7 +346,7 @@ const RegistroRendicionGastos = () => {
       async function project() {
           const project = await fetchGetproject(selectedCountry1.nombreProyecto)
           setProyecto(project)
-          console.log(project)
+          
          
         }
         project()
@@ -393,7 +400,7 @@ const RegistroRendicionGastos = () => {
                   value={
                     !validaciones
                       ? data?.numeroSolicitud
-                      : ''
+                      : edit?.numeroRendicion
                   }
                   disabled
                 />
@@ -455,8 +462,11 @@ const RegistroRendicionGastos = () => {
                   value={
                     !validaciones
                       ? data?.lugarComision
+                      : !validation
+                      ? edit.lugarComision
                       : ''
                   }
+
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -478,9 +488,12 @@ const RegistroRendicionGastos = () => {
                   type='text'
                   value={
                     !validaciones
-                      ? data?.objetoComision
+                    ? data?.objetoComision
+                      : !validation
+                      ? edit.objetoComision
                       : ''
                   }
+
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -500,7 +513,7 @@ const RegistroRendicionGastos = () => {
                   value={
                     !validaciones
                       ? new Date(data?.fechaInicio)
-                      : ''
+                      : new Date(edit?.fechaInicio)
                   }
             
                   onChange={formik.handleChange}
@@ -523,7 +536,7 @@ const RegistroRendicionGastos = () => {
                   value={
                     !validaciones
                       ? new Date(data?.fechaFin)
-                      : ''
+                      : new Date(edit?.fechaFin)
                   }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

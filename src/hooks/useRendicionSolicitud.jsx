@@ -31,6 +31,7 @@ const useRendicionSolicitud = () => {
   };
 
   const editData = (data) => {
+    console.log(data)
     dispatch(startEditRendicion());
     dispatch(oneIdRendicion(data));
     navigate('/RegistroRendicionGastos');
