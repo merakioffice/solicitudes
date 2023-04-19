@@ -23,8 +23,8 @@ const ModalRendicionGastos = ({
   const [filteredProyecto, setFilteredProyecto] = useState(null);
 
   const listData = () => {
-    fetchGet(`regdoc`).then(({ registroDocumento }) => {
-      const data = registroDocumento.map((element, item) => {
+    fetchGet(`tipo-documento`).then(({ result }) => {
+      const data = result.map((element, item) => {
         return element;
       });
 
@@ -39,7 +39,7 @@ const ModalRendicionGastos = ({
         _filteredCountries = [...proyectos];
       } else {
         _filteredCountries = proyectos.filter((country) => {
-          return country.tipoDocumento
+          return country.nombre
             .toLowerCase()
             .startsWith(event.query.toLowerCase());
         });
@@ -173,14 +173,14 @@ const ModalRendicionGastos = ({
               value={selectedProyecto}
               suggestions={filteredProyecto}
               completeMethod={searchProyecto}
-              field='tipoDocumento'
+              field='nombre'
               name='tipo'
               id='tipo'
               onChange={(e) => {
                 setSelectedProyecto(e.value);
               }}
               dropdown
-              aria-label='tipoDocumento'
+              aria-label='nombre'
               dropdownAriaLabel='Seleccionar Proyecto'
             />
             {/* <InputText

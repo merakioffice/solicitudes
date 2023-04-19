@@ -6,6 +6,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { LeftToolBarTemplate } from '../../../Molecula';
 import useRendicionSolicitud from '../../../../hooks/useRendicionSolicitud';
+import { fetchGet } from '../../../../api';
 
 const RendicionGastos = () => {
   const [
@@ -18,7 +19,15 @@ const RendicionGastos = () => {
     tableButtonDelete,
   ] = useRendicionSolicitud();
 
+  console.log(addData)
+
   useEffect(() => {
+
+    fetchGet('rendGastos').then((res)  => {
+
+    } )
+
+
     listData();
   }, []);
 

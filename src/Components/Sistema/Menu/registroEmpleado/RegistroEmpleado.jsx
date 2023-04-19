@@ -17,6 +17,7 @@ import { createFormData, fetchGet, fetchDelete  } from "../../../../api/api";
 import { FileUpload } from 'primereact/fileupload';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
+
 const usuario = [
   {
     id: 1,
