@@ -1,3 +1,5 @@
+$color-buttom: #0069c1;
+
 .containerLogin {
   width: 100vw;
   height: 100vh;
@@ -14,14 +16,17 @@
 }
 .imgLogin {
   .imgscreem {
-    width: 50vw;
-    height: 50vh;
+    background-size: 0 auto !important;
   }
 }
 .field {
   font-size: 1.5rem;
   height: 10vh;
   width: 35vw;
+}
+.text-center {
+  margin-top: -100px !important;
+  margin-bottom: 50px !important;
 }
 
 .text-center {
@@ -35,27 +40,27 @@
 
 .p-button {
   font-size: 16px !important;
-  background-color: #0069c1 !important;
-  border: 1px solid #0069c1;
+  background-color: $color-buttom !important;
+  border: 1px solid $color-buttom !important;
+  margin-top: 25px !important;
 
   &:hover {
-    background-color: #0069c1 !important;
+    background-color: $color-buttom !important;
   }
 }
 
 @media (max-width: 700px) {
-  .imgLogin .imgscreem {
-    visibility: hidden;
+  .imgscreem {
+    visibility: hidden !important;
     width: 0vw !important;
   }
   .formLogin {
     width: 100vw !important;
     margin-right: 10vw !important;
+    margin-left: 10vw !important;
   }
   .field {
+    margin-bottom: 10px !important;
     width: 80vw;
-  }
-  .text-center {
-    margin-top: -100px !important;
   }
 }

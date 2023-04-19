@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // PrimeReact
-import sd from "./logo.jpeg";
+import sd from "./descocentro.jpg";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
@@ -47,6 +47,7 @@ export default function Login() {
               Introducir correo electronico
             </label>
             <InputText
+              placeholder="Email"
               className="inputs"
               value={login.email}
               type="email"
@@ -56,6 +57,7 @@ export default function Login() {
           <div className="field">
             <label htmlFor="Contraseña">Introducir contraseña</label>
             <Password
+              placeholder="Password"
               className="inputs"
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
