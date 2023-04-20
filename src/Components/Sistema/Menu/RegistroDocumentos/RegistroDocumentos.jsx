@@ -112,7 +112,7 @@ const deleteData = async(id) => {
           mode='basic'
           maxFileSize={1000000}
           label='Import'
-          chooseLabel='Importar Referencia'
+          chooseLabel='Importar Documento'
           className='mr-2 inline-block'
         />
       </React.Fragment>
