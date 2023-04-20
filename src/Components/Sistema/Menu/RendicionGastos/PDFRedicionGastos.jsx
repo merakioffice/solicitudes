@@ -28,15 +28,22 @@ const PDFRendicionGastos = () => {
 
       const data = await fetchGet(`rendGastosProduct/${rendicionGastos?.id}`)
 
+
+
    
 
-    const newData =  data?.rendicionGastosProduct?.map((arr) => {
+    const newData =  data?.rendicionGastosProduct?.map(async (arr) => {
+
+     const tipo =  await fetchGet(`tipo-documento/${arr.tipo}`)
+
         const array = {
+          
           id: arr.id,
-          tipo: arr.tipo,
+          tipo: tipo.result.nombre,
           fecha: arr.fecha,
           numero: arr.numero,
           descripcion: arr.descripcion,
+          actividad: arr.partidaPresupuestal,
           importe: arr.importe
         }
 

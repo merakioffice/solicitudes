@@ -27,6 +27,8 @@ const RegistroRendicionGastos = () => {
 
   const [dataUser, setDataUser] = useState();
 
+  
+
   useEffect( () =>  {
     async function doIt(){
 
@@ -193,9 +195,27 @@ const RegistroRendicionGastos = () => {
     );
   };
 
-  const listaSolicitudDinero = () => {
-    fetchGet(`rendGastos/${uuid}`).then(({ rendGastosProducts, total }) => {
-      setDataRegistro(rendGastosProducts);
+  const listaSolicitudDinero = async() => {
+    fetchGet(`rendGastos/${uuid}`).then( async ({ rendGastosProducts, total }) => {
+
+     const promise = rendGastosProducts.productos.map(async (product) => {
+
+      const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
+
+        const result = {...product, tipo: tipo.result.nombre}
+
+        return result;
+
+      })
+
+        Promise.all(promise).then((data) => {
+        rendGastosProducts.productos = data;
+        console.log(data, 'data')
+        setDataRegistro(rendGastosProducts);
+      })
+
+     
+      console.log(rendGastosProducts,'ijdfpodspkmfdspmlk')
       setCountRecibido(rendGastosProducts.recibido);
       setCountRendido(total);
     });
