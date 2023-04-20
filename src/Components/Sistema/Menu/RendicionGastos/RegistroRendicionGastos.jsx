@@ -27,6 +27,8 @@ const RegistroRendicionGastos = () => {
 
   const [dataUser, setDataUser] = useState();
 
+  
+
   useEffect( () =>  {
     async function doIt(){
 
@@ -46,7 +48,36 @@ const RegistroRendicionGastos = () => {
 
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
   const [edit] = useState(rendicionGastos);
-  console.log(edit,'edirt')
+
+  const [editProyect, setEditProyect] = useState();
+
+ 
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      if(edit?.proyecto){
+      const proyecto = await fetchGet(`regProyecto/${edit.proyecto}`);
+    
+           
+          setEditProyect(proyecto.registroProyecto)
+      
+
+      }
+
+
+
+      
+   
+
+    
+    }
+
+    doIt();
+
+  }, [])
+
+
   const validation = Object.keys(edit).length === 0;
 
   const toast = useRef(null);
@@ -116,6 +147,27 @@ const RegistroRendicionGastos = () => {
     setView(!view);
   };
 
+
+  useEffect( () => {
+
+  
+    
+/*       async function project() {
+          const project = await fetchGetproject(selectedCountry1.nombreProyecto)
+          setProyecto(project)
+          
+         
+        }*/
+
+       const obj = {registroProyecto: selectedProyecto}
+        setProyecto(obj)
+
+        console.log(obj)
+ 
+
+  }, [selectedProyecto]);
+
+
   const deleteData = (data) => {
     fetchDelete(`rendGastosProducts/${data.id}`).then(() => {
       listaSolicitudDinero();
@@ -143,9 +195,27 @@ const RegistroRendicionGastos = () => {
     );
   };
 
-  const listaSolicitudDinero = () => {
-    fetchGet(`rendGastos/${uuid}`).then(({ rendGastosProducts, total }) => {
-      setDataRegistro(rendGastosProducts);
+  const listaSolicitudDinero = async() => {
+    fetchGet(`rendGastos/${uuid}`).then( async ({ rendGastosProducts, total }) => {
+
+     const promise = rendGastosProducts.productos.map(async (product) => {
+
+      const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
+
+        const result = {...product, tipo: tipo.result.nombre}
+
+        return result;
+
+      })
+
+        Promise.all(promise).then((data) => {
+        rendGastosProducts.productos = data;
+        console.log(data, 'data')
+        setDataRegistro(rendGastosProducts);
+      })
+
+     
+      console.log(rendGastosProducts,'ijdfpodspkmfdspmlk')
       setCountRecibido(rendGastosProducts.recibido);
       setCountRendido(total);
     });
@@ -336,8 +406,20 @@ const RegistroRendicionGastos = () => {
     const suma1 = Number(countRecibido);
     const suma2 = Number(countRendido);
     const resultado = suma1 + suma2;
-    setCountSaldo(resultado);
+
+
+
+   setCountSaldo(resultado);
+   
   }, []);
+
+
+  useEffect(() => {
+
+    console.log(countSaldo)
+      
+ /*    setCountSaldo(countSaldo); */
+   }, [countSaldo])
 
   useEffect( () => {
 
@@ -414,7 +496,8 @@ const RegistroRendicionGastos = () => {
          /*          value={selectedProyecto} */
 
                  /*  vaue={proyecto ? proyecto?.registroProyecto?.nombreAbreviado: selectedProyecto } */
-                   value={proyecto?.registroProyecto?.nombreAbreviado} 
+                 value={proyecto?.registroProyecto?.nombreAbreviado ? proyecto?.registroProyecto?.nombreAbreviado : editProyect?.nombreAbreviado }
+                  
                   suggestions={filteredProyecto}
                   completeMethod={searchProyecto}
                   field='nombreAbreviado'
@@ -425,7 +508,7 @@ const RegistroRendicionGastos = () => {
                   }}
                   dropdown
                   aria-label='nombreAbreviado'
-                  dropdownAriaLabel='Seleccionar Proyecto'
+                  dropdownAriaLabel='Seleccionar Proyect'
                   disabled={boolCreate}
                 />
               </div>
@@ -588,7 +671,7 @@ const RegistroRendicionGastos = () => {
                   name='saldo'
                   type='text'
                   disabled
-                  value={countSaldo.toFixed(2)}
+                  value={countSaldo ? countSaldo?.toFixed(2) :    (Number(countRecibido)+ Number(countRendido)).toFixed(2)}
                   style={{ marginBottom: '5px' }}
                 />
               </div>

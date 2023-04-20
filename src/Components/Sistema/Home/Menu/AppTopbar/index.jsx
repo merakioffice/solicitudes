@@ -135,7 +135,7 @@ export default function AppTopbar({}) {
             label: 'Solicitud rendiciones',
             items: [
               {
-                label: 'Página principal',
+                label: 'RR.HH',
                 command: () => {
                   handleClickMain();
                 },
