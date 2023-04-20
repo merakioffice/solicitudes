@@ -128,7 +128,7 @@ const RegistroProyecto = () => {
         formData.append('file', File);
   
         await createFormData("regProyectoAddAll", 'POST' , formData);  
-
+        listData();
         toast.current.show({
           severity: 'success',
           summary: 'Registro lugar comisión',

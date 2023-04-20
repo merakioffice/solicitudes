@@ -12,37 +12,28 @@ import { FileUpload } from 'primereact/fileupload';
 import {fetchGet} from '../../../../api/api'
 const RegistroDocumentos = () => {
   const toast = useRef(null);
-
-// const datos = [
-//   {
-//     id: 1,
-//     codigo: 654332,
-//     nombre: 'Mateo',
-//   },
-//   {
-//     id: 2,
-//     codigo: 234592,
-//     nombre: 'Enrique',
-//   },
-//   {
-//     id: 3,
-//     codigo: 536278,
-//     nombre: 'Juan',
-//   },
-// ];
 const [addData, setAddData] = useState([]);
-useEffect( () =>  {
-  async function doIt(){
+const [totalRecords, setTotalRecords] = useState(0);
+const [loading, setLoading] = useState(false);
 
-    const response =  await fetchGet('tipo-documento')
-
-    setAddData(response.result)
-
+async function listData(filters = {page: 0, rows: 10}) {
+  const {page, rows} = filters;
+  setLoading(true);
   
-  }
+  fetchGet(`tipo-documento?page=${page + 1}&pageSize=${rows}`).then(( { registroTipoDocumento, count } ) => {
+    setTotalRecords(count);
+    const data = registroTipoDocumento.map((element, item) => {
+      element.index = item + 1;
+      return element;
+    });
 
-  doIt();
+    setAddData(data);
+    setLoading(false);
+  });
+}
 
+useEffect( () =>  {
+  listData();
 }, [])
 
 const deleteData = async(id) => {
@@ -112,7 +103,7 @@ const deleteData = async(id) => {
           mode='basic'
           maxFileSize={1000000}
           label='Import'
-          chooseLabel='Importar Referencia'
+          chooseLabel='Importar Tipos de proyecto'
           className='mr-2 inline-block'
         />
       </React.Fragment>
@@ -140,7 +131,7 @@ const deleteData = async(id) => {
             detail: 'Tipo de documento subido',
             life: 3000,
           });
-
+          listData();
           resolve(res);
          
           return res;
@@ -163,7 +154,15 @@ const deleteData = async(id) => {
 
             right={RightToolBarTemplate}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData} 
+                          responsiveLayout='scroll'
+                          paginator
+                          lazy
+                          rows={10} 
+                          totalRecords={totalRecords}
+                          onPage={listData}
+                          loading={loading}
+          >
             <Column field='id' header='Id'>
               {addData.map((item, index) => {
                 {
