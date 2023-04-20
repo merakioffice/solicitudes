@@ -41,8 +41,8 @@ export default function Login() {
       </div>
       <div className={`formLogin`}>
         <form onSubmit={handleSubmit} className="p-fluid">
-          <h1 className="text-center">Bienvenidos</h1>
-          <div className="field">
+          <h1 className="text-center welcome">Bienvenidos</h1>
+          <div className="field fields">
             <label htmlFor="Correo electronico">
               Introducir correo electronico
             </label>
@@ -54,7 +54,7 @@ export default function Login() {
               onChange={(e) => setLogin({ ...login, email: e.target.value })}
             />
           </div>
-          <div className="field">
+          <div className="field fields">
             <label htmlFor="Contraseña">Introducir contraseña</label>
             <Password
               placeholder="Password"
@@ -64,7 +64,11 @@ export default function Login() {
               feedback={false}
             />
           </div>
-          <Button type="submit" label={"Ingresar"} className="inputs" />
+          <Button
+            type="submit"
+            label={"Ingresar"}
+            className="inputs btn-login"
+          />
         </form>
       </div>
     </div>
