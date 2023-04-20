@@ -79,7 +79,7 @@ export default function Login() {
               feedback={false}
             />
           </div>
-          <Button type="submit" label={"Ingresar"} className="inputs" />
+          <Button type="submit" label={"Ingresar"} className="inputs login-button" />
         </form>
       </div>
     </div>
