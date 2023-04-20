@@ -3,12 +3,74 @@ import { Button } from 'primereact/button';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { useSelector } from 'react-redux';
+import { fetchGet } from '../../../../api';
+import { useEffect, useState } from 'react';
+
+
 
 const PDFRendicionGastos = () => {
+  const [data3, setData] = useState();
+  const [rendido, setRendido] = useState();
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
+
+  let proyecto;
+
+  fetchGet(`regProyecto/${rendicionGastos.proyecto}`).then((res) => {
+    proyecto = res.registroProyecto.nombreAbreviado
+     
+  })
+  useEffect(() => {
+
+
+   
+
+    async function doIt(){
+
+      const data = await fetchGet(`rendGastosProduct/${rendicionGastos?.id}`)
+
+   
+
+    const newData =  data?.rendicionGastosProduct?.map((arr) => {
+        const array = {
+          id: arr.id,
+          tipo: arr.tipo,
+          fecha: arr.fecha,
+          numero: arr.numero,
+          descripcion: arr.descripcion,
+          importe: arr.importe
+        }
+
+        return array
+      })
+
+
+
+
+      Promise.all(newData).then((data) => {
+        setData(data);
+      });
+
+      const totalImporte = newData.reduce((total, item) => total + Number(item.importe), 0);
+      setRendido(Number(totalImporte).toFixed(2))
+      console.log(totalImporte,'pidpjd')
+    
+    }
+
+    doIt();
+
+    console.log(data3, 'okjcnpkmcpn')
+
+  }, [rendicionGastos])
+
+  
+
+  
   const descarga = () => {
+
     const data = [];
-    rendicionGastos?.rendicionGastosProducts.map((item, index) => {
+   
+    const arr = [rendicionGastos]
+    arr.map((item, index) => {
       const data1 = [
         `${index + 1}`,
         `${item.tipo}`,
@@ -22,7 +84,7 @@ const PDFRendicionGastos = () => {
       data.push(data1);
     });
 
-    const suma = rendicionGastos.rendicionGastosProducts
+    const suma = arr
       .map((item) => {
         let variable = Number(item.importe);
         return variable;
@@ -49,7 +111,7 @@ const PDFRendicionGastos = () => {
     doc.text(`Nombres y Apellidos: ${rendicionGastos.nombreApellido}`, 25, 40);
 
     doc.rect(20, 42, 169, 6);
-    doc.text(`Proyecto: ${rendicionGastos.proyecto}`, 25, 46);
+    doc.text(`Proyecto: ${proyecto}`, 25, 46);
 
     doc.rect(20, 47.95, 169, 6);
     doc.text(`Lugar de comisión: ${rendicionGastos.lugarComision} `, 25, 52);
@@ -72,9 +134,9 @@ const PDFRendicionGastos = () => {
     doc.rect(20, 66, 169, 11);
     doc.text('Resumen de la rendición de cuentas', 25, 70);
     doc.text(`RECIBIDO: $/ ${rendicionGastos.recibido}`, 25, 75);
-    doc.text(`RENDIDO: $/ ${suma}`, 90, 75);
+    doc.text(`RENDIDO: $/ ${rendido}`, 90, 75);
     doc.text(
-      `SALDO: $/ ${Number(rendicionGastos.recibido) + Number(suma)}`,
+      `SALDO: $/ ${(Number(rendicionGastos.recibido) + Number(rendido)).toFixed(2)}`,
       150,
       75
     );
@@ -123,7 +185,7 @@ const PDFRendicionGastos = () => {
         5: { halign: 'center', cellWidth: 25.1 },
         6: { halign: 'center', cellWidth: 25.1 },
       },
-      body: data,
+      body: data3,
       startY: 102,
       margin: 20,
     });

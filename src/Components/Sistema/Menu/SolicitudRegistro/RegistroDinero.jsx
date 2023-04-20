@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import ModalCreacionProducto from './modal/ModalCreacionProducto';
 import { fetchDelete, fetchGet, fetchPost, fetchPut } from '../../../../api';
 
+
 import PDFSolicitud from './PDFSolicitud';
 
 function RegistroDinero() {
@@ -23,6 +24,8 @@ function RegistroDinero() {
     (state) => state.solicitudDinero
   );
   const [edit, setEdit] = useState(solicitud);
+  
+  
 
   const validaciones = Object.keys(edit).length === 0;
   const toast = useRef(null);
@@ -35,9 +38,26 @@ function RegistroDinero() {
 
   const [countries, setCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(null);
+  const [project, setProject] = useState('');
+
+
+
+  useEffect(() => {
+
+    fetchGet(`regProyecto/${edit?.nombreProyecto}`).then((res) => {
+      
+      setProject(res.registroProyecto.nombreAbreviado)
+      console.log(res.registroProyecto.nombreAbreviado)
+       
+    })
+   
+    
+  })
+ 
 
   const [selectedCountry1, setSelectedCountry1] = useState(
-    !validaciones ? edit.nombreProyecto : null
+  
+    !validaciones ? project : edit?.nombreProyecto 
   );
 
   const [dataLista, setDataLista] = useState({
@@ -172,7 +192,7 @@ function RegistroDinero() {
 
   const formik = useFormik({
     initialValues: {
-      fechaFin: !validaciones ? edit.fechaFin : '',
+      fechaFin: !validaciones ? new Date(edit.fechaFin)  : '',
       fechaInicio: !validaciones ? edit.fechaInicio : '',
       fechaRegistro: !validaciones ? edit.fechaRegistro : '',
       itinerarioTransporte: !validaciones ? edit.itinerarioTransporte : '',
@@ -253,7 +273,7 @@ function RegistroDinero() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  value={formik.values.fechaRegistro}
+                  value={new Date(formik.values.fechaRegistro)}
                   showIcon
                 />
                 {formik.touched.fechaRegistro &&
@@ -292,7 +312,7 @@ function RegistroDinero() {
                 </label>
                 <AutoComplete
                   id='nombreProyecto'
-                  value={selectedCountry1}
+                  value={project}
                   suggestions={filteredCountries}
                   completeMethod={searchProject}
                   field='nombreAbreviado'
@@ -390,7 +410,7 @@ function RegistroDinero() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  value={formik.values.fechaInicio}
+                  value={new Date(formik.values.fechaInicio)}
                   showIcon
                 />
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
@@ -407,7 +427,7 @@ function RegistroDinero() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  value={formik.values.fechaFin}
+                  value={new Date(formik.values.fechaFin)}
                   showIcon
                 />
                 {formik.touched.fechaFin && formik.errors.fechaFin && (

@@ -46,7 +46,36 @@ const RegistroRendicionGastos = () => {
 
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
   const [edit] = useState(rendicionGastos);
-  console.log(edit,'edirt')
+
+  const [editProyect, setEditProyect] = useState();
+
+ 
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      if(edit?.proyecto){
+      const proyecto = await fetchGet(`regProyecto/${edit.proyecto}`);
+    
+           
+          setEditProyect(proyecto.registroProyecto)
+      
+
+      }
+
+
+
+      
+   
+
+    
+    }
+
+    doIt();
+
+  }, [])
+
+
   const validation = Object.keys(edit).length === 0;
 
   const toast = useRef(null);
@@ -115,6 +144,27 @@ const RegistroRendicionGastos = () => {
   const handleClickProduct = () => {
     setView(!view);
   };
+
+
+  useEffect( () => {
+
+  
+    
+/*       async function project() {
+          const project = await fetchGetproject(selectedCountry1.nombreProyecto)
+          setProyecto(project)
+          
+         
+        }*/
+
+       const obj = {registroProyecto: selectedProyecto}
+        setProyecto(obj)
+
+        console.log(obj)
+ 
+
+  }, [selectedProyecto]);
+
 
   const deleteData = (data) => {
     fetchDelete(`rendGastosProducts/${data.id}`).then(() => {
@@ -336,8 +386,20 @@ const RegistroRendicionGastos = () => {
     const suma1 = Number(countRecibido);
     const suma2 = Number(countRendido);
     const resultado = suma1 + suma2;
-    setCountSaldo(resultado);
+
+
+
+   setCountSaldo(resultado);
+   
   }, []);
+
+
+  useEffect(() => {
+
+    console.log(countSaldo)
+      
+ /*    setCountSaldo(countSaldo); */
+   }, [countSaldo])
 
   useEffect( () => {
 
@@ -414,7 +476,8 @@ const RegistroRendicionGastos = () => {
          /*          value={selectedProyecto} */
 
                  /*  vaue={proyecto ? proyecto?.registroProyecto?.nombreAbreviado: selectedProyecto } */
-                   value={proyecto?.registroProyecto?.nombreAbreviado} 
+                 value={proyecto?.registroProyecto?.nombreAbreviado ? proyecto?.registroProyecto?.nombreAbreviado : editProyect?.nombreAbreviado }
+                  
                   suggestions={filteredProyecto}
                   completeMethod={searchProyecto}
                   field='nombreAbreviado'
@@ -425,7 +488,7 @@ const RegistroRendicionGastos = () => {
                   }}
                   dropdown
                   aria-label='nombreAbreviado'
-                  dropdownAriaLabel='Seleccionar Proyecto'
+                  dropdownAriaLabel='Seleccionar Proyect'
                   disabled={boolCreate}
                 />
               </div>
@@ -588,7 +651,7 @@ const RegistroRendicionGastos = () => {
                   name='saldo'
                   type='text'
                   disabled
-                  value={countSaldo.toFixed(2)}
+                  value={countSaldo ? countSaldo?.toFixed(2) :    (Number(countRecibido)+ Number(countRendido)).toFixed(2)}
                   style={{ marginBottom: '5px' }}
                 />
               </div>

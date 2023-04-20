@@ -17,13 +17,20 @@ const useRendicionSolicitud = () => {
 
   const listData = () => {
     fetchGet('rendGastos').then(({ rendicionGastos }) => {
-      const data = rendicionGastos.map((element, item) => {
-        element.index = item + 1;
-        return element;
+      const promises = rendicionGastos.map((element, item) => {
+        return fetchGet(`regProyecto/${element.proyecto}`).then((res) => {
+          element.proyectoName = res.registroProyecto.nombreAbreviado;
+          element.index = item + 1;
+          return element;
+        });
       });
-      setAddData(data);
+  
+      Promise.all(promises).then((data) => {
+        setAddData(data);
+      });
     });
   };
+  
 
   const openSolicitud = () => {
     console.log('click');
