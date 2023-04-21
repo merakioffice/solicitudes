@@ -6,13 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { notEditSolicitud } from '../../../../../store/slices/solicitud/solicitudStile';
 import { notEditRendicion } from '../../../../../store/slices/rendicionGastos';
 import { getUser } from "../../../../../utils/getUser";
-export default  function  AppMenu() {
+export default  function  AppMenu({isOpen}) {
   const navigate = useNavigate();
 
 
   const [dataUser, setDataUser] = useState({});
   const [dataUserRol, setDataUserRol] = useState({});
   useEffect( () => {
+    console.log(isOpen)
 
     async function doIt(){
 
@@ -33,10 +34,6 @@ export default  function  AppMenu() {
 
 
   }, [])
-
-
-
-
 
   const { estado } = useSelector((state) => {
     return state.menuRRHH;

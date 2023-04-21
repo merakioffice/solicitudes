@@ -13,8 +13,11 @@ export const MenuSlice = createSlice({
     },
     stateMenuMain: (state) => {
       state.estado = false;
+    },   
+     stateMenuOpen: (state) => {
+      state.estado = false;
     },
   },
 });
 
-export const { stateMenu, stateMenuMain } = MenuSlice.actions;
+export const { stateMenu, stateMenuMain, stateMenuOpen } = MenuSlice.actions;

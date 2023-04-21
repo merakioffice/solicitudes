@@ -30,20 +30,31 @@ export default function Home({isLogged}) {
 
   
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
+  const [openMenuActive, setOpenMenuActive] = useState(false);
 
   return (
     <div>
-      <AppTopbar />
-      <div className='layout-sidebar'>
+      <AppTopbar isOpen={openMenuActive} setMenuIsOpen={setOpenMenuActive}/>
+    { openMenuActive && <div className='layout-sidebar'>
         <AppMenu />
-      </div>
+      </div>}
 
-      <div className='layout-main-container'>
+      { !openMenuActive && <div className='layout-sidebar layout-expand'>
+        <AppMenu />
+      </div>}
+
+   { openMenuActive &&  <div className='layout-main-container'>
         <div className='layout-main'>
           <Outlet />
         </div>
         {/* <AppFooter /> */}
-      </div>
+      </div>}
+      { !openMenuActive &&  <div className='layout-main-container expand-menu'>
+        <div className='layout-main'>
+          <Outlet />
+        </div>
+        {/* <AppFooter /> */}
+      </div>}
       <CSSTransition
         classNames='layout-mask'
         timeout={{ enter: 200, exit: 200 }}

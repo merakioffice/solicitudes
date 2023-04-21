@@ -3,3 +3,21 @@
     justify-content: space-evenly;
     gap: 20px;
 }
+
+.layout-sidebar{
+    animation-duration: 3s !important;
+    width: 100vw;
+}
+
+.layout-expand{
+    animation-duration: 3s !important;
+    visibility: hidden;
+    width: -0vw !important;
+}
+
+.expand-menu{
+    animation-duration: 3s !important;
+    width: 120vw !important;
+    margin-left: -22vw !important;
+}
+
