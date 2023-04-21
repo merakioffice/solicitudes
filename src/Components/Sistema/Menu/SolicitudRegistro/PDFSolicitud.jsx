@@ -3,9 +3,18 @@ import jsPDF from 'jspdf';
 import { Button } from 'primereact/button';
 import { useSelector } from 'react-redux';
 import autoTable from 'jspdf-autotable';
+import { fetchGet } from '../../../../api';
 
 const PDFSolicitud = () => {
   const { solicitud } = useSelector((state) => state.solicitudDinero);
+
+  let proyecto;
+
+  fetchGet(`regProyecto/${solicitud.nombreProyecto}`).then((res) => {
+    proyecto = res.registroProyecto.nombreAbreviado
+     
+  })
+ 
 
   const descarga = () => {
     const data = [];
@@ -41,7 +50,7 @@ const PDFSolicitud = () => {
     doc.rect(20, 43, 169, 6);
     doc.text('Cargo: PERSONAL ADMINISTRATIVO', 25, 47);
     doc.rect(20, 49, 169, 6);
-    doc.text(`Proyecto: ${solicitud.nombreProyecto}`, 25, 53);
+    doc.text(`Proyecto: ${proyecto}`, 25, 53);
     doc.rect(20, 55, 169, 6);
     doc.text(`Lugar de comisión: ${solicitud.lugarComision}`, 25, 59);
     doc.rect(20, 61, 169, 6);

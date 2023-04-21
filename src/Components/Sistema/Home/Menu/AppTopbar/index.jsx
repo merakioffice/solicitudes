@@ -136,7 +136,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
             label: 'Solicitud rendiciones',
             items: [
               {
-                label: 'Página principal',
+                label: 'RR.HH',
                 command: () => {
                   handleClickMain();
                 },

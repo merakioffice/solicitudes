@@ -47,7 +47,7 @@ const RendicionGastos = () => {
           <DataTable value={addData} responsiveLayout='scroll'>
             <Column field='index' header='Id'></Column>
             <Column field='nombreApellido' header='Nombre'></Column>
-            <Column field='proyecto' header='Proyecto'></Column>
+            <Column field='proyectoName' header='Proyecto'></Column>
             <Column field='lugarComision' header='Lugar Comisión'></Column>
             <Column
               field='objetoComision'
