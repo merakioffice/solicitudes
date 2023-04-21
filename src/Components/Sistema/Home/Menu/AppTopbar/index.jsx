@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MegaMenu } from 'primereact/megamenu';
 import {  useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import {
 } from '../../../../../store/slices/solicitud/MenuRRHHSlice';
 import { getUser } from "../../../../../utils/getUser";
 import { useDispatch } from 'react-redux'
-export default function AppTopbar({}) {
+export default function AppTopbar({isOpen, setMenuIsOpen}) {
   const dispatch = useDispatch();
    const navigate = useNavigate();
   const { estado } = useSelector((state) => {
@@ -18,6 +18,7 @@ export default function AppTopbar({}) {
 
 
   const [dataUser, setDataUser] = useState();
+  const [menuState, setMenuState] = useState(false);
 
   useEffect( () =>  {
     async function doIt(){
@@ -147,24 +148,32 @@ export default function AppTopbar({}) {
     },
   ];
 
+  const handleMenu = ()=> (
+    setMenuIsOpen(!isOpen)
+  )
+
 
   return (
     <div className='layout-topbar '>
       <Link to='/Dashboard' className='layout-topbar-logo'>
         <span>Proyecto OTE</span>
       </Link>
-      <button
+      
+      <button 
+        onClick={handleMenu}
         type='button'
-        className='p-link  layout-menu-button layout-topbar-button'
+        className='p-link layout-menu-button layout-topbar-button'
       >
         <i className='pi pi-bars' />
       </button>
+      
       <button
         type='button'
         className='p-link layout-topbar-menu-button layout-topbar-button'
       >
         <i className='pi pi-ellipsis-v' />
       </button>
+      
       <ul className='layout-topbar-menu lg:flex origin-top'>
       <li className='mr-5'>
           {!estado ? (
