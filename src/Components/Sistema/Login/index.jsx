@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // PrimeReact
 import sd from "./descocentro.jpg";
+import logo from "./logo.png";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
 import { fetchLogin } from "../../../api/api";
-import Swal from 'sweetalert2'
-import { Button } from 'primereact/button';
-import { Image } from 'primereact/image';
-import './login.scss';
-
+import Swal from "sweetalert2";
+import { Button } from "primereact/button";
+import { Image } from "primereact/image";
+import "./login.scss";
 
 export default function Login() {
   const [login, setLogin] = useState({
@@ -21,67 +21,64 @@ export default function Login() {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await fetchLogin('login', 'POST', login);
+    const data = await fetchLogin("login", "POST", login);
 
-
-    if(data.token){
-      localStorage.setItem('token', data.token);
-      navigate(`/Dashboard`)
-     
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      navigate(`/Dashboard`);
     }
 
-
-  
-    if(data.message){
+    if (data.message) {
       Swal.fire({
-        title: 'Error!',
-        text: 'Correo o contraseña invalida',
-        icon: 'error',
-        confirmButtonText: 'Ok'
-      })
+        title: "Error!",
+        text: "Correo o contraseña invalida",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
-   
-  }
+  };
   return (
-    <div className={`containerLogin`}>
-      <div className={`imgLogin`}>
-        <div style={{}}>
-          <img
-            src={sd}
-            alt="Image Text"
-            className="imgscreem"
-            style={{ width: "50vw", height: "100vh" }}
-          />
+    <section id="login">
+      <div className={`containerLogin`}>
+        <div className={`formLogin`}>
+          <form onSubmit={handleSubmit} className="p-fluid">
+            <center>
+
+            <img src={logo} alt="hyper" class="mb-3 img-logo"/>
+            </center>
+            <div class="title text-900 text-3xl font-medium mb-5">FE Y ALEGRIA DEL PERU</div>
+            <div className="field">
+              <label htmlFor="Correo electronico">
+                Correo
+              </label>
+              <InputText
+                placeholder="Correo"
+                className="inputs"
+                value={login.email}
+                type="email"
+                onChange={(e) => setLogin({ ...login, email: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="Contraseña">Contraseña</label>
+              <Password
+                placeholder="Contraseña"
+                className="inputs"
+                value={login.password}
+                onChange={(e) =>
+                  setLogin({ ...login, password: e.target.value })
+                }
+                feedback={false}
+              />
+            </div>
+            <Button type="submit" label={"Ingreso"} className="inputs" />
+          </form>
+        </div>
+
+        <div className={`imgLogin`}>
+          <div class="img-login"></div>
         </div>
       </div>
-      <div className={`formLogin`}>
-        <form onSubmit={handleSubmit} className="p-fluid">
-          <h1 className="text-center">Bienvenidos</h1>
-          <div className="field">
-            <label htmlFor="Correo electronico">
-              Introducir correo electronico
-            </label>
-            <InputText
-              placeholder="Email"
-              className="inputs"
-              value={login.email}
-              type="email"
-              onChange={(e) => setLogin({ ...login, email: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="Contraseña">Introducir contraseña</label>
-            <Password
-              placeholder="Password"
-              className="inputs"
-              value={login.password}
-              onChange={(e) => setLogin({ ...login, password: e.target.value })}
-              feedback={false}
-            />
-          </div>
-          <Button type="submit" label={"Ingresar"} className="inputs login-button" />
-        </form>
-      </div>
-    </div>
+    </section>
   );
 }

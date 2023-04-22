@@ -181,7 +181,8 @@ const RegistroProyecto = () => {
             })}
             right={RightToolBarTemplate}
           ></Toolbar>
-          <DataTable value={addData} 
+          <DataTable 
+          value={addData} 
                 responsiveLayout='scroll'
                 paginator
                 lazy
@@ -190,7 +191,7 @@ const RegistroProyecto = () => {
                 onPage={listData}
                 loading={loading}
           >
-            <Column field='index' header='Id'></Column>
+            <Column field='id' header='Id'></Column>
             <Column field='codigo' header='Código Contable'></Column>
             <Column field='nombreAbreviado' header='Nombre Abreviado'></Column>
             <Column field='nombreCompleto' header='Nombre Completo'></Column>

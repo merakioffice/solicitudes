@@ -44,6 +44,8 @@ function RegistroDinero() {
 
   useEffect(() => {
 
+    if(edit)
+
     fetchGet(`regProyecto/${edit?.nombreProyecto}`).then((res) => {
       
       setProject(res.registroProyecto.nombreAbreviado)
@@ -52,7 +54,7 @@ function RegistroDinero() {
     })
    
     
-  })
+  }, [edit])
  
 
   const [selectedCountry1, setSelectedCountry1] = useState(
@@ -148,7 +150,7 @@ function RegistroDinero() {
 
   const editAdd = (values) => {
     fetchPut(`solicitud/${edit.id}`, 'PUT', values).then((response) => {
-      console.log(response);
+   
       if (response.personal) {
         toast.current.show({
           severity: 'success',
@@ -312,14 +314,20 @@ function RegistroDinero() {
                 </label>
                 <AutoComplete
                   id='nombreProyecto'
-                  value={project}
+                  value={project ? project : selectedCountry1}
                   suggestions={filteredCountries}
                   completeMethod={searchProject}
                   field='nombreAbreviado'
                   name='nombreProyecto'
                   onChange={(e) => {
                     setSelectedCountry1(e.value);
-                    if (selectedCountry1) {
+                    if (selectedCountry1 && !project) {
+                      setSelectedCountry1(e.value);
+                      dataLista.nombreProyecto = e.value.id;
+                    }
+
+                    if(!selectedCountry1 && project){
+                      setProject(e.value);
                       dataLista.nombreProyecto = e.value.id;
                     }
                   }}
