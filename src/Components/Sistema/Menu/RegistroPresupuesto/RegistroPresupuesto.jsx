@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -7,10 +7,31 @@ import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroProsupuesto from './Modal/ModalRegistroProsupuesto';
 import { FileUpload } from 'primereact/fileupload';
+import { fetchGet } from '../../../../api';
 
 const RegistroPresupuesto = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
+
+
+  useEffect( () =>  {
+    async function doIt(){
+
+      const {presupuestos} = await  fetchGet('registroPresupuesto')
+
+      if(presupuestos){
+         setAddData(presupuestos);
+      }
+     
+    
+     
+
+    
+    }
+
+    doIt();
+
+  }, [])
 
   const openModal = () => {
     setView(!view);
@@ -112,10 +133,10 @@ const RegistroPresupuesto = () => {
               })}
             </Column>
             <Column field='codigo' header='Código'></Column>
-            <Column field='proyecto' header='Proyecto / Resultado'></Column>
+            <Column field='nombreAbreviado' header='Nombre Abreviado'></Column>
             <Column
-              field='equivalentes'
-              header='Equivalentes técnicos'
+              field='nombreCompleto'
+              header='Nombre Completo'
             ></Column>
             <Column body={tableButtonEdit}></Column>
             <Column body={tableButtonDelete}></Column>
@@ -123,6 +144,15 @@ const RegistroPresupuesto = () => {
         </div>
       </div>
       <ModalRegistroProsupuesto setView={setView} view={view} />
+{/*       {view && (
+        <ModalRegistroProsupuesto
+          setView={setView}
+          view={view}
+          listData={listData}
+          edit={edit}
+          setEdit={setEdit}
+        />
+      )} */}
     </div>
   );
 };
