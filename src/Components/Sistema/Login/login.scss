@@ -28,16 +28,15 @@
   //background-color: lime;
 }
 .title{
-  margin-left: 40px;
-}
-
-.inputs{
-  width: 130% !important;
+  margin-left: 50px;
 }
 
 .img-logo{
-  height: 50px;
+  width: 250px;
+  height: 140px;
+  margin-right: 40px;
 }
+
 @media (max-width: 700px) {
   .imgscreem {
     visibility: hidden !important;
@@ -60,11 +59,10 @@
 
 
 .img-login{
-  background-image: url('./background.png');
-  clip-path: polygon(8% 0px, 100% 0%, 100% 100%, 0px 100%);
+  background-image: url('./login1.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
   height: 95%;
-  width: 90%;  
+  width: 100%;  
 }
