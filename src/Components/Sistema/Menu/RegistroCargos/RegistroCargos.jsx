@@ -16,13 +16,17 @@ const RegistroCargos = () => {
   const [addData, setAddData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
+     const toast = useRef(null);
 
-  const toast = useRef(null);
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
 
-  const listData = (filters = {page: 0, rows: 10}) => {
-    const {page, rows} = filters;
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
     setLoading(true);
-    
+
     fetchGet(`registrocargo?page=${page + 1}&pageSize=${rows}`).then(( { registroCargo, count } ) => {
       setTotalRecords(count);
 
@@ -171,7 +175,9 @@ const RegistroCargos = () => {
                       lazy
                       rows={10} 
                       totalRecords={totalRecords}
-                      onPage={listData}
+                      dataKey="id" 
+                      first={datatableState.first}
+                      onPage={(e) => changeDatatableState(e)}   
                       loading={loading}
               >
             <Column field='index' header='Id'></Column>

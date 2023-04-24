@@ -15,11 +15,15 @@ const RegistroDocumentos = () => {
 const [addData, setAddData] = useState([]);
 const [totalRecords, setTotalRecords] = useState(0);
 const [loading, setLoading] = useState(false);
+const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
 
-async function listData(filters = {page: 0, rows: 10}) {
-  const {page, rows} = filters;
-  setLoading(true);
-  
+useEffect(() => {
+listData(datatableState)
+}, [datatableState])
+
+const listData = (filters) => {
+const {page, rows} = filters || {page: 0, rows: 10, first: 10};
+setLoading(true);
   fetchGet(`tipo-documento?page=${page + 1}&pageSize=${rows}`).then(( { registroTipoDocumento, count } ) => {
     setTotalRecords(count);
     const data = registroTipoDocumento.map((element, item) => {
@@ -32,9 +36,6 @@ async function listData(filters = {page: 0, rows: 10}) {
   });
 }
 
-useEffect( () =>  {
-  listData();
-}, [])
 
 const deleteData = async(id) => {
 
@@ -160,7 +161,9 @@ const deleteData = async(id) => {
                           lazy
                           rows={10} 
                           totalRecords={totalRecords}
-                          onPage={listData}
+                          dataKey="id" 
+                          first={datatableState.first}
+                          onPage={(e) => changeDatatableState(e)}   
                           loading={loading}
           >
             <Column field='id' header='Id'>
