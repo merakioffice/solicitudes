@@ -129,11 +129,11 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
 
   const megaMenuMain = [
     {
-      label: 'RR.HH',
+      label: 'Solicitudes',
       items: [
         [
           {
-            label: 'Solicitud rendiciones',
+            label: 'Solicitud ',
             items: [
               {
                 label: 'RR.HH',
