@@ -19,9 +19,14 @@ const LugarComision = () => {
   const toast = useRef(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
 
-  const listData = (filters = {page: 0, rows: 10}) => {
-    const {page, rows} = filters;
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
+
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
     setLoading(true);
     
     fetchGet(`comision?page=${page + 1}&pageSize=${rows}`).then(( { comisiones, count } ) => {
@@ -148,9 +153,6 @@ const LugarComision = () => {
     else reader.readAsArrayBuffer(File);
   };
 
-  useEffect(() => {
-    listData();
-  }, []);
 
   return (
     <div className='grid crud-demo'>
@@ -172,10 +174,12 @@ const LugarComision = () => {
                   lazy
                   rows={10} 
                   totalRecords={totalRecords}
-                  onPage={listData}
                   loading={loading}
+                  dataKey="id" 
+                  first={datatableState.first}
+                  onPage={(e) => changeDatatableState(e)}
           >
-            <Column field='index' header='Id'></Column>
+            <Column field='id' header='Id'></Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='descripcion' header='Descripción'></Column>
             <Column body={tableButtonEdit}></Column>

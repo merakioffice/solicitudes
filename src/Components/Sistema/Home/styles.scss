@@ -16,16 +16,23 @@
 }
 
 .expand-menu{
-    width: 120vw !important;
-    margin-left: -22vw !important;
+    width: 120vw ;
+    margin-left: -22vw;
 }
 
-@media (min-width:1550px){
+@media (min-width:1500px){
     .expand-menu{
-        width: 120vw !important;
-        margin-left: -17vw !important;
+        max-width: 118vw !important;
+        margin-left: -19vw !important;
     }
-    
+        
+}
+
+@media (min-width:1800px){
+    .expand-menu{
+        max-width: 115vw !important;
+        margin-left: -15vw !important;
+    }
 }
 
 

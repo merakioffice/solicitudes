@@ -17,12 +17,17 @@ const RegistroPresupuestoFinanciero = () => {
   const [edit, setEdit] = useState(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const toast = useRef(null);
-  const listData = (filters = {page: 0, rows: 10}) => {
-    const {page, rows} = filters;
+
+   
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
+
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
     setLoading(true);
-    
     fetchGet(`registroPresupuestoFinanciero?page=${page + 1}&pageSize=${rows}`).then(( { presupuestos, count } ) => {
       setTotalRecords(count);
 
@@ -168,12 +173,14 @@ const RegistroPresupuestoFinanciero = () => {
             right={RightToolBarTemplate}
           ></Toolbar>
           <DataTable value={addData} 
+                dataKey="id" 
+                first={datatableState.first}
                 responsiveLayout='scroll'
                 paginator
                 lazy
                 rows={10} 
                 totalRecords={totalRecords}
-                onPage={listData}
+                onPage={(e) => changeDatatableState(e)}     
                 loading={loading}
           >
             <Column field='index' header='Id'></Column>

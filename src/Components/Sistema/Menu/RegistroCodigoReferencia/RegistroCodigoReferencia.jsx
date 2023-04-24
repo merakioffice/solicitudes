@@ -13,17 +13,18 @@ const RegistroCodigoReferencia = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
-  const listData = (filters = {page: 0, rows: 10}) => {
-    const {page, rows} = filters;
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
     setLoading(true);
     
     fetchGet(`/registroReferenciaAll?page=${page + 1}&pageSize=${rows}`).then(( { codigoReferencias, count } ) => {
       setTotalRecords(count);
 
       const data = codigoReferencias.map((element, item) => {
-        element.index = item + 1;
+        element.index = item;
         return element;
       });
 
@@ -31,6 +32,10 @@ const RegistroCodigoReferencia = () => {
       setLoading(false);
     });
   };
+
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
 
 
   const tableButtonEdit = (rowData) => {
@@ -134,7 +139,17 @@ const RegistroCodigoReferencia = () => {
             })}
             right={RightToolBarTemplate}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData}
+                          dataKey="id" 
+                          first={datatableState.first}
+                          responsiveLayout='scroll'
+                          paginator
+                          lazy
+                          rows={10} 
+                          totalRecords={totalRecords}
+                          onPage={(e) => changeDatatableState(e)}
+                          loading={loading}
+          >
             <Column field='id' header='Id'>
               {addData.map((item, index) => {
                 {

@@ -17,10 +17,18 @@ const RegistroProyecto = () => {
   const [edit, setEdit] = useState(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
+ 
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
+
 
   const toast = useRef(null);
-  const listData = (filters = {page: 0, rows: 10}) => {
-    const {page, rows} = filters;
+
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
+    setLoading(true);
     setLoading(true);
     
     fetchGet(`regProyecto?page=${page + 1}&pageSize=${rows}`).then(( { registroProyecto, count } ) => {
@@ -182,13 +190,15 @@ const RegistroProyecto = () => {
             right={RightToolBarTemplate}
           ></Toolbar>
           <DataTable 
-          value={addData} 
+                value={addData} 
+                dataKey="id" 
+                first={datatableState.first}
                 responsiveLayout='scroll'
                 paginator
                 lazy
                 rows={10} 
                 totalRecords={totalRecords}
-                onPage={listData}
+                onPage={(e) => changeDatatableState(e)}
                 loading={loading}
           >
             <Column field='id' header='Id'></Column>

@@ -12,7 +12,7 @@ RUN yarn
 # Copia el resto de los archivos del proyecto al contenedor
 COPY ["./", "./"]
 RUN rm -f ./yarn.lock
-
+RUN rm -f ./package-json.lock
 # Construye la aplicación React
 RUN npm run build
 
