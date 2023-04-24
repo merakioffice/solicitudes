@@ -30,7 +30,7 @@ export default function Home({isLogged}) {
 
   
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
-  const [openMenuActive, setOpenMenuActive] = useState(false);
+  const [openMenuActive, setOpenMenuActive] = useState(true);
 
   return (
     <div>
