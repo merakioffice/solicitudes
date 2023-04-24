@@ -7,20 +7,21 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { fetchGet, fetchPost } from '../../../../../api';
+import { fetchGet, fetchPost, fetchPut } from '../../../../../api';
 
 export default function ModalCreacionProducto({
   viewProduct,
   setViewProduct,
   listaSolicitudDinero,
   uuid,
+  edit
 }) {
   const toast = useRef(null);
   //
   const [countries, setCountries] = useState([]);
   const [selectedCountry1, setSelectedCountry1] = useState(null);
   const [filteredCountries, setFilteredCountries] = useState(null);
-
+  const [project, setProject] = useState('');
   const [descript, setDescript] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filteredCountrie, setFilteredCountrie] = useState(null);
@@ -35,6 +36,19 @@ export default function ModalCreacionProducto({
 
   useEffect( () =>  {
     async function doIt(){
+
+      console.log(edit)
+      if(edit){
+       const project = encodeURIComponent(edit?.partidaPresupuestal)
+      fetchGet(`regProyectos/${project}`).then((res) => {
+
+        setProject(res.registroProyecto.nombreAbreviado)
+        console.log(res.registroProyecto.nombreAbreviado)
+         
+      })
+
+      }
+
 
       const userData = await getUser();
       
@@ -56,7 +70,7 @@ export default function ModalCreacionProducto({
     });
 
     fetchGet('comision').then(({ lugar }) => {
-      const data = lugar.map((element, item) => {
+      const data = lugar?.map((element, item) => {
         return element;
       });
       setDescript(data);
@@ -65,19 +79,25 @@ export default function ModalCreacionProducto({
 
   const formik = useFormik({
     initialValues: {
-      // descripcion: '',
-      // partidaPresupuestal: '',
-      importe: '',
+      descripcion: edit ? edit?.descripcion : '',
+      partidaPresupuestal: edit ? edit?.partidaPresupuestal :  '',
+      importe: edit ? edit?.importe : '',
     },
     onSubmit: (values) => {
       values.importe = Number(values.importe);
       values.solicitudId = uuid;
-      values.descripcion = dataLista.descripcion;
-      values.partidaPresupuestal = selectedCountry1.nombreAbreviado;
+  /*     values.descripcion = dataLista.descripcion; */
+      values.partidaPresupuestal = project? project.nombreAbreviado : selectedCountry1.nombreAbreviado;
       
 
-        createProduct(values);  
 
+        if(!edit){
+            createProduct(values); 
+        }
+       
+        if(edit){
+          editProduct(values)
+        }
 
    
 
@@ -98,6 +118,16 @@ export default function ModalCreacionProducto({
 
   const createProduct = (data) => {
     fetchPost('solicitudProducto', 'POST', data).then(() => {
+      setViewProduct(false);
+      formik.resetForm();
+      listaSolicitudDinero();
+    });
+  };
+
+
+  const editProduct = (data) => {
+    console.log('data', edit)
+    fetchPut(`solicitudProducto/${edit?.id}`, 'PUT', data).then(() => {
       setViewProduct(false);
       formik.resetForm();
       listaSolicitudDinero();
@@ -155,10 +185,18 @@ export default function ModalCreacionProducto({
         <div className='p-fluid formgrid grid'>
           <div className='field col-12 md:col-12'>
             <label htmlFor='descripcion'>Descripción</label>
-            <AutoComplete
+            <InputText
+              name='descripcion'
+              field='descripcion'
+              id='descripcion'
+              {...formik.getFieldProps('descripcion')}
+              type='text'
+              style={{ marginBottom: '5px' }}
+            />
+{/*             <AutoComplete
               aria-label='descripcion'
               completeMethod={searchDescription}
-              value={selectedCountry}
+              value={ edit ? edit?.descripcion : selectedCountry}
               dropdown
               dropdownAriaLabel='Seleccionar descripcion'
               field='descripcion'
@@ -174,13 +212,13 @@ export default function ModalCreacionProducto({
               }}
               suggestions={filteredCountrie}
              
-            />
+            /> */}
           </div>
 
           <div className='field col-12 md:col-12'>
             <label htmlFor='partidaPresupuestal'>Partida Presupuestal</label>
             <AutoComplete
-              value={selectedCountry1}
+                value={project ? project : selectedCountry1}
               suggestions={filteredCountries}
               completeMethod={searchPartidaPresupuestal}
               field='nombreAbreviado'
@@ -188,8 +226,19 @@ export default function ModalCreacionProducto({
               id='partidaPresupuestal'
               onChange={(e) => {
                 setSelectedCountry1(e.value);
-                if (selectedCountry1) {
+/*                 if (selectedCountry1) {
                   dataLista.partidaPresupuestal = e.value.id;
+                } */
+
+                setSelectedCountry1(e.value);
+                if (selectedCountry1 && !project) {
+                  setSelectedCountry1(e.value);
+                  dataLista.nombreProyecto = e.value.id;
+                }
+
+                if(!selectedCountry1 && project){
+                  setProject(e.value);
+                  dataLista.nombreProyecto = e.value.id;
                 }
               }}
               dropdown

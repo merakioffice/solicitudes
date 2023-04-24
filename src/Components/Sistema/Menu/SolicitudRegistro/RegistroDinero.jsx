@@ -25,6 +25,7 @@ function RegistroDinero() {
   );
   const [edit, setEdit] = useState(solicitud);
   
+  const [editProduct, setEditProduct] = useState();
   
 
   const validaciones = Object.keys(edit).length === 0;
@@ -37,19 +38,31 @@ function RegistroDinero() {
   const navigate = useNavigate();
 
   const [countries, setCountries] = useState([]);
+  const [lugares, setLugares] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(null);
+  const [filteredLugarCom, setFilteredLugarCom] = useState(null);
   const [project, setProject] = useState('');
+  const [lugarCom, setLugarComision] = useState('');
 
 
 
   useEffect(() => {
 
+    console.log(edit)
     if(edit)
 
     fetchGet(`regProyecto/${edit?.nombreProyecto}`).then((res) => {
       
       setProject(res.registroProyecto.nombreAbreviado)
       console.log(res.registroProyecto.nombreAbreviado)
+       
+    })
+
+
+    fetchGet(`comision/${edit?.lugarComision}`).then((res) => {
+      
+      setLugarComision(res.lugarComision.descripcion) 
+      
        
     })
    
@@ -60,6 +73,11 @@ function RegistroDinero() {
   const [selectedCountry1, setSelectedCountry1] = useState(
   
     !validaciones ? project : edit?.nombreProyecto 
+  );
+
+  const [selectedLugar, setSelectedLugar] = useState(
+  
+    !validaciones ? lugarCom : edit?.lugarComision
   );
 
   const [dataLista, setDataLista] = useState({
@@ -73,6 +91,16 @@ function RegistroDinero() {
       const data = registroProyecto.map((element, item) => element);
       setCountries(data);
     });
+
+
+    fetchGet('comision').then(({ comisiones }) => {
+      const data = comisiones.map((element, item) => element);
+      console.log(data)
+      setLugares(data);
+    });
+
+
+
   };
 
   const handleClickRetornar = () => {
@@ -80,6 +108,8 @@ function RegistroDinero() {
   };
 
   const handleClickProduct = () => {
+
+    setEditProduct('')
     setViewProduct(!viewProduct);
   };
 
@@ -120,6 +150,26 @@ function RegistroDinero() {
       />
     </div>
   );
+
+
+  const tableButtonEdit = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-pencil'
+          className='p-button-rounded p-button-warning'
+          onClick={() => editData(rowData)}
+        />
+      </div>
+    );
+  };
+
+  const editData = (data) => {
+    setEditProduct(data);
+    setViewProduct(!viewProduct);
+   
+    
+  };
 
   const registreAdd = (values) => {
     fetchPost('solicitud', 'POST', values).then((response) => {
@@ -192,19 +242,38 @@ function RegistroDinero() {
     }, 250);
   };
 
+
+  const searchLugares = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...lugares];
+      } else {
+        _filteredCountries = lugares.filter((country) =>
+          country.descripcion
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase())
+        );
+      }
+      setFilteredLugarCom(_filteredCountries);
+    }, 250);
+  };
+
   const formik = useFormik({
     initialValues: {
       fechaFin: !validaciones ? new Date(edit.fechaFin)  : '',
       fechaInicio: !validaciones ? edit.fechaInicio : '',
       fechaRegistro: !validaciones ? edit.fechaRegistro : '',
       itinerarioTransporte: !validaciones ? edit.itinerarioTransporte : '',
-      lugarComision: !validaciones ? edit.lugarComision : '',
+    
       nombre: !validaciones ? edit.nombre : '',
      
       // nombreProyecto: !validaciones ? edit.nombreProyecto : '',
       objetoComision: !validaciones ? edit.objetoComision : '',
     },
     onSubmit: (values) => {
+      console.log(values)
+      values.lugarComision = selectedLugar.id;
       values.nombreProyecto = selectedCountry1.id;
       values.proyectoId = selectedCountry1.id;
       values.user_id = dataUser?.id ;
@@ -222,9 +291,9 @@ function RegistroDinero() {
       itinerarioTransporte: Yup.string('Solo se ingresa letras').required(
         'El itinerario es requerido'
       ),
-      lugarComision: Yup.string('Solo se aceptan letras').required(
+/*       lugarComision: Yup.string('Solo se aceptan letras').required(
         'El lugar de comisión es requerido'
-      ),
+      ), */
       nombre: Yup.string().required('El nombre es requerido'),
       // nombreProyecto: Yup.string().required('El nombre es requerido'),
       objetoComision: Yup.string('Solo se ingresa letras').required(
@@ -354,7 +423,31 @@ function RegistroDinero() {
                 <label htmlFor='lugarComision' className='block'>
                   Lugar comisión
                 </label>
-                <InputText
+                <AutoComplete
+                  id='lugarComision'
+                  value={lugarCom ? lugarCom : selectedLugar}
+                  suggestions={filteredLugarCom}
+                  completeMethod={searchLugares}
+                  field='descripcion'
+                  name='lugarComision'
+                  onChange={(e) => {
+                    setSelectedLugar(e.value);
+                    if (selectedLugar && !lugarCom) {
+                      setSelectedLugar(e.value);
+                      dataLista.lugarComision = e.value.id;
+                    }
+
+                    if(!selectedLugar && lugarCom){
+                      setLugarComision(e.value);
+                      dataLista.lugarComision = e.value.id;
+                    }
+                  }}
+                  dropdown
+                  aria-label='nombreProyecto'
+                  dropdownAriaLabel='Seleccionar Lugar Comision'
+                  disabled={boolCreate}
+                />
+{/*                 <InputText
                   disabled={boolCreate}
                   name='lugarComision'
                   onBlur={formik.handleBlur}
@@ -362,13 +455,13 @@ function RegistroDinero() {
                   style={{ marginBottom: '5px' }}
                   type='text'
                   value={formik.values.lugarComision}
-                />
+                />*/}
                 {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
                     <span style={{ color: '#e5432d' }}>
                       {formik.errors.lugarComision}
                     </span>
-                  )}
+                  )} 
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='itinerarioTransporte' className='block'>
@@ -489,6 +582,7 @@ function RegistroDinero() {
             <Column field='descripcion' header='Descripción' />
             <Column field='partidaPresupuestal' header='Partida Presupuestal' />
             <Column field='importe' header='Importe' />
+            <Column body={tableButtonEdit} />
             <Column body={tableButtonDelete} />
           </DataTable>
 
@@ -533,6 +627,7 @@ function RegistroDinero() {
               viewProduct={viewProduct}
               setViewProduct={setViewProduct}
               uuid={uuid}
+              edit={editProduct}
               listaSolicitudDinero={listaSolicitudDinero}
             />
           )}

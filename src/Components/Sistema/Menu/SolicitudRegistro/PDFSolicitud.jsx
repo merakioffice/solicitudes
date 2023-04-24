@@ -9,9 +9,16 @@ const PDFSolicitud = () => {
   const { solicitud } = useSelector((state) => state.solicitudDinero);
 
   let proyecto;
+  let lugar;
 
   fetchGet(`regProyecto/${solicitud.nombreProyecto}`).then((res) => {
     proyecto = res.registroProyecto.nombreAbreviado
+     
+  })
+
+  fetchGet(`comision/${solicitud?.lugarComision}`).then((res) => {
+    console.log(res)
+    lugar = res.lugarComision.descripcion
      
   })
  
@@ -52,7 +59,7 @@ const PDFSolicitud = () => {
     doc.rect(20, 49, 169, 6);
     doc.text(`Proyecto: ${proyecto}`, 25, 53);
     doc.rect(20, 55, 169, 6);
-    doc.text(`Lugar de comisión: ${solicitud.lugarComision}`, 25, 59);
+    doc.text(`Lugar de comisión: ${lugar}`, 25, 59);
     doc.rect(20, 61, 169, 6);
     doc.text(
       `Itinerario de transporte: ${solicitud.itinerarioTransporte}`,
