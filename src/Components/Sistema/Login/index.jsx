@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // PrimeReact
 import sd from "./descocentro.jpg";
-import logo from "./logo.png";
+import logo from "./login1.png";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
@@ -40,13 +40,18 @@ export default function Login() {
   return (
     <section id="login">
       <div className={`containerLogin`}>
+      <div className={`imgLogin`}>
+          <div class="img-login"></div>
+        </div>
         <div className={`formLogin`}>
           <form onSubmit={handleSubmit} className="p-fluid">
-            <center>
 
-            <img src={logo} alt="hyper" class="mb-3 img-logo"/>
+            <center>
+              <img src={logo} alt="hyper" class="mb-1 img-logo"/>
             </center>
-            <div class="title text-900 text-3xl font-medium mb-5">FE Y ALEGRIA DEL PERU</div>
+
+            <div class="title text-900 text-3xl font-medium mb-5">Desco Centro</div>
+
             <div className="field">
               <label htmlFor="Correo electronico">
                 Correo
@@ -59,6 +64,7 @@ export default function Login() {
                 onChange={(e) => setLogin({ ...login, email: e.target.value })}
               />
             </div>
+
             <div className="field">
               <label htmlFor="Contraseña">Contraseña</label>
               <Password
@@ -75,9 +81,7 @@ export default function Login() {
           </form>
         </div>
 
-        <div className={`imgLogin`}>
-          <div class="img-login"></div>
-        </div>
+       
       </div>
     </section>
   );
