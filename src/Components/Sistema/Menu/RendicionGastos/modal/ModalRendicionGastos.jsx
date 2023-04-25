@@ -9,14 +9,15 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Calendar } from 'primereact/calendar';
 import { AutoComplete } from 'primereact/autocomplete';
-import { fetchGet, fetchPost } from '../../../../../api';
+import { fetchGet, fetchPost, fetchPut } from '../../../../../api';
 const ModalRendicionGastos = ({
   view,
   setView,
   listaSolicitudDinero,
   uuid,
+  edit
 }) => {
-  // console.log(uuid);
+   console.log(edit);
   const toast = useRef(null);
   const [proyectos, setProyectos] = useState([]);
   const [selectedProyecto, setSelectedProyecto] = useState(null);
@@ -31,6 +32,24 @@ const ModalRendicionGastos = ({
       setProyectos(data);
     });
   };
+
+  useEffect(() => {
+
+    if(edit) {
+
+      console.log(edit, 'edit')
+      fetchGet(`tipo-documento/tipo/${edit?.tipo}`).then((res) => {
+        console.log(res.result)
+        setSelectedProyecto(res.result)
+      })
+
+      
+
+    }
+
+  }, [])
+
+
 
   const searchProyecto = (event) => {
     setTimeout(() => {
@@ -51,20 +70,29 @@ const ModalRendicionGastos = ({
 
   const formik = useFormik({
     initialValues: {
-      fecha: '',
-      serie: '',
-      numero: '',
-      ruc: '',
-      descripcion: '',
-      partidaPresupuestal: '',
-      importe: '',
+      fecha: edit ? new Date(edit?.fecha)  : '',
+      serie: edit ? edit?.serie : '',
+      numero: edit ? edit?.numero : '',
+      ruc: edit ? edit?.ruc : '',
+      descripcion: edit ? edit?.descripcion : '',
+      partidaPresupuestal: edit ? edit?.partidaPresupuestal : '',
+      importe: edit ? edit?.importe : '' ,
+      tipo: edit ? edit?.tipo : '' ,
     },
     onSubmit: (values) => {
-      // values.importe = Number(values.importe);
-      // values.solicitudId = uuid;
-      console.log(values);
+/*        values.importe = Number(values.importe);
+       values.solicitudId = uuid; */
+     
 
-      createProduct(values);
+        if(edit){
+
+          updateProduct(values)
+
+        } else {
+          createProduct(values);
+        }
+
+     
     },
     validationSchema: Yup.object({
       fecha: Yup.string().required('La fecha es requerida'),
@@ -111,6 +139,26 @@ const ModalRendicionGastos = ({
     });
   };
 
+  const updateProduct = (data) => {
+    const datosRegistros =
+      data.fecha.getMonth() +
+      1 +
+      '/' +
+      data.fecha.getDate() +
+      '/' +
+      data.fecha.getFullYear();
+
+    data.fecha = datosRegistros;
+    data.rendicionGastosId = uuid;
+     data.tipo = selectedProyecto.id; 
+     console.log(data, 'updated');
+    fetchPut(`rendGastosProducts/${edit?.id}`, 'PUT', data).then(() => {
+      setView(false);
+      formik.resetForm();
+      listaSolicitudDinero();
+    });
+  };
+
   useEffect(() => {
     listData();
   }, []);
@@ -131,7 +179,7 @@ const ModalRendicionGastos = ({
           <div className='field col-12 md:col-6'>
             <label htmlFor='fecha'>Fecha</label>
             <Calendar
-              value={formik.values.fecha}
+              value={new Date(formik.values.fecha) }
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               style={{ marginBottom: '5px' }}
@@ -143,30 +191,6 @@ const ModalRendicionGastos = ({
               <span style={{ color: '#e5432d' }}>{formik.errors.fecha}</span>
             )}
           </div>
-          <div className='field col-12 md:col-6'>
-            <label htmlFor='serie'>Serie</label>
-
-            <InputText
-              type='text'
-              {...formik.getFieldProps('serie')}
-              style={{ marginBottom: '5px' }}
-            />
-            {formik.touched.serie && formik.errors.serie && (
-              <span style={{ color: '#e5432d' }}>{formik.errors.serie}</span>
-            )}
-          </div>{' '}
-          <div className='field col-12 md:col-6'>
-            <label htmlFor='numero'>Número</label>
-
-            <InputText
-              type='text'
-              {...formik.getFieldProps('numero')}
-              style={{ marginBottom: '5px' }}
-            />
-            {formik.touched.numero && formik.errors.numero && (
-              <span style={{ color: '#e5432d' }}>{formik.errors.numero}</span>
-            )}
-          </div>{' '}
           <div className='field col-12 md:col-6'>
             <label htmlFor='tipo'>Tipo</label>
             <AutoComplete
@@ -192,6 +216,31 @@ const ModalRendicionGastos = ({
               <span style={{ color: '#e5432d' }}>{formik.errors.tipo}</span>
             )} */}
           </div>{' '}
+          <div className='field col-12 md:col-6'>
+            <label htmlFor='serie'>Serie</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('serie')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.serie && formik.errors.serie && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.serie}</span>
+            )}
+          </div>{' '}
+          <div className='field col-12 md:col-6'>
+            <label htmlFor='numero'>Número</label>
+
+            <InputText
+              type='text'
+              {...formik.getFieldProps('numero')}
+              style={{ marginBottom: '5px' }}
+            />
+            {formik.touched.numero && formik.errors.numero && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.numero}</span>
+            )}
+          </div>{' '}
+
           <div className='field col-12 md:col-12'>
             <label htmlFor='ruc'>RUC</label>
 

@@ -434,10 +434,12 @@ function RegistroDinero() {
                     setSelectedLugar(e.value);
                     if (selectedLugar && !lugarCom) {
                       setSelectedLugar(e.value);
+                      console.log('aqui 1')
                       dataLista.lugarComision = e.value.id;
                     }
 
                     if(!selectedLugar && lugarCom){
+                      console.log('aqui 2')
                       setLugarComision(e.value);
                       dataLista.lugarComision = e.value.id;
                     }

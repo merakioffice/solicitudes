@@ -26,6 +26,13 @@ const RegistroRendicionGastos = () => {
 
 
   const [dataUser, setDataUser] = useState();
+  const [lugares, setLugares] = useState([]);
+  const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
+  const [edit] = useState(rendicionGastos);
+  const [data, setData] = useState([]);
+  const validaciones = Object.keys(data).length === 0;
+  const [lugarCom, setLugarComision] = useState('');
+  const [filteredLugarCom, setFilteredLugarCom] = useState(null);
 
   
 
@@ -46,8 +53,8 @@ const RegistroRendicionGastos = () => {
 
 
 
-  const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
-  const [edit] = useState(rendicionGastos);
+
+
 
   const [editProyect, setEditProyect] = useState();
 
@@ -65,20 +72,55 @@ const RegistroRendicionGastos = () => {
 
       }
 
-
-
+      if(edit){
+      fetchGet(`comision/${edit?.lugarComision}`).then((res) => {
       
-   
+        setLugarComision(res.lugarComision.descripcion) 
+        
+         
+      })
 
-    
+      setUuid(edit?.id);
+
+          fetchGet(`rendGastos/${edit?.id}`).then( async ({ rendGastosProducts, total }) => {
+
+     const promise = rendGastosProducts.productos.map(async (product) => {
+
+      const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
+
+        const result = {...product, tipo: tipo.result.nombre}
+
+        return result;
+
+      })
+
+        Promise.all(promise).then((data) => {
+        rendGastosProducts.productos = data;
+     
+        setDataRegistro(rendGastosProducts);
+      })
+
+     
+     
+      setCountRendido(total);
+    });
+      
+      }
+
+
+      setCountRecibido(edit?.recibido)  
+     
     }
 
     doIt();
 
-  }, [])
+  }, [edit])
 
 
   const validation = Object.keys(edit).length === 0;
+  const [selectedLugar, setSelectedLugar] = useState(
+    !validaciones ? lugarCom : edit?.lugarComision
+  );
 
   const toast = useRef(null);
   const [ dataRegistro, setDataRegistro] = useState([]);
@@ -87,12 +129,11 @@ const RegistroRendicionGastos = () => {
   const [countSaldo, setCountSaldo] = useState(0);
   const [countRecibido, setCountRecibido] = useState(0);
   const [countRendido, setCountRendido] = useState(0);
-  const [uuid, setUuid] = useState(!validation ? edit.id : null);
+  const [uuid, setUuid] = useState(!validaciones ? edit.id : null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [view, setView] = useState(false);
   const navigate = useNavigate();
-
-  //
+  const [editProduct, setEditProduct] = useState();
   const [countries, setCountries] = useState([]);
   const [selectedCountry1, setSelectedCountry1] = useState('');
   const [filteredCountries, setFilteredCountries] = useState(null);
@@ -100,12 +141,12 @@ const RegistroRendicionGastos = () => {
   const [proyectos, setProyectos] = useState([]);
   
   const [selectedProyecto, setSelectedProyecto] = useState(
-    !validation ? edit.proyecto : null
+    !validaciones ? edit.proyecto : null
   );
   
   const [filteredProyecto, setFilteredProyecto] = useState(null);
 
-  const [data, setData] = useState([]);
+
 
   const [dataLista, setDataLista] = useState({
     nombreProyecto: null,
@@ -115,7 +156,23 @@ const RegistroRendicionGastos = () => {
 
   const [proyecto, setProyecto] = useState([]);
 
-  const validaciones = Object.keys(data).length === 0;
+ 
+
+  const searchLugares = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...lugares];
+      } else {
+        _filteredCountries = lugares.filter((country) =>
+          country.descripcion
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase())
+        );
+      }
+      setFilteredLugarCom(_filteredCountries);
+    }, 250);
+  };
 
   const listData = async() => {
     const user = await getUser()
@@ -123,14 +180,19 @@ const RegistroRendicionGastos = () => {
       const data = personal.map((element, item) => {
         return element;
       });
-
-      console.log(data)
-
       setCountries(data);
     });
+    fetchGet('comision').then(({ comisiones }) => {
+      const data = comisiones.map((element, item) => element);
+     
+      setLugares(data);
+    });
+
   };
 
   const listProject = () => {
+
+
     fetchGet(`regProyecto`).then(({ registroProyecto }) => {
       const data = registroProyecto.map((element) => {
         return element;
@@ -144,6 +206,7 @@ const RegistroRendicionGastos = () => {
   };
 
   const handleClickProduct = () => {
+    setEditProduct('')
     setView(!view);
   };
 
@@ -195,6 +258,28 @@ const RegistroRendicionGastos = () => {
     );
   };
 
+  const tableButtonEdit = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-pencil'
+          className='p-button-rounded p-button-warning'
+          onClick={() => editData(rowData)}
+        />
+      </div>
+    );
+  };
+
+
+  const editData = (data) => {
+    setEditProduct(data);
+   /* setViewProduct(!viewProduct); */
+
+    setView(!view);
+   
+    
+  };
+
   const listaSolicitudDinero = async() => {
     fetchGet(`rendGastos/${uuid}`).then( async ({ rendGastosProducts, total }) => {
 
@@ -210,7 +295,7 @@ const RegistroRendicionGastos = () => {
 
         Promise.all(promise).then((data) => {
         rendGastosProducts.productos = data;
-        console.log(data, 'data')
+     
         setDataRegistro(rendGastosProducts);
       })
 
@@ -347,7 +432,14 @@ const RegistroRendicionGastos = () => {
     
      /*  console.log(values) */
       // values.recibido = countRecibido.toString();
+      
+    /*   registreAdd(values); */
+
+    if(validaciones){
+      registreUpdate(values)
+    } else {
       registreAdd(values);
+    }
     },
     validationSchema: Yup.object({
       // lugarComision: Yup.string().required('El lugar de comisión es requerido'),
@@ -356,7 +448,6 @@ const RegistroRendicionGastos = () => {
       // fechaFin: Yup.string().required('La fecha de fin es requerido'),
     }),
   });
-
   const registreAdd = (values) => {
     fetchPost('rendGastos', 'POST', values).then((response) => {
       if (response.rendicionGastos) {
@@ -384,6 +475,35 @@ const RegistroRendicionGastos = () => {
       }
     });
   };
+
+  const registreUpdate = (values) => {
+    fetchPost(`rendGastos/${edit?.id}`, 'PUT', values).then((response) => {
+      if (response.rendicionGastos) {
+        setDataLista({
+          numeroSolicitud: response.rendicionGastos
+            ? response.rendicionGastos.numeroRendicion
+            : '',
+        });
+        setUuid(response.rendicionGastos.id);
+
+        setBoolCreate(true);
+        toast.current.show({
+          severity: 'success',
+          summary: 'Creado',
+          detail: 'Se ha creado correctamente',
+          life: 3000,
+        });
+      } else {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Hubo un error',
+          detail: `${response.message}`,
+          life: 3000,
+        });
+      }
+    });
+  };
+
 
   const sumRecibido = () => {
     if (!validaciones && selectedCountry1.solicitud_productos.length > 0) {
@@ -424,6 +544,8 @@ const RegistroRendicionGastos = () => {
   useEffect( () => {
 
     setData(selectedCountry1);
+
+    console.log(selectedCountry1,'data')
     
       async function project() {
           const project = await fetchGetproject(selectedCountry1.nombreProyecto)
@@ -431,7 +553,16 @@ const RegistroRendicionGastos = () => {
           
          
         }
+
+        async function lugar() {
+          const lugar = await fetchGet(`comision/${selectedCountry1.lugarComision}`)
+          console.log('res', lugar)
+          setLugarComision(lugar.lugarComision)
+          
+         
+        }  
         project()
+        lugar()
  
     sumRecibido();
   }, [selectedCountry1]);
@@ -480,9 +611,7 @@ const RegistroRendicionGastos = () => {
                   name='numeroSolicitud'
                   type='text'
                   value={
-                    !validaciones
-                      ? data?.numeroSolicitud
-                      : edit?.numeroRendicion
+                    dataLista ? dataLista.numeroSolicitud : ''
                   }
                   disabled
                 />
@@ -539,7 +668,33 @@ const RegistroRendicionGastos = () => {
                 <label htmlFor='lugarComision' className='block'>
                   Lugar Comisión
                 </label>
-                <InputText
+                <AutoComplete
+                  id='lugarComision'
+                  value={lugarCom ? lugarCom : selectedLugar}
+                  suggestions={filteredLugarCom}
+                  completeMethod={searchLugares}
+                  field='descripcion'
+                  name='lugarComision'
+                  onChange={(e) => {
+                    setSelectedLugar(e.value);
+                    if (selectedLugar && !lugarCom) {
+                      setSelectedLugar(e.value);
+                      console.log('aqui 1')
+                      dataLista.lugarComision = e.value.id;
+                    }
+
+                    if(!selectedLugar && lugarCom){
+                      console.log('aqui 2')
+                      setLugarComision(e.value);
+                      dataLista.lugarComision = e.value.id;
+                    }
+                  }}
+                  dropdown
+                  aria-label='nombreProyecto'
+                  dropdownAriaLabel='Seleccionar Lugar Comision'
+                  disabled={boolCreate}
+                />
+{/*                 <InputText
                   name='lugarComision'
                   type='text'
                   value={
@@ -554,7 +709,7 @@ const RegistroRendicionGastos = () => {
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   disabled={boolCreate}
-                />
+                /> */}
                 {formik.touched.lugarComision &&
                   formik.errors.lugarComision && (
                     <span style={{ color: '#e5432d' }}>
@@ -671,7 +826,7 @@ const RegistroRendicionGastos = () => {
                   name='saldo'
                   type='text'
                   disabled
-                  value={countSaldo ? countSaldo?.toFixed(2) :    (Number(countRecibido)+ Number(countRendido)).toFixed(2)}
+                  value={countSaldo ? (Number(countRecibido)+ Number(countRendido)).toFixed(2) :    (Number(countRecibido)+ Number(countRendido)).toFixed(2)}
                   style={{ marginBottom: '5px' }}
                 />
               </div>
@@ -721,7 +876,7 @@ const RegistroRendicionGastos = () => {
 
           <DataTable
             value={dataRegistro.productos}
-            headerColumnGroup={headerGroup}
+           /*  headerColumnGroup={headerGroup} */
             responsiveLayout='scroll'
           >
             {/* <Column field='id' header='Item'></Column> */}
@@ -733,7 +888,7 @@ const RegistroRendicionGastos = () => {
             <Column field='descripcion' header='Descripción'></Column>
             <Column field='partidaPresupuestal' header='Actividad'></Column>
             <Column field='importe' header='Importe'></Column>
-
+            <Column body={tableButtonEdit} style={{ width: '20px' }}></Column>
             <Column body={tableButtonDelete} style={{ width: '20px' }}></Column>
           </DataTable>
           {view && (
@@ -741,6 +896,7 @@ const RegistroRendicionGastos = () => {
               view={view}
               setView={setView}
               uuid={uuid}
+              edit={editProduct}
               listaSolicitudDinero={listaSolicitudDinero}
             />
           )}
