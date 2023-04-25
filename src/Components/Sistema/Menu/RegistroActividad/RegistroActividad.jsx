@@ -34,10 +34,10 @@ const RegistroActividad = () => {
   };
 
   const editData = (data) => {
-    console.log(data);
+  
     // dispatch(getSolicitudDinero());
     // dispatch(oneIdSolicitud(data));
-    navigate('/registro-actividad');
+    navigate('/registro-actividad', { state: data });
   };
 
   const tableButtonEdit = (rowData) => {
