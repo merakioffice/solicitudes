@@ -19,7 +19,7 @@ const ModalRegistroDocumentos = ({
   const formik = useFormik({
     initialValues: {
       codigo: edit ? edit?.codigo : '',
-      tipoDocumento: edit ? edit?.tipoDocumento : '',
+      nombre: edit ? edit?.nombre : '',
     },
     onSubmit: (values) => {
       if (edit) {
@@ -34,12 +34,12 @@ const ModalRegistroDocumentos = ({
       codigo: Yup.string()
         .required('El campo es requerido')
         .min(5, 'El código debe tener mas de 5 caracteres'),
-      tipoDocumento: Yup.string().required('El campo es requerido'),
+      nombre: Yup.string().required('El campo es requerido'),
     }),
   });
 
   const registreAdd = (data) => {
-    fetchPost('regdoc', 'POST', data).then(({ message }) => {
+    fetchPost('registro-tipo-documento/one', 'POST', data).then(({ message }) => {
       if (message === 'El código ya existe') {
         toast.current.show({
           severity: 'warn',
@@ -56,32 +56,32 @@ const ModalRegistroDocumentos = ({
           formik.resetForm();
           listData();
           setView(false);
-          setEdit(null);
+        
         }, 500);
       }
     });
   };
 
   const updateAdd = (data) => {
-    fetchPut(`regdoc/${edit.id}`, 'PUT', data).then(({ message }) => {
+    fetchPut(`tipo-documento/${edit.id}`, 'PUT', data).then(({ message }) => {
       console.log(data);
       if (message === '"El código ya existe"') {
         toast.current.show({
           severity: 'warn',
           summary: 'Datos duplicados',
-          detail: response.message,
+          detail: message,
         });
       } else {
         toast.current.show({
           severity: 'success',
           summary: 'Actualizado',
-          detail: response.message,
+          detail: message,
         });
         setTimeout(() => {
           formik.resetForm();
           listData();
           setView(false);
-          setEdit(null);
+        
         }, 500);
       }
     });
@@ -95,7 +95,7 @@ const ModalRegistroDocumentos = ({
       modal
       className='p-fluid'
       onHide={() => {
-        setEdit(null);
+       
         setView(false);
       }}
     >
@@ -119,12 +119,12 @@ const ModalRegistroDocumentos = ({
           </div>
 
           <div className='field col-12 md:col-12'>
-            <label htmlFor='tipoDocumento'>Tipo Documento</label>
+            <label htmlFor='nombre'>Tipo Documento</label>
 
             <InputText
               type='text'
-              name='tipoDocumento'
-              value={formik.values.tipoDocumento}
+              name='nombre'
+              value={formik.values.nombre}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               style={{ marginBottom: '5px' }}

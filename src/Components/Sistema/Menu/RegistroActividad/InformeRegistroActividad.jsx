@@ -12,11 +12,18 @@ import { useFormik } from 'formik';
 import { fetchPost } from '../../../../api';
 import { useSelector } from 'react-redux';
 import PDFActividad from './PDFActividad';
+import { useLocation } from 'react-router-dom';
 import { InputTextarea } from 'primereact/inputtextarea';
 
 const InformeRegistroActividad = () => {
   const { registroActividad } = useSelector((state) => state.solicitudDinero);
+  
   const [boolCreate, setBoolCreate] = useState(false);
+    const location = useLocation();
+  const [edit, setEdit] = useState(location.state)
+
+
+  console.log(edit, 'edit');
 
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -27,8 +34,8 @@ const InformeRegistroActividad = () => {
 
   const formik = useFormik({
     initialValues: {
-      nombreApellido: '',
-      destino: '',
+      nombreApellido: edit !== null ? edit?.nombreApellido : '',
+      destino: edit ? edit?.destino : '',
       fechaFin: '',
       fechaInicio: '',
       objetoComision: '',
@@ -36,6 +43,7 @@ const InformeRegistroActividad = () => {
       otros: '',
     },
     onSubmit: (values) => {
+     
       if (values.fechaInicio) {
         const fechaInicio =
           values.fechaInicio.getMonth() +
@@ -77,7 +85,7 @@ const InformeRegistroActividad = () => {
   });
 
   const registreAdd = (values) => {
-    console.log(values);
+   
     fetchPost('regActividad', 'POST', values).then((data) => {
       console.log(data);
       if (data.registroActividad) {
@@ -127,7 +135,7 @@ const InformeRegistroActividad = () => {
                 <InputText
                   name='nombreApellido'
                   type='text'
-                  values={formik.values.nombreApellido}
+                  values={'jv'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}

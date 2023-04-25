@@ -74,6 +74,8 @@ const fetchGetproject = async (id, method = 'GET') => {
 
 
 
+
+
 const fetchDelete = async (url = '', method = 'DELETE') => {
   const token = localStorage.getItem('token')
   const response = await fetch(`${VITE_API_URL}/${url}`, { method,  headers: {
@@ -114,7 +116,6 @@ const fetchPut = async (url = '', method = '', data) => {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-      
     },
     body: JSON.stringify(data),
   });

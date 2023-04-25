@@ -7,6 +7,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import { createFormData, fetchDelete } from "../../../../api/api";
+import ModalRegistroDocumentos from './Modal/ModalRegistroDocumentos';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
 import {fetchGet} from '../../../../api/api'
@@ -16,6 +17,7 @@ const [addData, setAddData] = useState([]);
 const [totalRecords, setTotalRecords] = useState(0);
 const [loading, setLoading] = useState(false);
 const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
+const [edit, setEdit] = useState()
 
 useEffect(() => {
 listData(datatableState)
@@ -25,6 +27,7 @@ const listData = (filters) => {
 const {page, rows} = filters || {page: 0, rows: 10, first: 10};
 setLoading(true);
   fetchGet(`tipo-documento?page=${page + 1}&pageSize=${rows}`).then(( { registroTipoDocumento, count } ) => {
+    console.log(registroTipoDocumento)
     setTotalRecords(count);
     const data = registroTipoDocumento.map((element, item) => {
       element.index = item + 1;
@@ -67,14 +70,23 @@ const deleteData = async(id) => {
   const tableButtonEdit = (rowData) => {
     return (
       <div className='actions'>
-{/*         <Button
+{         <Button
           icon='pi pi-pencil'
           className='p-button-rounded p-button-warning'
             onClick={() => editData(rowData)} 
-        /> */}
+        /> }
       </div>
     );
   };
+
+
+  const editData = (data) => {
+    setEdit(data);
+    setView(!view);
+   
+    
+  };
+
 
   const tableButtonDelete = (rowData) => {
     return (
@@ -150,9 +162,17 @@ const deleteData = async(id) => {
       <div className='col-12'>
         <div className='card'>
         <Toast ref={toast} />
-          <Toolbar
+{/*           <Toolbar
             className='mb-4'
 
+            right={RightToolBarTemplate}
+          ></Toolbar> */}
+            <Toolbar
+            className='mb-4'
+            left={LeftToolBarTemplate({
+              openNew: openModal,
+              nameBtn: 'Crear Documento',
+            })}
             right={RightToolBarTemplate}
           ></Toolbar>
           <DataTable value={addData} 
@@ -180,6 +200,16 @@ const deleteData = async(id) => {
           </DataTable>
         </div>
       </div>
+
+      {view && (
+        <ModalRegistroDocumentos
+          setView={setView}
+          view={view}
+          listData={listData}
+          edit ={edit}
+
+        />
+      )}
     
     </div>
   );
