@@ -37,7 +37,7 @@ const RegistroPresupuesto = () => {
 
   const deleteData = (id) => {
     fetchDelete(`registroPresupuesto/${id}`).then((res) => {
-      navigate('/registro-presupuesto');
+     
     })
 
   }
