@@ -435,7 +435,7 @@ const RegistroRendicionGastos = () => {
       
     /*   registreAdd(values); */
 
-    if(validaciones){
+    if(edit){
       registreUpdate(values)
     } else {
       registreAdd(values);
