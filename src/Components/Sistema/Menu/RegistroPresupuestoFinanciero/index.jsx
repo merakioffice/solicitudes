@@ -11,41 +11,54 @@ import { FileUpload } from 'primereact/fileupload';
 import { createFormData, fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
+
 const RegistroPresupuestoFinanciero = () => {
+
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
-  const [edit, setEdit] = useState(null);
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const toast = useRef(null);
+  const [edit, setEdit] = useState([]);
+  useEffect( () =>  {
+    async function doIt(){
 
-   
-  useEffect(() => {
-    listData(datatableState)
-  }, [datatableState])
+      const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
 
-  const listData = (filters) => {
-    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
-    setLoading(true);
-    fetchGet(`registroPresupuestoFinanciero?page=${page + 1}&pageSize=${rows}`).then(( { presupuestos, count } ) => {
-      setTotalRecords(count);
+      if(presupuestos){
+         setAddData(presupuestos);
+      }
+     
 
-      const data = presupuestos.map((element, item) => {
-        element.index = item + 1;
-        return element;
-      });
+    }
 
-      console.log(data,presupuestos)
+    doIt();
 
-      setAddData(data);
-      setLoading(false);
-    });
-  };
+  }, [])
+
+
+
+
+  const deleteData = (id) => {
+    fetchDelete(`registroPresupuestoFinanciero/${id}`).then(async (res) => {
+      const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
+
+      if(presupuestos){
+         setAddData(presupuestos);
+      }
+     
+    })
+
+  }
 
   const openModal = () => {
+    setEdit('')
     setView(!view);
   };
+
+  const editData = (data) => {
+    
+    setEdit(data)
+    setView(!view);
+  }
 
   const tableButtonEdit = (rowData) => {
     return (
@@ -53,16 +66,14 @@ const RegistroPresupuestoFinanciero = () => {
         <Button
           icon='pi pi-pencil'
           className='p-button-rounded p-button-warning'
-          onClick={() => editData(rowData)}
+           onClick={() => editData(rowData)}
         />
       </div>
     );
   };
 
-  const editData = (data) => {
-    setView(!view);
-    setEdit(data);
-  };
+
+
 
   const tableButtonDelete = (rowData) => {
     return (
@@ -70,33 +81,10 @@ const RegistroPresupuestoFinanciero = () => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          onClick={() => {
-            confirm1(rowData.id);
-          }}
+           onClick={() => deleteData(rowData.id)}
         />
       </div>
     );
-  };
-
-  const acceptFunc = (data) => {
-    fetchDelete(`registroPresupuestoFinanciero/${data}`).then((data) => {
-      toast.current.show({
-        severity: 'success',
-        summary: 'Confirmado',
-        detail: data.message,
-        life: 3000,
-      });
-      listData();
-    });
-  };
-
-  const confirm1 = (data) => {
-    confirmDialog({
-      message: 'Esta seguro que desea eliminar?',
-      header: 'Confirmar',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => acceptFunc(data),
-    });
   };
 
   const RightToolBarTemplate = () => {
@@ -109,100 +97,147 @@ const RegistroPresupuestoFinanciero = () => {
           mode='basic'
           maxFileSize={1000000}
           label='Import'
-          chooseLabel='Importar Presupuestos'
+          chooseLabel='Importar Presupuesto Finaciador'
           className='mr-2 inline-block'
         />
       </React.Fragment>
     );
   };
 
-  const readExcel = async ({ files }) => {
+
+  const listData = (data) => {
+    const newData = [];
+    for (let i = 1; i < data.length - 1; i++) {
+      const element = data[i];
+      const items = {
+        id: i,
+        codigo: element[0],
+        proyecto: element[1],
+        equivalentes: element[2],
+      };
+      newData.push(items);
+    }
+
+    useEffect( () =>  {
+      async function doIt(){
+  
+        const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
+  
+        if(presupuestos){
+           setAddData(presupuestos);
+        }
+       
+      
+       
+  
+      
+      }
+  
+      doIt();
+  
+    }, [])
+
+    return newData;
+  };
+
+  const readExcel = ({ files }) => {
     const [File] = files;
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
 
-    reader.onload = async (e) => {
+    reader.onload = (e) => {
       const bstr = e.target.result;
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
+      const formData = new FormData();
+      formData.append('file', File);
+      
 
-      try {
-        const formData = new FormData();
+      new Promise(async (resolve) => {
+        try {
+        const res =  await createFormData("registroPresupuestoFinancieroAddAll", 'POST' , formData);
 
-        formData.append('file', File);
+          await 
+          toast.current.show({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Empleados Created',
+            life: 3000,
+          });
+         
+          resolve(res);
+          async function doIt(){
   
-        await createFormData("registroPresupuestoFinancieroAddAll", 'POST' , formData);  
-        listData()
-        toast.current.show({
-          severity: 'success',
-          summary: 'Registro lugar comisión',
-          life: 3000,
-        });
-      } catch (error) {
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error al subir el archivo',
-          life: 3000,
-        });
-      }
+            const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
+      
+            if(presupuestos){
+               setAddData(presupuestos);
+            } 
+          }
+
+          doIt();
+      
+          return res;
+        } catch (error) {
+          console.log(error)
+          resolve([]);
+        }
+      });
+
+
+      setAddData(listData(data));
     };
 
     if (rABS) reader.readAsBinaryString(File);
     else reader.readAsArrayBuffer(File);
   };
 
-  useEffect(() => {
-    listData();
-  }, []);
-
   return (
     <div className='grid crud-demo'>
-      <Toast ref={toast} />
-      <ConfirmDialog />
+       <Toast ref={toast} /> 
       <div className='col-12'>
         <div className='card'>
           <Toolbar
             className='mb-4'
+            right={RightToolBarTemplate}
             left={LeftToolBarTemplate({
               openNew: openModal,
-              nameBtn: 'Agregar Proyecto',
+              nameBtn: 'Agregar Presupuesto Financiador',
             })}
-            right={RightToolBarTemplate}
           ></Toolbar>
-          <DataTable value={addData} 
-                dataKey="id" 
-                first={datatableState.first}
-                responsiveLayout='scroll'
-                paginator
-                lazy
-                rows={10} 
-                totalRecords={totalRecords}
-                onPage={(e) => changeDatatableState(e)}     
-                loading={loading}
-          >
-            <Column field='index' header='Id'></Column>
-            <Column field='codigo' header='Código Contable'></Column>
+          <DataTable value={addData} responsiveLayout='scroll'>
+            <Column field='id' header='Id'>
+              {addData.map((item, index) => {
+                {
+                  index + 1;
+                }
+              })}
+            </Column>
+            <Column field='codigo' header='Código'></Column>
             <Column field='nombreAbreviado' header='Nombre Abreviado'></Column>
-            <Column field='nombreCompleto' header='Nombre Completo'></Column>
+            <Column
+              field='nombreCompleto'
+              header='Nombre Completo'
+            ></Column>
             <Column body={tableButtonEdit}></Column>
             <Column body={tableButtonDelete}></Column>
           </DataTable>
         </div>
       </div>
-      {view && (
-        <ModalRegistroProsupuestoFinanciero
+      <ModalRegistroProsupuestoFinanciero  setAddData={setAddData} edit={edit}  setView={setView} view={view} />
+{/*       {view && (
+        <ModalRegistroProsupuesto
           setView={setView}
           view={view}
           listData={listData}
           edit={edit}
           setEdit={setEdit}
         />
-      )}
+      )} */}
     </div>
   );
 };
-
 export { RegistroPresupuestoFinanciero };

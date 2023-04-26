@@ -15,7 +15,7 @@ const RegistroPresupuesto = () => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
   const toast = useRef(null);
-
+  const [edit, setEdit] = useState([]);
   useEffect( () =>  {
     async function doIt(){
 
@@ -43,8 +43,15 @@ const RegistroPresupuesto = () => {
   }
 
   const openModal = () => {
+    setEdit('')
     setView(!view);
   };
+
+  const editData = (data) => {
+    
+    setEdit(data)
+    setView(!view);
+  }
 
   const tableButtonEdit = (rowData) => {
     return (
@@ -52,11 +59,14 @@ const RegistroPresupuesto = () => {
         <Button
           icon='pi pi-pencil'
           className='p-button-rounded p-button-warning'
-          // onClick={() => editData(rowData)}
+           onClick={() => editData(rowData)}
         />
       </div>
     );
   };
+
+
+
 
   const tableButtonDelete = (rowData) => {
     return (
@@ -152,7 +162,17 @@ const RegistroPresupuesto = () => {
           });
          
           resolve(res);
-          navigate('/registro-presupuesto');
+          async function doIt(){
+  
+            const {presupuestos} = await  fetchGet('registroPresupuesto')
+      
+            if(presupuestos){
+               setAddData(presupuestos);
+            } 
+          }
+
+          doIt();
+      
           return res;
         } catch (error) {
           console.log(error)
@@ -200,7 +220,7 @@ const RegistroPresupuesto = () => {
           </DataTable>
         </div>
       </div>
-      <ModalRegistroProsupuesto  listData={listData} setView={setView} view={view} />
+      <ModalRegistroProsupuesto  setAddData={setAddData} edit={edit}  setView={setView} view={view} />
 {/*       {view && (
         <ModalRegistroProsupuesto
           setView={setView}
