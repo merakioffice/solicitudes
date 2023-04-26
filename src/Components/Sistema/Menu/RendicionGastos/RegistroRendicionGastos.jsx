@@ -577,7 +577,7 @@ const RegistroRendicionGastos = () => {
 
       <div className='col-12'>
         <div className='card'>
-          <Toolbar className='mb-4' right={<PDFRendicionGastos />}></Toolbar>
+          <Toolbar className='mb-4' right={<PDFRendicionGastos rendidoCount={countRendido} />}></Toolbar>
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
