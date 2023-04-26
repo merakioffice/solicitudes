@@ -9,7 +9,7 @@ import { Calendar } from 'primereact/calendar';
 import { Toolbar } from 'primereact/toolbar';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { fetchPost } from '../../../../api';
+import { fetchPost, fetchPut } from '../../../../api';
 import { useSelector } from 'react-redux';
 import PDFActividad from './PDFActividad';
 import { useLocation } from 'react-router-dom';
@@ -35,38 +35,23 @@ const InformeRegistroActividad = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      nombreApellido: edit !== null ? edit?.nombreApellido : '',
+      nombreApellido: edit  ? edit?.nombreApellido : '',
       destino: edit ? edit?.destino : '',
-      fechaFin: '',
-      fechaInicio: '',
-      objetoComision: '',
-      detalleActividad: '',
-      otros: '',
+      fechaFin: edit ? new Date(edit?.fechaFin)  : '',
+      fechaInicio: edit ?  new Date(edit?.fechaInicio)  : '',
+      objetoComision: edit ? edit?.objetoComision : '',
+      detalleActividad: edit ? edit?.detalleActividad : '',
+      otros: edit ? edit?.otros : '',
     },
     onSubmit: (values) => {
-     
-      if (values.fechaInicio) {
-        const fechaInicio =
-          values.fechaInicio.getMonth() +
-          1 +
-          '-' +
-          values.fechaInicio.getDate() +
-          '-' +
-          values.fechaInicio.getFullYear();
-        values.fechaInicio = fechaInicio;
-      }
-      if (values.fechaFin) {
-        const fechaFin =
-          values.fechaFin.getMonth() +
-          1 +
-          '-' +
-          values.fechaFin.getDate() +
-          '-' +
-          values.fechaFin.getFullYear();
-        values.fechaFin = fechaFin;
+
+      if(Object.keys(edit).length === 0){
+        registreAdd(values);
+      } else {
+        registreUpdate(values)
       }
 
-      registreAdd(values);
+      
     },
     validationSchema: Yup.object({
       nombreApellido: Yup.string('No se permiten números').required(
@@ -105,15 +90,31 @@ const InformeRegistroActividad = () => {
           life: 3000,
         });
       }
-      // setUuid(personal.id);
-      // console.log(personal);
-      // setBoolCreate(true);
-      // toast.current.show({
-      //   severity: 'success',
-      //   summary: 'Creado',
-      //   detail: 'Se ha creado correctamente',
-      //   life: 3000,
-      // });
+    });
+  };
+
+
+
+  const registreUpdate = (values) => {
+   
+    fetchPut(`regActividad/${edit?.id}`, 'PUT', values).then((data) => {
+      console.log(data);
+      if (data.registroActividad) {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Creado',
+          detail: 'Se ha creado correctamente',
+          life: 3000,
+        });
+        // formik.resetForm();
+      } else {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Creado',
+          detail: 'Ha ocurrido un error, hable con el administrador',
+          life: 3000,
+        });
+      }
     });
   };
 
@@ -157,7 +158,7 @@ const InformeRegistroActividad = () => {
                 <InputText
                   name='destino'
                   type='text'
-                  values={formik.values.destino}
+                  {...formik.getFieldProps('destino')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -173,12 +174,16 @@ const InformeRegistroActividad = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaInicio'>Fecha inicio</label>
                 <Calendar
-                  values={formik.values.fechaInicio}
+
+                   {...formik.getFieldProps('fechaInicio')} 
+                
+            
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaInicio'
-                  // disabled={boolCreate}
+                  disabled={boolCreate}
+                  showIcon
                 ></Calendar>
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
                   <span style={{ color: '#e5432d' }}>
@@ -189,13 +194,16 @@ const InformeRegistroActividad = () => {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
-                  values={formik.values.fechaFin}
+                     {...formik.getFieldProps('fechaFin')} 
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaFin'
+                  showIcon
                   disabled={boolCreate}
-                ></Calendar>
+                >
+                  
+                </Calendar>
                 {formik.touched.fechaFin && formik.errors.fechaFin && (
                   <span style={{ color: '#e5432d' }}>
                     {formik.errors.fechaFin}
@@ -212,7 +220,7 @@ const InformeRegistroActividad = () => {
                 <InputTextarea
                   name='objetoComision'
                   type='text'
-                  values={formik.values.objetoComision}
+                  {...formik.getFieldProps('objetoComision')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -234,7 +242,7 @@ const InformeRegistroActividad = () => {
                 <InputTextarea
                   name='detalleActividad'
                   type='text'
-                  values={formik.values.detalleActividad}
+                  {...formik.getFieldProps('detalleActividad')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
@@ -257,7 +265,7 @@ const InformeRegistroActividad = () => {
                 <InputTextarea
                   name='otros'
                   type='text'
-                  values={formik.values.otros}
+                  {...formik.getFieldProps('otros')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}

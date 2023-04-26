@@ -434,7 +434,7 @@ const RegistroRendicionGastos = () => {
       // values.recibido = countRecibido.toString();
       
     /*   registreAdd(values); */
-     
+      console.log('edit', edit)
     if(Object.keys(edit).length === 0){
       registreAdd(values);
     } else {
