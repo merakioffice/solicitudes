@@ -16,6 +16,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
   const toast = useRef(null);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       codigo: edit ? edit?.codigo : '',
       nombreAbreviado: edit ? edit?.nombreAbreviado : '',
@@ -163,7 +164,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
 
             <InputText
               type='text'
-              {...formik.getFieldProps('nombreAbreviado')}
+              {...formik.getFieldProps('nombreCompleto')}
               name='nombreCompleto'
               style={{ marginBottom: '5px' }}
             />
