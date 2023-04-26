@@ -164,7 +164,6 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
             <InputText
               type='text'
               {...formik.getFieldProps('nombreCompleto')}
-              
               style={{ marginBottom: '5px' }}
             />
             {formik.touched.nombreCompleto && formik.errors.nombreCompleto && (
