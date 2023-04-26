@@ -1,4 +1,4 @@
- import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Toast } from 'primereact/toast';
@@ -9,16 +9,18 @@ import { fetchPost, fetchPut, fetchGet } from '../../../../../api';
 import { useNavigate } from 'react-router-dom';
 const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
 
-
+  
+ 
+  const navigate = useNavigate();
 
   const toast = useRef(null);
 
   const formik = useFormik({
-    enableReinitialze: true,
+    enableReinitialize: true,
     initialValues: {
-      codigo: edit?.codigo || '',
-      nombreAbreviado: edit?.nombreAbreviado || '',
-      nombreCompleto: edit?.nombreCompleto || '',
+      codigo: edit ? edit?.codigo : '',
+      nombreAbreviado: edit ? edit?.nombreAbreviado : '',
+      nombreCompleto: edit ? edit?.nombreCompleto : '',
     },
     onSubmit: (values) => {
       if (edit) {
@@ -33,7 +35,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
       nombreAbreviado: Yup.string().required('El campo es requerido'),
       nombreCompleto: Yup.string().required('El campo es requerido'),
     }),
-   
+    enableReinitialze: true,
   });
 
   const registreAdd = (data) => {
@@ -131,7 +133,6 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
             <InputText
               type='text'
               {...formik.getFieldProps('codigo')}
-              
               style={{ marginBottom: '5px' }}
               disabled={edit ? true : false}
             />
@@ -147,7 +148,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
               type='text'
             
               {...formik.getFieldProps('nombreAbreviado')}
-             
+              name='nombreAbreviado'
               style={{ marginBottom: '5px' }}
             />
             {formik.touched.nombreAbreviado &&
@@ -164,6 +165,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
             <InputText
               type='text'
               {...formik.getFieldProps('nombreCompleto')}
+              name='nombreCompleto'
               style={{ marginBottom: '5px' }}
             />
             {formik.touched.nombreCompleto && formik.errors.nombreCompleto && (
