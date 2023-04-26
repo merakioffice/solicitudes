@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react';
 
 
 
-const PDFRendicionGastos = () => {
+const PDFRendicionGastos = (countRendido) => {
   const [data3, setData] = useState();
   const [rendido, setRendido] = useState();
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
 
   let proyecto;
   let lugar;
-
+console.log(countRendido,'RENDIDO')
   fetchGet(`regProyecto/${rendicionGastos.proyecto}`).then((res) => {
     proyecto = res.registroProyecto.nombreAbreviado
      
@@ -144,9 +144,9 @@ const PDFRendicionGastos = () => {
     doc.rect(20, 66, 169, 11);
     doc.text('Resumen de la rendición de cuentas', 25, 70);
     doc.text(`RECIBIDO: $/ ${rendicionGastos.recibido}`, 25, 75);
-    doc.text(`RENDIDO: $/ ${rendido}`, 90, 75);
+    doc.text(`RENDIDO: $/ ${countRendido.rendidoCount.toFixed(2)}`, 90, 75);
     doc.text(
-      `SALDO: $/ ${(Number(rendicionGastos.recibido) + Number(rendido)).toFixed(2)}`,
+      `SALDO: $/ ${(Number(rendicionGastos.recibido) + Number(countRendido.rendidoCount)).toFixed(2)}`,
       150,
       75
     );
