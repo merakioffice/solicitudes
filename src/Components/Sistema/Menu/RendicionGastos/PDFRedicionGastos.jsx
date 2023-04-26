@@ -14,11 +14,15 @@ const PDFRendicionGastos = () => {
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
 
   let proyecto;
+  let lugar;
 
   fetchGet(`regProyecto/${rendicionGastos.proyecto}`).then((res) => {
     proyecto = res.registroProyecto.nombreAbreviado
      
   })
+  fetchGet(`comision/${rendicionGastos?.lugarComision}`).then((res) => {
+    lugar = res.lugarComision.descripcion
+  } )
   useEffect(() => {
 
 
@@ -27,7 +31,6 @@ const PDFRendicionGastos = () => {
     async function doIt(){
 
       const data = await fetchGet(`rendGastosProduct/${rendicionGastos?.id}`)
-
 
 
    
@@ -121,7 +124,7 @@ const PDFRendicionGastos = () => {
     doc.text(`Proyecto: ${proyecto}`, 25, 46);
 
     doc.rect(20, 47.95, 169, 6);
-    doc.text(`Lugar de comisión: ${rendicionGastos.lugarComision} `, 25, 52);
+    doc.text(`Lugar de comisión: ${lugar} `, 25, 52);
 
     doc.rect(20, 53.9, 169, 6);
     doc.text(

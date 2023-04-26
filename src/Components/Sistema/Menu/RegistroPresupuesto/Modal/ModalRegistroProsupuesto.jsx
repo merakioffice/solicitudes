@@ -1,23 +1,25 @@
- import React, { useRef } from 'react';
+ import React, { useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { fetchPost, fetchPut } from '../../../../../api';
+import { fetchPost, fetchPut, fetchGet } from '../../../../../api';
 import { useNavigate } from 'react-router-dom';
-const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
+const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
 
+  
+ 
   const navigate = useNavigate();
 
   const toast = useRef(null);
 
   const formik = useFormik({
     initialValues: {
-      codigo: edit ? edit.codigo : '',
-      nombreAbreviado: edit ? edit.nombreAbreviado : '',
-      nombreCompleto: edit ? edit.nombreCompleto : '',
+      codigo: edit ? edit?.codigo : '',
+      nombreAbreviado: edit ? edit?.nombreAbreviado : '',
+      nombreCompleto: edit ? edit?.nombreCompleto : '',
     },
     onSubmit: (values) => {
       if (edit) {
@@ -50,6 +52,17 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
           });
           setTimeout(() => {
             formik.resetForm();
+            async function doIt(){
+  
+              const {presupuestos} = await  fetchGet('registroPresupuesto')
+        
+              if(presupuestos){
+                 setAddData(presupuestos);
+              }
+             
+            }
+        
+            doIt();
             setView(false);
             navigate('/registro-presupuesto');
           }, 500);
@@ -59,7 +72,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
   };
 
   const updateAdd = (data) => {
-    fetchPut(`regProyecto/${edit.id}`, 'PUT', data).then((response) => {
+    fetchPut(`regProyecto/${edit?.id}`, 'PUT', data).then((response) => {
       if (response.proyecto === undefined) {
         toast.current.show({
           severity: 'warn',
@@ -74,7 +87,19 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
         });
         setTimeout(() => {
           formik.resetForm();
-          listData()
+
+                      async function doIt(){
+  
+              const {presupuestos} = await  fetchGet('registroPresupuesto')
+        
+              if(presupuestos){
+                 setAddData(presupuestos);
+              }
+             
+            }
+        
+            doIt();
+          
           setView(false);
          
         }, 500);
@@ -105,8 +130,9 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
             <InputText
               type='text'
               {...formik.getFieldProps('codigo')}
+              name='codigo'
               style={{ marginBottom: '5px' }}
-              disabled={edit ? true : false}
+             
             />
             {formik.touched.codigo && formik.errors.codigo && (
               <span style={{ color: '#e5432d' }}>{formik.errors.codigo}</span>
@@ -118,7 +144,9 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
 
             <InputText
               type='text'
+            
               {...formik.getFieldProps('nombreAbreviado')}
+              name='nombreAbreviado'
               style={{ marginBottom: '5px' }}
             />
             {formik.touched.nombreAbreviado &&
@@ -135,6 +163,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
             <InputText
               type='text'
               {...formik.getFieldProps('nombreCompleto')}
+              name='nombreCompleto'
               style={{ marginBottom: '5px' }}
             />
             {formik.touched.nombreCompleto && formik.errors.nombreCompleto && (

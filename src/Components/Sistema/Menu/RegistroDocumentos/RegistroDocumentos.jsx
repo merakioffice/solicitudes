@@ -26,10 +26,10 @@ listData(datatableState)
 const listData = (filters) => {
 const {page, rows} = filters || {page: 0, rows: 10, first: 10};
 setLoading(true);
-  fetchGet(`tipo-documento?page=${page + 1}&pageSize=${rows}`).then(( { registroTipoDocumento, count } ) => {
-    console.log(registroTipoDocumento)
+  fetchGet(`tipo-documento?page=${page + 1}&pageSize=${rows}`).then(( { result, count } ) => {
+    console.log(result)
     setTotalRecords(count);
-    const data = registroTipoDocumento.map((element, item) => {
+    const data = result.map((element, item) => {
       element.index = item + 1;
       return element;
     });

@@ -1,118 +1,174 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
+import { fetchPost, fetchPut, fetchGet } from '../../../../../api';
 
-const ModalRegistroProsupuesto = ({ setView, view }) => {
+
+const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
+  
+
   const toast = useRef(null);
+
+  const formik = useFormik({
+    initialValues: {
+      codigo: edit ? edit?.codigo : '',
+      nombreAbreviado: edit ? edit?.nombreAbreviado : '',
+      nombreCompleto: edit ? edit?.nombreCompleto : '',
+    },
+    onSubmit: (values) => {
+      if (edit) {
+        updateAdd(values);
+      } else {
+        registreAdd(values);
+      }
+    },
+    validationSchema: Yup.object({
+      codigo: Yup.string().required('El campo es requerido'),
+      nombreAbreviado: Yup.string().required('El campo es requerido'),
+      nombreCompleto: Yup.string().required('El campo es requerido'),
+    }),
+  });
+
+  const registreAdd = (data) => {
+    fetchPost('registroPresupuestoFinanciero', 'POST', data).then(
+      ({ presupuestos, message }) => {
+        if (presupuestos === undefined || !presupuestos) {
+          toast.current.show({
+            severity: 'warn',
+            summary: 'Datos duplicados',
+            detail: message,
+          });
+        } else {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Creado',
+            detail: message,
+          });
+          setTimeout(() => {
+            formik.resetForm();
+            async function doIt(){
+  
+              const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
+        
+              if(presupuestos){
+                 setAddData(presupuestos);
+              }
+             
+            }
+        
+            doIt();
+            setView(false);
+         
+          }, 500);
+        }
+      }
+    );
+  };
+
+  const updateAdd = (data) => {
+    fetchPut(`regProyecto/${edit?.id}`, 'PUT', data).then((response) => {
+      if (response.proyecto === undefined) {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Datos duplicados',
+          detail: response.message,
+        });
+      } else {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: response.message,
+        });
+        setTimeout(() => {
+          formik.resetForm();
+
+                      async function doIt(){
+  
+              const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
+        
+              if(presupuestos){
+                 setAddData(presupuestos);
+              }
+             
+            }
+        
+            doIt();
+          
+          setView(false);
+         
+        }, 500);
+      }
+    });
+  };
+
   return (
     <Dialog
       visible={view}
-      style={{ width: '500px' }}
-      header='Registro de Presupuesto'
+      style={{ width: '450px' }}
+      header={
+        edit ? 'Editar Registro de Proyecto' : 'Crear Registro de Proyecto'
+      }
       modal
       className='p-fluid'
-      onHide={() => setView(false)}
+      onHide={() => {
+      
+        setView(false);
+      }}
     >
       <Toast ref={toast} />
-      <form>
+      <form onSubmit={formik.handleSubmit}>
         <div className='p-fluid formgrid grid'>
           <div className='field col-12 md:col-12'>
             <label htmlFor='codigo'>Código</label>
 
             <InputText
               type='text'
-              // {...formik.getFieldProps('descripcion')}
+              {...formik.getFieldProps('codigo')}
+              name='codigo'
               style={{ marginBottom: '5px' }}
+             
             />
-            {/* {formik.touched.descripcion && formik.errors.descripcion && (
-               <span style={{ color: '#e5432d' }}>
-                 {formik.errors.descripcion}
-               </span>
-             )} */}
+            {formik.touched.codigo && formik.errors.codigo && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.codigo}</span>
+            )}
           </div>
+
           <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>Proyecto / Resultado</label>
+            <label htmlFor='nombreAbreviado'>Nombre Abreviado</label>
 
             <InputText
               type='text'
-              // {...formik.getFieldProps('partidaPresupuestal')}
+            
+              {...formik.getFieldProps('nombreAbreviado')}
+              name='nombreAbreviado'
               style={{ marginBottom: '5px' }}
             />
+            {formik.touched.nombreAbreviado &&
+              formik.errors.nombreAbreviado && (
+                <span style={{ color: '#e5432d' }}>
+                  {formik.errors.nombreAbreviado}
+                </span>
+              )}
           </div>
+
           <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreCompleto'>Equivalentes técnicos</label>
+            <label htmlFor='nombreCompleto'>Nombre Completo</label>
 
-            <InputTextarea
-              rows={5}
-              cols={30}
-              // {...formik.getFieldProps('importe')}
+            <InputText
               type='text'
-              autoResize
+              {...formik.getFieldProps('nombreCompleto')}
+              name='nombreCompleto'
               style={{ marginBottom: '5px' }}
             />
-          </div>
-          {/*  */}
-
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div className='field col-3 md:col-3'>
-              <label htmlFor='nombreCompleto'>datos1</label>
-
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-            <div className='field col-3 md:col-3'>
-              <label htmlFor='nombreCompleto'>datos1</label>
-
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-            <div className='field col-3 md:col-3'>
-              <label htmlFor='nombreCompleto'>datos1</label>
-
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div className='field col-3 md:col-3'>
-              <label htmlFor='nombreCompleto'>datos1</label>
-
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-            <div className='field col-3 md:col-3'>
-              <label htmlFor='nombreCompleto'>datos1</label>
-
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-            <div className='field col-3 md:col-3'>
-              <label htmlFor='nombreCompleto'>datos1</label>
-
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
+            {formik.touched.nombreCompleto && formik.errors.nombreCompleto && (
+              <span style={{ color: '#e5432d' }}>
+                {formik.errors.nombreCompleto}
+              </span>
+            )}
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -124,12 +180,13 @@ const ModalRegistroProsupuesto = ({ setView, view }) => {
             type='button'
             onClick={() => {
               setView(false);
-              // formik.resetForm({});
+              formik.resetForm({});
+             
             }}
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label={edit ? 'Editar' : 'Crear'}
             icon='pi pi-check'
             type='submit'
           />
