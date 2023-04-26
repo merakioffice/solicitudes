@@ -6,8 +6,11 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { fetchPost, fetchPut } from '../../../../../api';
+import { useNavigate } from 'react-router-dom';
+const ModalRegistroProsupuesto = ({ setView, view, edit, listData }) => {
 
-const ModalRegistroProsupuesto = ({ setView, view, edit }) => {
+  const navigate = useNavigate();
+
   const toast = useRef(null);
 
   const formik = useFormik({
@@ -47,9 +50,8 @@ const ModalRegistroProsupuesto = ({ setView, view, edit }) => {
           });
           setTimeout(() => {
             formik.resetForm();
-            listData();
             setView(false);
-           
+            navigate('/registro-presupuesto');
           }, 500);
         }
       }
@@ -72,7 +74,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit }) => {
         });
         setTimeout(() => {
           formik.resetForm();
-          listData();
+          listData()
           setView(false);
          
         }, 500);

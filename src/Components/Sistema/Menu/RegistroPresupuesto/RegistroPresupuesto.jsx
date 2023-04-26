@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -7,12 +7,14 @@ import { LeftToolBarTemplate, RightToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroProsupuesto from './Modal/ModalRegistroProsupuesto';
 import { FileUpload } from 'primereact/fileupload';
-import { fetchGet } from '../../../../api';
-
+import { fetchGet, createFormData, fetchDelete } from '../../../../api';
+import { Toast } from 'primereact/toast';
+import { useNavigate } from 'react-router-dom';
 const RegistroPresupuesto = () => {
+  const navigate = useNavigate();
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
-
+  const toast = useRef(null);
 
   useEffect( () =>  {
     async function doIt(){
@@ -23,15 +25,22 @@ const RegistroPresupuesto = () => {
          setAddData(presupuestos);
       }
      
-    
-     
 
-    
     }
 
     doIt();
 
   }, [])
+
+
+
+
+  const deleteData = (id) => {
+    fetchDelete(`registroPresupuesto/${id}`).then((res) => {
+      navigate('/registro-presupuesto');
+    })
+
+  }
 
   const openModal = () => {
     setView(!view);
@@ -55,7 +64,7 @@ const RegistroPresupuesto = () => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          // onClick={() => deleteData(rowData.id)}
+           onClick={() => deleteData(rowData.id)}
         />
       </div>
     );
@@ -78,6 +87,42 @@ const RegistroPresupuesto = () => {
     );
   };
 
+
+  const listData = (data) => {
+    const newData = [];
+    for (let i = 1; i < data.length - 1; i++) {
+      const element = data[i];
+      const items = {
+        id: i,
+        codigo: element[0],
+        proyecto: element[1],
+        equivalentes: element[2],
+      };
+      newData.push(items);
+    }
+
+    useEffect( () =>  {
+      async function doIt(){
+  
+        const {presupuestos} = await  fetchGet('registroPresupuesto')
+  
+        if(presupuestos){
+           setAddData(presupuestos);
+        }
+       
+      
+       
+  
+      
+      }
+  
+      doIt();
+  
+    }, [])
+
+    return newData;
+  };
+
   const readExcel = ({ files }) => {
     const [File] = files;
     const reader = new FileReader();
@@ -90,20 +135,32 @@ const RegistroPresupuesto = () => {
       const ws = wb.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-      const listData = (data) => {
-        const newData = [];
-        for (let i = 1; i < data.length - 1; i++) {
-          const element = data[i];
-          const items = {
-            id: i,
-            codigo: element[0],
-            proyecto: element[1],
-            equivalentes: element[2],
-          };
-          newData.push(items);
+      const formData = new FormData();
+      formData.append('file', File);
+      
+
+      new Promise(async (resolve) => {
+        try {
+        const res =  await createFormData("registroPresupuestoAddAll", 'POST' , formData);
+
+          await 
+          toast.current.show({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Empleados Created',
+            life: 3000,
+          });
+         
+          resolve(res);
+          navigate('/registro-presupuesto');
+          return res;
+        } catch (error) {
+          console.log(error)
+          resolve([]);
         }
-        return newData;
-      };
+      });
+
+
       setAddData(listData(data));
     };
 
@@ -113,7 +170,7 @@ const RegistroPresupuesto = () => {
 
   return (
     <div className='grid crud-demo'>
-      {/* <Toast ref={toast} /> */}
+       <Toast ref={toast} /> 
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -143,7 +200,7 @@ const RegistroPresupuesto = () => {
           </DataTable>
         </div>
       </div>
-      <ModalRegistroProsupuesto setView={setView} view={view} />
+      <ModalRegistroProsupuesto  listData={listData} setView={setView} view={view} />
 {/*       {view && (
         <ModalRegistroProsupuesto
           setView={setView}
