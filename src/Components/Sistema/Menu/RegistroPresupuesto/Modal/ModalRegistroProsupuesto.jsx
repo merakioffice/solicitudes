@@ -28,11 +28,13 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
         registreAdd(values);
       }
     },
+
     validationSchema: Yup.object({
       codigo: Yup.string().required('El campo es requerido'),
       nombreAbreviado: Yup.string().required('El campo es requerido'),
       nombreCompleto: Yup.string().required('El campo es requerido'),
     }),
+    enableReinitialze: true,
   });
 
   const registreAdd = (data) => {
@@ -130,9 +132,8 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
             <InputText
               type='text'
               {...formik.getFieldProps('codigo')}
-              name='codigo'
               style={{ marginBottom: '5px' }}
-             
+              disabled={edit ? true : false}
             />
             {formik.touched.codigo && formik.errors.codigo && (
               <span style={{ color: '#e5432d' }}>{formik.errors.codigo}</span>
@@ -162,7 +163,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
 
             <InputText
               type='text'
-              {...formik.getFieldProps('nombreCompleto')}
+              {...formik.getFieldProps('nombreAbreviado')}
               name='nombreCompleto'
               style={{ marginBottom: '5px' }}
             />

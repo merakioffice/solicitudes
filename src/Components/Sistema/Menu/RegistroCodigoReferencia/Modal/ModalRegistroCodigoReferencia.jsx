@@ -1,244 +1,157 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { Dropdown } from 'primereact/dropdown';
+import { fetchPost, fetchPut, fetchGet } from '../../../../../api';
+import { useNavigate } from 'react-router-dom';
+const ModalRegistroCodigoReferencia = ({ setView, edit, view, setAddData }) => {
+ 
+  const navigate = useNavigate();
 
-const ModalRegistroCodigoReferencia = ({ setView, view }) => {
   const toast = useRef(null);
+
+  const formik = useFormik({
+    initialValues: {
+      codigo: edit ? edit?.codigo : '',
+      nombre: edit ? edit?.nombreCompleto : '',
+    },
+    onSubmit: (values) => {
+      if (edit) {
+        updateAdd(values);
+      } else {
+        registreAdd(values);
+      }
+    },
+    validationSchema: Yup.object({
+      codigo: Yup.string().required('El campo es requerido'),
+      nombre: Yup.string().required('El campo es requerido'),
+
+    }),
+  });
+
+  const registreAdd = (data) => {
+    fetchPost('registroReferencia', 'POST', data).then(
+      ({  message, codigoReferencias }) => {
+        if (!codigoReferencias) {
+          toast.current.show({
+            severity: 'warn',
+            summary: 'ocurrio un eror',
+            detail: message,
+          });
+        } else {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Creado',
+            detail: message,
+          });
+          setTimeout(() => {
+            formik.resetForm();
+            fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
+          
+        console.log('dsdsacdsc', codigoReferencias )
+              const data = codigoReferencias.map((element, item) => {
+                element.index = item;
+                return element;
+              });
+        
+              setAddData(data);
+            
+            });
+            setView(false);
+ 
+          }, 500);
+        }
+      }
+    );
+  };
+
+  const updateAdd = (data) => {
+    fetchPut(`regProyecto/${edit?.id}`, 'PUT', data).then((response) => {
+      if (response.proyecto === undefined) {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Datos duplicados',
+          detail: response.message,
+        });
+      } else {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: response.message,
+        });
+        setTimeout(() => {
+          formik.resetForm();
+
+            async function doIt(){
+  
+              const {codigoReferencias} = await  fetchGet('registroReferenciaAll')
+        
+              if(codigoReferencias){
+                 setAddData(codigoReferencias);
+              }
+             
+            }
+        
+            doIt();
+          
+          setView(false);
+         
+        }, 500);
+      }
+    });
+  };
+
   return (
     <Dialog
       visible={view}
-      style={{ width: '550px' }}
-      header='Registro Código de Referencia'
+      style={{ width: '450px' }}
+      header={
+        edit ? 'Editar Registro de Proyecto' : 'Crear Registro de Proyecto'
+      }
       modal
       className='p-fluid'
-      onHide={() => setView(false)}
+      onHide={() => {
+      
+        setView(false);
+      }}
     >
       <Toast ref={toast} />
-      <form>
+      <form onSubmit={formik.handleSubmit}>
         <div className='p-fluid formgrid grid'>
           <div className='field col-12 md:col-12'>
             <label htmlFor='codigo'>Código</label>
 
             <InputText
               type='text'
-              // {...formik.getFieldProps('descripcion')}
+              {...formik.getFieldProps('codigo')}
+              name='codigo'
               style={{ marginBottom: '5px' }}
+             
             />
-            {/* {formik.touched.descripcion && formik.errors.descripcion && (
-              <span style={{ color: '#e5432d' }}>
-                {formik.errors.descripcion}
-              </span>
-            )} */}
-          </div>
-
-          <div
-            className='field col-12 md:col-12'
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '5px',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <label htmlFor='nombreAbreviado'>Exonerar</label>
-              <TriStateCheckbox
-                // value={value} onChange={(e) => setValue(e.value)}
-                style={{ marginLeft: '5px' }}
-              />
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <label htmlFor='nombreCompleto'>Categoría</label>
-              <Dropdown
-                // value={selectedCity1}
-                // options={cities}
-                // onChange={onCityChange}
-                optionLabel='name'
-                placeholder='Seleccionar categoría'
-                style={{ marginLeft: '5px' }}
-              />
-              <InputText
-                // {...formik.getFieldProps('importe')}
-                type='text'
-                style={{ marginLeft: '5px' }}
-              />
-            </div>
-          </div>
-          {/*  */}
-          <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>Código Documento</label>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Dropdown
-                // value={selectedCity1}
-                // options={cities}
-                // onChange={onCityChange}
-                optionLabel='name'
-                placeholder='Seleccionar categoría'
-              />
-              <InputText
-                type='text'
-                // {...formik.getFieldProps('partidaPresupuestal')}
-                style={{ marginLeft: '5px' }}
-              />
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '99.3%',
-            }}
-          >
-            <div className='field ' style={{ marginLeft: '5px', width: '90%' }}>
-              <label htmlFor='nombreAbreviado'>RUC</label>
-
-              <InputText type='text' />
-            </div>
-            <div className='field' style={{ marginLeft: '5px', width: '90%' }}>
-              <label htmlFor='nombreAbreviado'>Teléfono</label>
-
-              <InputText type='text' />
-            </div>
+            {formik.touched.codigo && formik.errors.codigo && (
+              <span style={{ color: '#e5432d' }}>{formik.errors.codigo}</span>
+            )}
           </div>
 
           <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>Dirección</label>
+            <label htmlFor='nombreAbreviado'>Nombre Abreviado</label>
 
             <InputText
               type='text'
-              // {...formik.getFieldProps('partidaPresupuestal')}
+            
+              {...formik.getFieldProps('nombreAbreviado')}
+              name='nombre'
               style={{ marginBottom: '5px' }}
             />
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '99.3%',
-            }}
-          >
-            <div
-              className='field '
-              style={{ marginLeft: '5px', width: '100%' }}
-            >
-              <label htmlFor='nombreAbreviado'>Apellido Paterno</label>
-
-              <InputText
-                type='text'
-                // {...formik.getFieldProps('partidaPresupuestal')}
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-            <div
-              className='field '
-              style={{ marginLeft: '5px', width: '100%' }}
-            >
-              <label htmlFor='nombreAbreviado'>Apellido Materno</label>
-
-              <InputText
-                type='text'
-                // {...formik.getFieldProps('partidaPresupuestal')}
-                style={{ marginBottom: '5px' }}
-              />
-            </div>
-          </div>
-          <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>Nombres</label>
-
-            <InputText
-              type='text'
-              // {...formik.getFieldProps('partidaPresupuestal')}
-              style={{ marginBottom: '5px' }}
-            />
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '99.3%',
-            }}
-          >
-            <div
-              className='field '
-              style={{ marginLeft: '5px', width: '100%' }}
-            >
-              <label htmlFor='nombreAbreviado'>Razón</label>
-
-              <InputText
-                type='text'
-                // {...formik.getFieldProps('partidaPresupuestal')}
-                // style={{ marginBottom: '5px' }}
-              />
-            </div>
-            <div className='field ' style={{ marginLeft: '5px' }}>
-              <label htmlFor='nombreAbreviado'>Fecha Nacimiento</label>
-
-              <InputText
-                type='text'
-                // {...formik.getFieldProps('partidaPresupuestal')}
-                // style={{ marginBottom: '5px' }}
-              />
-            </div>
-          </div>
-
-          <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>Regimen</label>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Dropdown
-                // value={selectedCity1}
-                // options={cities}
-                // onChange={onCityChange}
-                optionLabel='name'
-                placeholder='Seleccionar regimen'
-              />
-              <InputText
-                type='text'
-                // {...formik.getFieldProps('partidaPresupuestal')}
-                style={{ marginLeft: '5px' }}
-              />
-            </div>
-          </div>
-          <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>CUPSS</label>
-
-            <InputText
-              type='text'
-              // {...formik.getFieldProps('partidaPresupuestal')}
-              style={{ marginBottom: '5px' }}
-            />
+            {formik.touched.nombreAbreviado &&
+              formik.errors.nombreAbreviado && (
+                <span style={{ color: '#e5432d' }}>
+                  {formik.errors.nombreAbreviado}
+                </span>
+              )}
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -249,13 +162,14 @@ const ModalRegistroCodigoReferencia = ({ setView, view }) => {
             className='p-button-text'
             type='button'
             onClick={() => {
-              // setViewProduct(false);
-              // formik.resetForm({});
+              setView(false);
+              formik.resetForm({});
+             
             }}
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label={edit ? 'Editar' : 'Crear'}
             icon='pi pi-check'
             type='submit'
           />
