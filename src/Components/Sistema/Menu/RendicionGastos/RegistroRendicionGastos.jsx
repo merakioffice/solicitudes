@@ -434,11 +434,11 @@ const RegistroRendicionGastos = () => {
       // values.recibido = countRecibido.toString();
       
     /*   registreAdd(values); */
-
-    if(edit){
-      registreUpdate(values)
-    } else {
+     
+    if(Object.keys(edit).length === 0){
       registreAdd(values);
+    } else {
+      registreUpdate(values)
     }
     },
     validationSchema: Yup.object({
@@ -704,7 +704,6 @@ const RegistroRendicionGastos = () => {
                       ? edit.lugarComision
                       : ''
                   }
-
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
