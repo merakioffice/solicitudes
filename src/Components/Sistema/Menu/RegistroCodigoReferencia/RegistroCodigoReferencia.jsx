@@ -7,7 +7,7 @@ import { LeftToolBarTemplate } from '../../../Molecula';
 import { Button } from 'primereact/button';
 import ModalRegistroCodigoReferencia from './Modal/ModalRegistroCodigoReferencia';
 import { FileUpload } from 'primereact/fileupload';
-import { createFormData, fetchGet } from '../../../../api';
+import { createFormData, fetchDelete, fetchGet } from '../../../../api';
 import { Toast } from 'primereact/toast';
 const RegistroCodigoReferencia = () => {
   const [view, setView] = useState(false);
@@ -38,6 +38,32 @@ const RegistroCodigoReferencia = () => {
   }, [datatableState])
 
 
+  const deleteData = (data) => {
+
+    
+
+    fetchDelete(`registroReferencia/${data}`).then((res) => {
+      toast.current.show({
+        severity: 'success',
+        summary: res.message,
+        life: 3000,
+      });
+
+      fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
+          
+      
+              const data = codigoReferencias.map((element, item) => {
+                element.index = item;
+                return element;
+              });
+        
+              setAddData(data);
+            
+            });
+    })
+
+  }
+
   const tableButtonEdit = (rowData) => {
     return (
       <div className='actions'>
@@ -56,7 +82,7 @@ const RegistroCodigoReferencia = () => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          // onClick={() => deleteData(rowData.id)}
+          onClick={() => deleteData(rowData.id)}
         />
       </div>
     );
@@ -164,7 +190,7 @@ const RegistroCodigoReferencia = () => {
           </DataTable>
         </div>
       </div>
-      <ModalRegistroCodigoReferencia setView={setView} view={view} />
+      <ModalRegistroCodigoReferencia setView={setView} setAddData={setAddData} view={view} />
     </div>
   );
 };

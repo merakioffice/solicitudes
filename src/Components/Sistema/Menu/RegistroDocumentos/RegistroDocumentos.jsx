@@ -179,10 +179,10 @@ const deleteData = async(id) => {
                           responsiveLayout='scroll'
                           paginator
                           lazy
-                          rows={10} 
+                          rows={8} 
                           totalRecords={totalRecords}
                           dataKey="id" 
-                          first={datatableState.first}
+                        /*   first={datatableState.first} */
                           onPage={(e) => changeDatatableState(e)}   
                           loading={loading}
           >

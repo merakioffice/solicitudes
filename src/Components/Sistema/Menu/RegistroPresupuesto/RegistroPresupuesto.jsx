@@ -49,8 +49,9 @@ const RegistroPresupuesto = () => {
 
   const editData = (data) => {
     
-    setEdit(data)
+   
     setView(!view);
+    setEdit(data)
   }
 
   const tableButtonEdit = (rowData) => {

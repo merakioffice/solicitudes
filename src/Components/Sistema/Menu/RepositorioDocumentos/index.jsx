@@ -224,6 +224,8 @@ const RegistroDocumentos = () => {
               name='image'
              /*  url={urlfirmado} */
               accept='pdf/*'
+              customUpload
+
               uploadHandler={customBaseUploader}
               // onUpload={onUpload}
               maxFileSize={1000000}
