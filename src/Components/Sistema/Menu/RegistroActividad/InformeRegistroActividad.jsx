@@ -33,6 +33,7 @@ const InformeRegistroActividad = () => {
   };
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       nombreApellido: edit !== null ? edit?.nombreApellido : '',
       destino: edit ? edit?.destino : '',
@@ -135,7 +136,7 @@ const InformeRegistroActividad = () => {
                 <InputText
                   name='nombreApellido'
                   type='text'
-                  values={'jv'}
+                  {...formik.getFieldProps('nombreApellido')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}

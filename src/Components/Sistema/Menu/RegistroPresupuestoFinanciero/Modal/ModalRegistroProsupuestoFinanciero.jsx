@@ -71,7 +71,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
   };
 
   const updateAdd = (data) => {
-    fetchPut(`regProyecto/${edit?.id}`, 'PUT', data).then((response) => {
+    fetchPut(`registroPresupuestoFinanciero/${edit?.id}`, 'PUT', data).then((response) => {
       if (response.proyecto === undefined) {
         toast.current.show({
           severity: 'warn',
