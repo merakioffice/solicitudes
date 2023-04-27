@@ -11,6 +11,8 @@ import ModalRegistroDocumentos from './Modal/ModalRegistroDocumentos';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
 import {fetchGet} from '../../../../api/api'
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+
 const RegistroDocumentos = () => {
   const toast = useRef(null);
 const [addData, setAddData] = useState([]);
@@ -18,6 +20,7 @@ const [totalRecords, setTotalRecords] = useState(0);
 const [loading, setLoading] = useState(false);
 const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
 const [edit, setEdit] = useState()
+const [view, setView] = useState(false);
 
 useEffect(() => {
 listData(datatableState)
@@ -38,6 +41,26 @@ setLoading(true);
     setLoading(false);
   });
 }
+
+
+
+  const editData = (data) => {
+    setEdit(data);
+    setView(!view);
+  };
+
+
+  const tableButtonDelete = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-trash'
+          className='p-button-rounded p-button-danger'
+           onClick={() => confirm1(rowData.id)}
+        />
+      </div>
+    );
+  };
 
 
 const deleteData = async(id) => {
@@ -61,11 +84,16 @@ const deleteData = async(id) => {
       life: 3000,
     });
   })
-
 }
 
-  const [view, setView] = useState(false);
-
+  const confirm1 = (id) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
 
   const tableButtonEdit = (rowData) => {
     return (
@@ -75,27 +103,6 @@ const deleteData = async(id) => {
           className='p-button-rounded p-button-warning'
             onClick={() => editData(rowData)} 
         /> }
-      </div>
-    );
-  };
-
-
-  const editData = (data) => {
-    setEdit(data);
-    setView(!view);
-   
-    
-  };
-
-
-  const tableButtonDelete = (rowData) => {
-    return (
-      <div className='actions'>
-        <Button
-          icon='pi pi-trash'
-          className='p-button-rounded p-button-danger'
-           onClick={() => deleteData(rowData.id)}
-        />
       </div>
     );
   };
@@ -162,11 +169,7 @@ const deleteData = async(id) => {
       <div className='col-12'>
         <div className='card'>
         <Toast ref={toast} />
-{/*           <Toolbar
-            className='mb-4'
-
-            right={RightToolBarTemplate}
-          ></Toolbar> */}
+        <ConfirmDialog />
             <Toolbar
             className='mb-4'
             left={LeftToolBarTemplate({
@@ -180,6 +183,7 @@ const deleteData = async(id) => {
                           paginator
                           lazy
                           rows={8} 
+                          first={datatableState.first}
                           totalRecords={totalRecords}
                           dataKey="id" 
                         /*   first={datatableState.first} */
