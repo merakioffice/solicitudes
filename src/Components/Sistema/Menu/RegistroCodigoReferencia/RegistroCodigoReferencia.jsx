@@ -9,6 +9,9 @@ import ModalRegistroCodigoReferencia from './Modal/ModalRegistroCodigoReferencia
 import { FileUpload } from 'primereact/fileupload';
 import { createFormData, fetchDelete, fetchGet } from '../../../../api';
 import { Toast } from 'primereact/toast';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+
+
 const RegistroCodigoReferencia = () => {
   const [view, setView] = useState(false);
   const [edit, setEdit] = useState();
@@ -39,30 +42,6 @@ const RegistroCodigoReferencia = () => {
   }, [datatableState])
 
 
-  const deleteData = (data) => {
-
-  
-    fetchDelete(`registroReferencia/${data}`).then((res) => {
-      toast.current.show({
-        severity: 'success',
-        summary: res.message,
-        life: 3000,
-      });
-
-      fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
-          
-      
-              const data = codigoReferencias.map((element, item) => {
-                element.index = item;
-                return element;
-              });
-        
-              setAddData(data);
-            
-            });
-    })
-
-  }
 
 
 const editData = (data) => {
@@ -90,10 +69,40 @@ const editData = (data) => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          onClick={() => deleteData(rowData.id)}
+          onClick={() => confirm1(rowData.id)}
         />
       </div>
     );
+  };
+
+
+  const deleteData = (id) => {
+    fetchDelete(`registroReferencia/${id}`).then((res) => {
+      toast.current.show({
+        severity: 'success',
+        summary: res.message,
+        life: 3000,
+      });
+
+      fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
+              const data = codigoReferencias.map((element, item) => {
+                element.index = item;
+                return element;
+              });
+        
+              setAddData(data);
+            
+            });
+    })
+  }
+
+  const confirm1 = (id) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
   };
 
   const openModal = () => {
@@ -174,6 +183,7 @@ const editData = (data) => {
             })}
             right={RightToolBarTemplate}
           ></Toolbar>
+                  <ConfirmDialog />
           <DataTable value={addData}
                           dataKey="id" 
                           first={datatableState.first}
