@@ -260,7 +260,7 @@ const RegistroPresupuesto = () => {
   return (
     <div className='grid crud-demo'>
        <Toast ref={toast} /> 
-       <ConfirmDialog />
+        <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -280,11 +280,6 @@ const RegistroPresupuesto = () => {
                           onPage={(e) => changeDatatableState(e)}
                             paginator>
             <Column field='id' header='Id'>
-              {addData.map((item, index) => {
-                {
-                  index + 1;
-                }
-              })}
             </Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='nombreAbreviado' header='Nombre Abreviado'></Column>

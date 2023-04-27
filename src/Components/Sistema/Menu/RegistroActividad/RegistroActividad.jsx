@@ -16,11 +16,24 @@ const RegistroActividad = () => {
   const dispatch = useDispatch();
   const [addData, setAddData] = useState([]);
   const navigate = useNavigate();
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const toast = useRef(null);
 
   const listData = () => {
-    fetchGet('regActividad').then(({ registroActividad }) => {
+/*     fetchGet('regActividad').then(({ registroActividad }) => {
       const data = registroActividad.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
+      setAddData(data);
+    }); */
+    const {page, rows} = datatableState || {page: 0, rows: 10, first: 10};
+        
+    fetchGet(`/regActividad?page=${page + 1}&pageSize=${rows}`).then(( { registroActividad, count } ) => {
+      console.log(registroActividad,'registro')
+      setTotalRecords(count);
+      const data = registroActividad.rows.map((element, item) => {
         element.index = item + 1;
         return element;
       });
@@ -35,8 +48,6 @@ const RegistroActividad = () => {
 
   const editData = (data) => {
   
-    // dispatch(getSolicitudDinero());
-    // dispatch(oneIdSolicitud(data));
     navigate('/registro-actividad', { state: data });
   };
 
@@ -107,7 +118,18 @@ const RegistroActividad = () => {
             })}
           ></Toolbar>
 
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData} 
+                                    dataKey="id" 
+                                    first={datatableState.first}
+                                  
+                                    paginator
+                                    lazy
+                                    rows={10} 
+                                    totalRecords={totalRecords}
+                                    onPage={(e) => changeDatatableState(e)}
+                                   
+          
+          responsiveLayout='scroll'>
             <Column field='index' header='Id'></Column>
             <Column field='nombreApellido' header='Nombre'></Column>
             <Column field='fechaInicio' header='Fecha'></Column>
