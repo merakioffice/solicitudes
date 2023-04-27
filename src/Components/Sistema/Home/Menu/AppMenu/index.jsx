@@ -265,6 +265,9 @@ export default  function  AppMenu({isOpen}) {
   const fyaMain = () => {
     return menuFyA
       ? menuFyA.map((item, index) => {
+        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
+          return
+        }
           return (
             <div key={index}>
               <li>
