@@ -31,7 +31,6 @@ const LugarComision = () => {
     
     fetchGet(`comision?page=${page + 1}&pageSize=${rows}`).then(( { comisiones, count } ) => {
       setTotalRecords(count);
-      console.log("c", comisiones)
       const data = comisiones.map((element, item) => {
         element.index = item + 1;
         return element;
