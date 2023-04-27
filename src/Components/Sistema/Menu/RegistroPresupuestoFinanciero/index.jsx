@@ -18,36 +18,30 @@ const RegistroPresupuestoFinanciero = () => {
   const [addData, setAddData] = useState([]);
   const toast = useRef(null);
   const [edit, setEdit] = useState([]);
-  useEffect( () =>  {
-    async function doIt(){
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
 
-      const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
 
-      if(presupuestos){
-         setAddData(presupuestos);
-      }
-     
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
+    setLoading(true);
+    fetchGet(`registroPresupuestoFinanciero?page=${page + 1}&pageSize=${rows}`).then(( { presupuestos, count } ) => {
+      setTotalRecords(count);
 
-    }
+      const data = presupuestos.map((element, item) => {
+        element.index = item + 1;
+        return element;
+      });
 
-    doIt();
+      setAddData(data);
+      setLoading(false);
+    });
+  };
 
-  }, [])
-
-
-
-
-  const deleteData = (id) => {
-    fetchDelete(`registroPresupuestoFinanciero/${id}`).then(async (res) => {
-      const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
-
-      if(presupuestos){
-         setAddData(presupuestos);
-      }
-     
-    })
-
-  }
 
   const openModal = () => {
     setEdit('')
@@ -72,20 +66,46 @@ const RegistroPresupuestoFinanciero = () => {
     );
   };
 
+  const deleteData = (id) => {
+    fetchDelete(`registroPresupuestoFinanciero/${id}`).then(async (res) => {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Elemento eliminado.',
+        detail: res.message,
+        life: 3000,
+      });
+      listData();
+    })
 
+  }
 
+  const confirm1 = (id) => {
+    console.log("sss")
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
 
   const tableButtonDelete = (rowData) => {
+
     return (
       <div className='actions'>
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-           onClick={() => deleteData(rowData.id)}
+          onClick={() => {
+            confirm1(rowData.id);
+          }}  
         />
       </div>
     );
   };
+
+
+
 
   const RightToolBarTemplate = () => {
     return (
@@ -105,40 +125,7 @@ const RegistroPresupuestoFinanciero = () => {
   };
 
 
-  const listData = (data) => {
-    const newData = [];
-    for (let i = 1; i < data.length - 1; i++) {
-      const element = data[i];
-      const items = {
-        id: i,
-        codigo: element[0],
-        proyecto: element[1],
-        equivalentes: element[2],
-      };
-      newData.push(items);
-    }
 
-    useEffect( () =>  {
-      async function doIt(){
-  
-        const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
-  
-        if(presupuestos){
-           setAddData(presupuestos);
-        }
-       
-      
-       
-  
-      
-      }
-  
-      doIt();
-  
-    }, [])
-
-    return newData;
-  };
 
   const readExcel = ({ files }) => {
     const [File] = files;
@@ -167,18 +154,9 @@ const RegistroPresupuestoFinanciero = () => {
             detail: 'Empleados Created',
             life: 3000,
           });
-         
-          resolve(res);
-          async function doIt(){
-  
-            const {presupuestos} = await  fetchGet('registroPresupuestoFinanciero')
-      
-            if(presupuestos){
-               setAddData(presupuestos);
-            } 
-          }
+          listData();
 
-          doIt();
+          resolve(res);
       
           return res;
         } catch (error) {
@@ -187,8 +165,6 @@ const RegistroPresupuestoFinanciero = () => {
         }
       });
 
-
-      setAddData(listData(data));
     };
 
     if (rABS) reader.readAsBinaryString(File);
@@ -198,6 +174,7 @@ const RegistroPresupuestoFinanciero = () => {
   return (
     <div className='grid crud-demo'>
        <Toast ref={toast} /> 
+       <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -208,7 +185,17 @@ const RegistroPresupuestoFinanciero = () => {
               nameBtn: 'Agregar Presupuesto Financiador',
             })}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData} 
+                    dataKey="id" 
+                    first={datatableState.first}
+                    responsiveLayout='scroll'
+                    paginator
+                    lazy
+                    rows={10} 
+                    totalRecords={totalRecords}
+                    onPage={(e) => changeDatatableState(e)}     
+                    loading={loading}
+          >
             <Column field='id' header='Id'>
               {addData.map((item, index) => {
                 {
