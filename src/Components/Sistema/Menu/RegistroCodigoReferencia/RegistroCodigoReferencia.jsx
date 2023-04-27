@@ -97,6 +97,7 @@ const editData = (data) => {
   };
 
   const openModal = () => {
+    setEdit('')
     setView(!view);
   };
 

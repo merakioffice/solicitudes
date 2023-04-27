@@ -37,7 +37,7 @@ const ModalRegistroCodigoReferencia = ({ setView, edit, view, setAddData }) => {
   const registreAdd = (data) => {
     fetchPost('registroReferencia', 'POST', data).then(
       ({  message, codigoReferencias }) => {
-        if (codigoReferencias) {
+        if (!codigoReferencias) {
           toast.current.show({
             severity: 'warn',
             summary: 'ocurrio un eror',
