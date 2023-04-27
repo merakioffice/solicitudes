@@ -45,7 +45,7 @@ const InformeRegistroActividad = () => {
     },
     onSubmit: (values) => {
 
-      if(Object.keys(edit).length === 0){
+      if(edit === null){
         registreAdd(values);
       } else {
         registreUpdate(values)

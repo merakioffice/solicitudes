@@ -65,6 +65,7 @@ const RegistroActividad = () => {
       </div>
     );
   };
+  
 
   const acceptFunc = (data) => {
     fetchDelete(`regActividad/${data}`).then((data) => {

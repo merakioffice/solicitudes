@@ -11,6 +11,7 @@ import { createFormData, fetchDelete, fetchGet } from '../../../../api';
 import { Toast } from 'primereact/toast';
 const RegistroCodigoReferencia = () => {
   const [view, setView] = useState(false);
+  const [edit, setEdit] = useState();
   const [addData, setAddData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
@@ -40,8 +41,7 @@ const RegistroCodigoReferencia = () => {
 
   const deleteData = (data) => {
 
-    
-
+  
     fetchDelete(`registroReferencia/${data}`).then((res) => {
       toast.current.show({
         severity: 'success',
@@ -64,13 +64,21 @@ const RegistroCodigoReferencia = () => {
 
   }
 
+
+const editData = (data) => {
+
+  setEdit(data)
+  setView(!view);
+
+}
+
   const tableButtonEdit = (rowData) => {
     return (
       <div className='actions'>
         <Button
           icon='pi pi-pencil'
           className='p-button-rounded p-button-warning'
-          // onClick={() => editData(rowData)}
+           onClick={() => editData(rowData)}
         />
       </div>
     );
@@ -89,6 +97,7 @@ const RegistroCodigoReferencia = () => {
   };
 
   const openModal = () => {
+    setEdit('')
     setView(!view);
   };
 
@@ -190,7 +199,7 @@ const RegistroCodigoReferencia = () => {
           </DataTable>
         </div>
       </div>
-      <ModalRegistroCodigoReferencia setView={setView} setAddData={setAddData} view={view} />
+      <ModalRegistroCodigoReferencia setView={setView} edit={edit} setAddData={setAddData} view={view} />
     </div>
   );
 };

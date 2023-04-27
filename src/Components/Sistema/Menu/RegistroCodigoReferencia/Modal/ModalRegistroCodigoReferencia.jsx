@@ -9,20 +9,22 @@ import { fetchPost, fetchPut, fetchGet } from '../../../../../api';
 import { useNavigate } from 'react-router-dom';
 const ModalRegistroCodigoReferencia = ({ setView, edit, view, setAddData }) => {
  
-  const navigate = useNavigate();
+  console.log(edit,'edit')
 
   const toast = useRef(null);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       codigo: edit ? edit?.codigo : '',
-      nombre: edit ? edit?.nombreCompleto : '',
+      nombre: edit ? edit?.nombre : '',
     },
     onSubmit: (values) => {
-      if (edit) {
-        updateAdd(values);
-      } else {
+      if (Object.keys(edit).length === 0) {
         registreAdd(values);
+        
+      } else {
+        updateAdd(values);
       }
     },
     validationSchema: Yup.object({
@@ -51,7 +53,7 @@ const ModalRegistroCodigoReferencia = ({ setView, edit, view, setAddData }) => {
             formik.resetForm();
             fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
           
-        console.log('dsdsacdsc', codigoReferencias )
+     
               const data = codigoReferencias.map((element, item) => {
                 element.index = item;
                 return element;
@@ -69,8 +71,8 @@ const ModalRegistroCodigoReferencia = ({ setView, edit, view, setAddData }) => {
   };
 
   const updateAdd = (data) => {
-    fetchPut(`regProyecto/${edit?.id}`, 'PUT', data).then((response) => {
-      if (response.proyecto === undefined) {
+    fetchPut(`registroReferenciaAll/${edit?.id}`, 'PUT', data).then((response) => {
+      if (response.codigoReferencias === undefined) {
         toast.current.show({
           severity: 'warn',
           summary: 'Datos duplicados',
@@ -137,19 +139,19 @@ const ModalRegistroCodigoReferencia = ({ setView, edit, view, setAddData }) => {
           </div>
 
           <div className='field col-12 md:col-12'>
-            <label htmlFor='nombreAbreviado'>Nombre Abreviado</label>
+            <label htmlFor='nombre'>Nombre</label>
 
             <InputText
               type='text'
             
-              {...formik.getFieldProps('nombreAbreviado')}
+              {...formik.getFieldProps('nombre')}
               name='nombre'
               style={{ marginBottom: '5px' }}
             />
-            {formik.touched.nombreAbreviado &&
-              formik.errors.nombreAbreviado && (
+            {formik.touched.nombre&&
+              formik.errors.nombre && (
                 <span style={{ color: '#e5432d' }}>
-                  {formik.errors.nombreAbreviado}
+                  {formik.errors.nombre}
                 </span>
               )}
           </div>
