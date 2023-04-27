@@ -40,6 +40,7 @@ const ModalRegistroDocumentos = ({
 
   const registreAdd = (data) => {
     fetchPost('registro-tipo-documento/one', 'POST', data).then(({ message }) => {
+      console.log(message,'mensaje')
       if (message === 'El código ya existe') {
         toast.current.show({
           severity: 'warn',

@@ -7,7 +7,7 @@ import {
   oneIdSolicitud,
   startEditSolicitud,
 } from '../store/slices/solicitud/solicitudStile';
-
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 const useSolicitud = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -64,13 +64,22 @@ const useSolicitud = () => {
     });
   };
 
+  const confirm1 = (id) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
+
   const tableButtonDelete = (rowData) => {
     return (
       <div className='actions'>
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          onClick={() => deleteData(rowData.id)}
+          onClick={() => confirm1(rowData.id)}
         />
       </div>
     );

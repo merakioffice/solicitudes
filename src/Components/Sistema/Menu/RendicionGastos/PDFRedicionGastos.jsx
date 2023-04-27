@@ -21,7 +21,8 @@ console.log(countRendido,'RENDIDO')
      
   })
   fetchGet(`comision/${rendicionGastos?.lugarComision}`).then((res) => {
-    lugar = res.lugarComision.descripcion
+    console.log(rendicionGastos,'comision')
+    lugar = rendicionGastos.lugarComision
   } )
   useEffect(() => {
 
