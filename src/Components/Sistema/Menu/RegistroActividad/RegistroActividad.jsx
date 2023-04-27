@@ -103,7 +103,7 @@ const RegistroActividad = () => {
             className='mb-4'
             right={LeftToolBarTemplate({
               openNew: openSolicitud,
-              nameBtn: 'Generar rendición',
+              nameBtn: 'Generar Actividad',
             })}
           ></Toolbar>
 

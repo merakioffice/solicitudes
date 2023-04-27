@@ -180,6 +180,7 @@ const deleteData = async(id) => {
                           paginator
                           lazy
                           rows={8} 
+                          first={datatableState.first}
                           totalRecords={totalRecords}
                           dataKey="id" 
                         /*   first={datatableState.first} */
