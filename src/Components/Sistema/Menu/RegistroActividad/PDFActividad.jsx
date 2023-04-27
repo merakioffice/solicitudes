@@ -1,8 +1,30 @@
 import { Button } from 'primereact/button';
 
 import jsPDF from 'jspdf';
+import { useEffect, useState } from 'react';
 
-const PDFActividad = () => {
+const PDFActividad = (edit, data) => {
+
+  const [datas, setDatas] = useState()
+
+  useEffect(() =>{
+
+console.log(edit,'EDIT')
+  if(edit.edit !== undefined){
+    setDatas(edit.edit)
+  }
+
+  if (data.data !== undefined){
+    setDatas(data.data)
+  }
+
+    console.log(edit.edit, 'editPDF')
+
+  },[])
+
+
+
+
   const descarga = () => {
     const doc = new jsPDF();
     doc.setFontSize(10);
@@ -21,7 +43,8 @@ const PDFActividad = () => {
     doc.text('INSTITUCIÓN: descocentro', 140, 32);
 
     doc.rect(20, 36, 169, 6);
-    doc.text('Nombres y Apellidos:  LAURENTE SORIANO ROCIO EDITH', 25, 40);
+    
+    doc.text(`Nombres y Apellidos:  ${datas?.nombreApellido}`, 25, 40);
 
     doc.rect(20, 42, 169, 6);
     doc.text('Fecha  Inicio:__/__/20__', 25, 46);
@@ -31,16 +54,16 @@ const PDFActividad = () => {
     doc.text('Destino: ', 25, 52);
 
     doc.rect(20, 53.9, 169, 6);
-    doc.text('Objeto de la comisión:', 25, 58);
+    doc.text(`Objeto de la comisión: ${datas?.objetoComision}`, 25, 58);
     doc.rect(20, 60, 169, 20);
 
     doc.rect(20, 80, 169, 6);
-    doc.text('Detalle de la actividad realizada', 25, 84);
+    doc.text(`Detalle de la actividad realizada: ${datas?.detalleActividad}`, 25, 84);
     doc.rect(20, 86, 169, 25);
 
     doc.rect(20, 111, 169, 6);
     doc.text(
-      'Otros aspectos administrativos relevantes que afecten su rendición de cuentas:',
+      `Otros aspectos administrativos relevantes que afecten su rendición de cuentas: ${datas?.otros}`,
       25,
       115
     );

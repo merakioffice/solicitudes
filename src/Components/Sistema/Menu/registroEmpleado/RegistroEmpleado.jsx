@@ -127,7 +127,7 @@ const RegistroEmpleado = () => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   useEffect( () =>  {
     async function doIt(){
 
@@ -143,7 +143,14 @@ const RegistroEmpleado = () => {
   }, [])
  
   
+  async function doIt(){
 
+    const response =  await fetchGet('empleados')
+    console.log(response.registroEmpleados)
+    setProducts(response.registroEmpleados);
+
+  
+  }
   const [selectedCity1, setSelectedCity1] = useState(null);
 
   const toast = useRef(null);
@@ -185,10 +192,11 @@ const RegistroEmpleado = () => {
 
         formData.append('file', file);
   
-
-          return new Promise(async (resolve) => {
+        setLoading(true);
+          return new Promise(async (resolve, reject) => {
             try {
            
+
               
             const res =  await createFormData("regEmpleado", 'POST' , formData);
 
@@ -200,7 +208,7 @@ const RegistroEmpleado = () => {
                 life: 3000,
               });
 
-              resolve(res);
+              resolve(setLoading(false), doIt());
               return res;
             } catch (error) {
               console.log(error)
@@ -682,6 +690,7 @@ const RegistroEmpleado = () => {
           <DataTable
             ref={dt}
             value={products}
+            loading={loading}
             selection={selectedProducts}
             onSelectionChange={(e) => setSelectedProducts(e.value)}
             dataKey='id'
