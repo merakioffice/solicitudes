@@ -22,8 +22,12 @@ const InformeRegistroActividad = () => {
     const location = useLocation();
   const [edit, setEdit] = useState(location.state)
 
+  const [data, setData] = useState()
 
-  console.log(edit, 'edit');
+
+
+
+ 
 
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -81,6 +85,8 @@ const InformeRegistroActividad = () => {
           detail: 'Se ha creado correctamente',
           life: 3000,
         });
+
+        setData(data)
         // formik.resetForm();
       } else {
         toast.current.show({
@@ -125,7 +131,7 @@ const InformeRegistroActividad = () => {
       <div className='col-12'>
         <div className='card'>
           <form onSubmit={formik.handleSubmit}>
-            <Toolbar className='mb-4' right={<PDFActividad />}></Toolbar>
+            <Toolbar className='mb-4' /* right={<PDFActividad edit={edit} data={data} />} */></Toolbar>
 
             <h4>Datos Personales</h4>
 
