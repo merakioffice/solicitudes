@@ -111,7 +111,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
       visible={view}
       style={{ width: '450px' }}
       header={
-        edit ? 'Editar Registro de Proyecto' : 'Crear Registro de Proyecto'
+        edit ? 'Editar Registro de Presupuesto' : 'Crear Registro de Presupuesto'
       }
       modal
       className='p-fluid'

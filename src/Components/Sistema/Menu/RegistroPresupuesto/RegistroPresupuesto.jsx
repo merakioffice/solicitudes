@@ -10,12 +10,37 @@ import { FileUpload } from 'primereact/fileupload';
 import { fetchGet, createFormData, fetchDelete } from '../../../../api';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 const RegistroPresupuesto = () => {
   const navigate = useNavigate();
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const toast = useRef(null);
   const [edit, setEdit] = useState([]);
+
+  const listData = (filters) => {
+    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
+
+    
+    fetchGet(`/registroPresupuesto?page=${page + 1}&pageSize=${rows}`).then(( { presupuestos, count } ) => {
+      setTotalRecords(count);
+
+      const data = presupuestos.map((element, item) => {
+        element.index = item;
+        return element;
+      });
+
+      setAddData(data);
+    
+    });
+  };
+
+  useEffect(() => {
+    listData(datatableState)
+  }, [datatableState])
+
   useEffect( () =>  {
     async function doIt(){
 
@@ -35,9 +60,16 @@ const RegistroPresupuesto = () => {
 
 
 
+
   const deleteData = (id) => {
-    fetchDelete(`registroPresupuesto/${id}`).then((res) => {
-     
+    fetchDelete(`registroPresupuesto/${id}`).then(async (res) => {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Elemento eliminado.',
+        detail: res.message,
+        life: 3000,
+      });
+      listData();
     })
 
   }
@@ -69,13 +101,38 @@ const RegistroPresupuesto = () => {
 
 
 
-  const tableButtonDelete = (rowData) => {
+/*   const tableButtonDelete = (rowData) => {
     return (
       <div className='actions'>
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
            onClick={() => deleteData(rowData.id)}
+        />
+      </div>
+    );
+  };
+ */
+
+  const confirm1 = (id) => {
+    console.log("sss")
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
+  const tableButtonDelete = (rowData) => {
+
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-trash'
+          className='p-button-rounded p-button-danger'
+          onClick={() => {
+            confirm1(rowData.id);
+          }}  
         />
       </div>
     );
@@ -99,7 +156,7 @@ const RegistroPresupuesto = () => {
   };
 
 
-  const listData = (data) => {
+/*   const listData = (data) => {
     const newData = [];
     for (let i = 1; i < data.length - 1; i++) {
       const element = data[i];
@@ -132,7 +189,7 @@ const RegistroPresupuesto = () => {
     }, [])
 
     return newData;
-  };
+  }; */
 
   const readExcel = ({ files }) => {
     const [File] = files;
@@ -153,6 +210,7 @@ const RegistroPresupuesto = () => {
       new Promise(async (resolve) => {
         try {
         const res =  await createFormData("registroPresupuestoAddAll", 'POST' , formData);
+        console.log(res)
 
           await 
           toast.current.show({
@@ -176,6 +234,14 @@ const RegistroPresupuesto = () => {
       
           return res;
         } catch (error) {
+
+          await 
+          toast.current.show({
+            severity: 'warn',
+            summary: 'Successful',
+            detail: 'Error Codigo',
+            life: 3000,
+          });
           console.log(error)
           resolve([]);
         }
@@ -188,10 +254,13 @@ const RegistroPresupuesto = () => {
     if (rABS) reader.readAsBinaryString(File);
     else reader.readAsArrayBuffer(File);
   };
-
+  useEffect(() => {
+    listData();
+  }, []);
   return (
     <div className='grid crud-demo'>
        <Toast ref={toast} /> 
+       <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -202,7 +271,14 @@ const RegistroPresupuesto = () => {
               nameBtn: 'Agregar Presupuesto',
             })}
           ></Toolbar>
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addData}                         
+                          lazy
+                          first={datatableState.first}
+                          rows={10}  
+                          totalRecords={totalRecords}
+                          responsiveLayout='scroll'
+                          onPage={(e) => changeDatatableState(e)}
+                            paginator>
             <Column field='id' header='Id'>
               {addData.map((item, index) => {
                 {

@@ -75,7 +75,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
   };
 
   const updateAdd = (data) => {
-    fetchPut(`regProyecto/${edit?.id}`, 'PUT', data).then((response) => {
+    fetchPut(`registroPresupuesto/${edit?.id}`, 'PUT', data).then((response) => {
       if (response.proyecto === undefined) {
         toast.current.show({
           severity: 'warn',
@@ -115,7 +115,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
       visible={view}
       style={{ width: '450px' }}
       header={
-        edit ? 'Editar Registro de Proyecto' : 'Crear Registro de Proyecto'
+        edit ? 'Editar Registro de Presupuesto' : 'Crear Registro de Presupuesto'
       }
       modal
       className='p-fluid'
