@@ -6,8 +6,9 @@ import { DataTable } from 'primereact/datatable';
 import './styles.scss';
 import { LeftToolBarTemplate } from '../../../Molecula';
 import useSolicitud from '../../../../hooks/useSolicitud';
-import { fetchGet } from '../../../../api';
-
+import { fetchDelete, fetchGet } from '../../../../api';
+import { Button } from 'primereact/button';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 function SolicitudDinero() {
   const [
     listaSolicitud,
@@ -42,9 +43,41 @@ function SolicitudDinero() {
   };
 
 
-  useEffect(() => {
-    listaSolicitud();
-  }, []);
+  const deleteData = (data) => {
+    fetchDelete(`solicitud/${data}`).then(() => {
+      listData();
+      toast.current.show({
+        severity: 'success',
+        summary: 'Eliminado',
+        detail: 'Se ha eliminado correctamente',
+        life: 3000,
+      });
+    });
+  };
+
+  const confirm1 = (id) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
+
+  const tableButtonDeletes = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-trash'
+          className='p-button-rounded p-button-danger'
+          onClick={() => confirm1(rowData.id)}
+        />
+      </div>
+    );
+  };
+
+
+
 
   useEffect(() => {
     listData(datatableState)
@@ -53,6 +86,7 @@ function SolicitudDinero() {
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
+      <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar
@@ -95,7 +129,7 @@ function SolicitudDinero() {
             <Column
               header='Eliminar'
               style={{ width: '30px' }}
-              body={tableButtonDelete}
+              body={tableButtonDeletes}
             />
           </DataTable>
         </div>

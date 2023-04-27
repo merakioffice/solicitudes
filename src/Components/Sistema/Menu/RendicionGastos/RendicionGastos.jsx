@@ -6,8 +6,9 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { LeftToolBarTemplate } from '../../../Molecula';
 import useRendicionSolicitud from '../../../../hooks/useRendicionSolicitud';
-import { fetchGet } from '../../../../api';
-
+import { fetchDelete, fetchGet } from '../../../../api';
+import { Button } from 'primereact/button';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 const RendicionGastos = () => {
   const [
     addData,
@@ -16,7 +17,7 @@ const RendicionGastos = () => {
     openSolicitud,
     tableButtonEdit,
     tableButtonAutomatization,
-    tableButtonDelete,
+
   ] = useRendicionSolicitud();
 
   const [totalRecords, setTotalRecords] = useState(0);
@@ -54,8 +55,38 @@ const RendicionGastos = () => {
 
 
 
+  const deleteData = (data) => {
+    fetchDelete(`rendGastos/${data}`).then(() => {
+      listDatas();
+      toast.current.show({
+        severity: 'success',
+        summary: 'Eliminado',
+        detail: 'Se ha eliminado correctamente',
+        life: 3000,
+      });
+    });
+  };
 
+  const tableButtonDelete = (rowData) => {
+    return (
+      <div className='actions'>
+        <Button
+          icon='pi pi-trash'
+          className='p-button-rounded p-button-danger'
+          onClick={() => confirm1(rowData.id)}
+        />
+      </div>
+    );
+  };
 
+  const confirm1 = (id) => {
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
 
   
   useEffect(() => {
@@ -67,6 +98,7 @@ const RendicionGastos = () => {
       <Toast ref={toast} />
       <div className='col-12'>
         <div className='card'>
+        <ConfirmDialog />
           <Toolbar
             className='mb-4'
             right={LeftToolBarTemplate({
