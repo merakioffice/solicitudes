@@ -28,9 +28,10 @@ function SolicitudDinero() {
    
     
     fetchGet(`/solicitud?page=${page + 1}&pageSize=${rows}`).then(( { personal, count } ) => {
-      setTotalRecords(count);
 
-      const data = personal.map((element, item) => {
+      setTotalRecords(personal.count);
+
+      const data = personal.rows.map((element, item) => {
         element.index = item;
         return element;
       });
@@ -63,7 +64,7 @@ function SolicitudDinero() {
           />
 
           <DataTable value={addData}
-          azy
+          lazy
           first={datatableState.first}
           rows={10}  
           totalRecords={totalRecords}

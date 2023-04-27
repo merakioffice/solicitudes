@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -19,17 +19,48 @@ const RendicionGastos = () => {
     tableButtonDelete,
   ] = useRendicionSolicitud();
 
-  console.log(addData)
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
+  const [addDatas, setAddDatas] = useState([]);
 
+
+
+  const listDatas = (filters) => {
+    const {page, rows} = datatableState || {page: 0, rows: 10, first: 10};
+   
+    
+    fetchGet(`/rendGastos?page=${page + 1}&pageSize=${rows}`).then(( { rendicionGastos, count } ) => {
+      setTotalRecords(rendicionGastos.count);
+
+      console.log(rendicionGastos, 'ndaf')
+
+      const promises = rendicionGastos.rows.map((element, item) => {
+        return fetchGet(`regProyecto/${element.proyecto}`).then(async (res) => {
+          const comision = await fetchGet(`/comision/${element.lugarComision}`)
+         
+          element.lugarComision = comision.lugarComision.descripcion
+          element.proyectoName = res.registroProyecto.nombreAbreviado;
+          element.index = item + 1;
+          return element;
+        });
+      });
+
+      Promise.all(promises).then((data) => {
+        setAddDatas(data);
+      });
+     
+    });
+  };
+
+
+
+
+
+
+  
   useEffect(() => {
-
-    fetchGet('rendGastos').then((res)  => {
-
-    } )
-
-
-    listData();
-  }, []);
+    listDatas(datatableState)
+  }, [datatableState])
 
   return (
     <div className='grid crud-demo'>
@@ -44,7 +75,16 @@ const RendicionGastos = () => {
             })}
           ></Toolbar>
 
-          <DataTable value={addData} responsiveLayout='scroll'>
+          <DataTable value={addDatas} 
+          
+          lazy
+          first={datatableState.first}
+          rows={10}  
+          totalRecords={totalRecords}
+          responsiveLayout='scroll'
+          onPage={(e) => changeDatatableState(e)}
+            paginator
+          >
             <Column field='index' header='Id'></Column>
             <Column field='nombreApellido' header='Nombre'></Column>
             <Column field='proyectoName' header='Proyecto'></Column>
