@@ -30,9 +30,9 @@ function SolicitudDinero() {
     
     fetchGet(`/solicitud?page=${page + 1}&pageSize=${rows}`).then(( { personal, count } ) => {
 
-      setTotalRecords(personal.count);
+      setTotalRecords(count);
 
-      const data = personal.rows.map((element, item) => {
+      const data = personal.map((element, item) => {
         element.index = item;
         return element;
       });
@@ -81,7 +81,11 @@ function SolicitudDinero() {
 
   useEffect(() => {
     listData(datatableState)
+    return () => {
+      setAddData([])
+    };
   }, [datatableState])
+
 
   return (
     <div className='grid crud-demo'>

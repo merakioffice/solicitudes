@@ -29,13 +29,10 @@ const RendicionGastos = () => {
   const listDatas = (filters) => {
     const {page, rows} = datatableState || {page: 0, rows: 10, first: 10};
    
-    
     fetchGet(`/rendGastos?page=${page + 1}&pageSize=${rows}`).then(( { rendicionGastos, count } ) => {
-      setTotalRecords(rendicionGastos.count);
+      setTotalRecords(count);
 
-      console.log(rendicionGastos, 'ndaf')
-
-      const promises = rendicionGastos.rows.map((element, item) => {
+      const promises = rendicionGastos.map((element, item) => {
         return fetchGet(`regProyecto/${element.proyecto}`).then(async (res) => {
           const comision = await fetchGet(`/comision/${element.lugarComision}`)
          
