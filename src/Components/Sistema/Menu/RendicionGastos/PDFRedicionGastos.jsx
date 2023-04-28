@@ -15,13 +15,13 @@ const PDFRendicionGastos = (countRendido) => {
 
   let proyecto;
   let lugar;
-console.log(countRendido,'RENDIDO')
+
   fetchGet(`regProyecto/${rendicionGastos.proyecto}`).then((res) => {
     proyecto = res.registroProyecto.nombreAbreviado
      
   })
   fetchGet(`comision/${rendicionGastos?.lugarComision}`).then((res) => {
-    console.log(rendicionGastos,'comision')
+
     lugar = rendicionGastos.lugarComision
   } )
   useEffect(() => {
@@ -69,7 +69,7 @@ console.log(countRendido,'RENDIDO')
 
     doIt();
 
-    console.log(data3, 'okjcnpkmcpn')
+
 
   }, [rendicionGastos])
 

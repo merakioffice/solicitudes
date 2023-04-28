@@ -20,7 +20,7 @@ import { fetchDelete, fetchGet, fetchPost, fetchGetproject } from '../../../../a
 import { useSelector } from 'react-redux';
 import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
-
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 const RegistroRendicionGastos = () => {
 
 
@@ -88,8 +88,14 @@ const RegistroRendicionGastos = () => {
 
       const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
 
-        const result = {...product, tipo: tipo.result.nombre}
+      const ruc =  await fetchGet(`registroReferenciaAll/${product.ruc}`)
 
+      console.log(product.ruc,'de nuevoi ruc')
+  
+
+        const result = {...product, tipo: tipo.result.nombre, ruc: `${ruc?.codigoReferencias?.codigo}-${ruc?.codigoReferencias?.nombre}`}
+
+       
         return result;
 
       })
@@ -129,6 +135,7 @@ const RegistroRendicionGastos = () => {
   const [countSaldo, setCountSaldo] = useState(0);
   const [countRecibido, setCountRecibido] = useState(0);
   const [countRendido, setCountRendido] = useState(0);
+  
   const [uuid, setUuid] = useState(!validaciones ? edit.id : null);
   const [boolCreate, setBoolCreate] = useState(false);
   const [view, setView] = useState(false);
@@ -243,7 +250,15 @@ const RegistroRendicionGastos = () => {
     });
   };
 
-
+  const confirm1 = (id) => {
+    console.log("sss")
+    confirmDialog({
+      message: 'Esta seguro que desea eliminar?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteData(id),
+    });
+  };
 
 
   const tableButtonDelete = (rowData) => {
@@ -252,7 +267,7 @@ const RegistroRendicionGastos = () => {
         <Button
           icon='pi pi-trash'
           className='p-button-rounded p-button-danger'
-          onClick={() => deleteData(rowData)}
+          onClick={() => confirm1(rowData)}
         />
       </div>
     );
@@ -287,7 +302,11 @@ const RegistroRendicionGastos = () => {
 
       const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
 
-        const result = {...product, tipo: tipo.result.nombre}
+      const ruc =  await fetchGet(`registroReferenciaAll/${product.ruc}`)
+
+    console.log(ruc,'RUC')
+
+        const result = {...product, tipo: tipo.result.nombre, ruc: `${ruc.codigoReferencias.codigo}-${ruc.codigoReferencias.nombre}`}
 
         return result;
 
@@ -513,6 +532,13 @@ const RegistroRendicionGastos = () => {
           return variable;
         })
         .reduce((prev, curr) => prev + curr, 0);
+
+        if(suma){
+          console.log('si')
+        }else {
+          console.log('no')
+        }
+        
       setCountRecibido(suma);
     }
   };
@@ -574,7 +600,7 @@ const RegistroRendicionGastos = () => {
   return (
     <div className='grid crud-demo'>
       <Toast ref={toast} />
-
+      <ConfirmDialog />
       <div className='col-12'>
         <div className='card'>
           <Toolbar className='mb-4' right={<PDFRendicionGastos rendidoCount={countRendido} />}></Toolbar>
@@ -607,14 +633,18 @@ const RegistroRendicionGastos = () => {
                 <label htmlFor='numeroSolicitud' className='block'>
                   N.de Rendicion
                 </label>
-                <InputText
+{/*                 <InputText
                   name='numeroSolicitud'
                   type='text'
                   value={
                     dataLista ? dataLista.numeroSolicitud : ''
                   }
                   disabled
-                />
+                /> */}
+                <h5>{
+                    dataLista ? dataLista.numeroSolicitud : ''
+                  }
+                  </h5>
               </div>
 
               <div className='field col-12 md:col-6'>

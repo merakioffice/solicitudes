@@ -20,9 +20,19 @@ const ModalRendicionGastos = ({
    console.log(edit);
   const toast = useRef(null);
   const [proyectos, setProyectos] = useState([]);
+  const [rucs, setRucs] = useState([]);
   const [selectedProyecto, setSelectedProyecto] = useState(null);
+  const [selectedRuc, setSelectedRuc] = useState(null);
   const [filteredProyecto, setFilteredProyecto] = useState(null);
-
+  const [selectedCountry1, setSelectedCountry1] = useState(null);
+  const [filteredCountries, setFilteredCountries] = useState(null);
+  const [filteredRuc, setFilteredRuc] = useState(null);
+  const [project, setProject] = useState('');
+  const [countries, setCountries] = useState([]);
+  const [dataLista, setDataLista] = useState({
+    descripcion: null,
+    partidaPresupuestal: null,
+  });
   const listData = () => {
     fetchGet(`tipo-documento`).then(({ result }) => {
       const data = result.map((element, item) => {
@@ -30,12 +40,66 @@ const ModalRendicionGastos = ({
       });
 
       setProyectos(data);
+
+      fetchGet('regProyecto').then(({ registroProyecto }) => {
+        const data = registroProyecto.map((element, item) => {
+          return element;
+        });
+        setCountries(data);
+      });
+  
     });
+
+
+   
+
+
+    fetchGet(`registroReferencia`).then(({ codigoReferencias }) => {
+      const data = codigoReferencias.map((element, item) => {
+        element.nombre = `${element.codigo}-${element.nombre}`
+        return element;
+      });
+
+    
+
+      setRucs(data);
+    });
+
+
   };
+
+
+
+  
+
+  const searchPartidaPresupuestal = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...countries];
+      } else {
+        _filteredCountries = countries.filter((country) => {
+          return country.nombreAbreviado
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+      setFilteredCountries(_filteredCountries);
+    }, 250);
+  };
+
 
   useEffect(() => {
 
     if(edit) {
+
+      fetchGet(`rendGastosProducts/${edit?.id}`).then((res) => {
+
+        fetchGet(`registroReferenciaAll/${res.rendicionGastosProduct.ruc}`).then((res) =>{
+
+          setSelectedRuc(res.codigoReferencias) 
+     })
+      })
 
       console.log(edit, 'edit')
       fetchGet(`tipo-documento/tipo/${edit?.tipo}`).then((res) => {
@@ -43,7 +107,21 @@ const ModalRendicionGastos = ({
         setSelectedProyecto(res.result)
       })
 
-      
+      const project = encodeURIComponent(edit?.partidaPresupuestal)
+      fetchGet(`regProyectos/${project}`).then((res) => {
+
+        setProject(res.registroProyecto.nombreAbreviado)
+        console.log(res.registroProyecto.nombreAbreviado)
+         
+      })
+
+
+
+     
+/*       fetchGet(`registroReferencia/${code}`).then((res) =>{
+
+           setSelectedRuc(res.codigoReferencias) 
+      }) */
 
     }
 
@@ -68,6 +146,24 @@ const ModalRendicionGastos = ({
     }, 200);
   };
 
+
+  const searchRuc = (event) => {
+    setTimeout(() => {
+      let _filteredCountries;
+      if (!event.query.trim().length) {
+        _filteredCountries = [...rucs];
+      } else {
+        _filteredCountries = rucs.filter((ruc) => {
+          return  ruc.codigo
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+
+      setFilteredRuc(_filteredCountries);
+    }, 200);
+  };
+
   const formik = useFormik({
     initialValues: {
       fecha: edit ? new Date(edit?.fecha)  : '',
@@ -75,14 +171,14 @@ const ModalRendicionGastos = ({
       numero: edit ? edit?.numero : '',
       ruc: edit ? edit?.ruc : '',
       descripcion: edit ? edit?.descripcion : '',
-      partidaPresupuestal: edit ? edit?.partidaPresupuestal : '',
+  
       importe: edit ? edit?.importe : '' ,
       tipo: edit ? edit?.tipo : '' ,
     },
     onSubmit: (values) => {
 /*        values.importe = Number(values.importe);
        values.solicitudId = uuid; */
-     
+       values.partidaPresupuestal = project? project.nombreAbreviado : selectedCountry1.nombreAbreviado;
 
         if(edit){
 
@@ -101,15 +197,9 @@ const ModalRendicionGastos = ({
         'El número es requerido'
       ),
       // tipo: Yup.string().required('EL tipo es requerido'),
-      ruc: Yup.number('Solo se permiten números').required(
-        'EL RUC es requerido'
-      ),
 
       descripcion: Yup.string('No se permiten números').required(
         'La descripción es requerida'
-      ),
-      partidaPresupuestal: Yup.string('No se permiten números').required(
-        'La partida presupuestal es requerido'
       ),
       importe: Yup.number('Solo se ingresan números', (data) => {
         console.log(data);
@@ -131,7 +221,8 @@ const ModalRendicionGastos = ({
     data.fecha = datosRegistros;
     data.rendicionGastosId = uuid;
     data.tipo = selectedProyecto.id;
-    // console.log(data);
+    data.ruc = selectedRuc.id;
+     console.log(data, 'data producto gastos');
     fetchPost('rendGastosProducts', 'POST', data).then(() => {
       setView(false);
       formik.resetForm();
@@ -151,6 +242,7 @@ const ModalRendicionGastos = ({
     data.fecha = datosRegistros;
     data.rendicionGastosId = uuid;
      data.tipo = selectedProyecto.id; 
+     data.ruc = selectedRuc.id;
      console.log(data, 'updated');
     fetchPut(`rendGastosProducts/${edit?.id}`, 'PUT', data).then(() => {
       setView(false);
@@ -244,10 +336,19 @@ const ModalRendicionGastos = ({
           <div className='field col-12 md:col-12'>
             <label htmlFor='ruc'>RUC</label>
 
-            <InputText
-              type='text'
-              {...formik.getFieldProps('ruc')}
-              style={{ marginBottom: '5px' }}
+              <AutoComplete
+              value={selectedRuc}
+              suggestions={filteredRuc}
+              completeMethod={searchRuc}
+              field='nombre'
+              name='tipo'
+              id='tipo'
+              onChange={(e) => {
+                setSelectedRuc(e.value);
+              }}
+              dropdown
+              aria-label='nombre'
+              dropdownAriaLabel='Seleccionar Proyecto'
             />
             {formik.touched.ruc && formik.errors.ruc && (
               <span style={{ color: '#e5432d' }}>{formik.errors.ruc}</span>
@@ -269,11 +370,33 @@ const ModalRendicionGastos = ({
           </div>
           <div className='field col-12 md:col-12'>
             <label htmlFor='partidaPresupuestal'>Partida Presupuestal</label>
+            <AutoComplete
+                value={project ? project : selectedCountry1}
+              suggestions={filteredCountries}
+              completeMethod={searchPartidaPresupuestal}
+              field='nombreAbreviado'
+              name='partidaPresupuestal'
+              id='partidaPresupuestal'
+              onChange={(e) => {
+                setSelectedCountry1(e.value);
+/*                 if (selectedCountry1) {
+                  dataLista.partidaPresupuestal = e.value.id;
+                } */
 
-            <InputText
-              type='text'
-              {...formik.getFieldProps('partidaPresupuestal')}
-              style={{ marginBottom: '5px' }}
+                setSelectedCountry1(e.value);
+                if (selectedCountry1 && !project) {
+                  setSelectedCountry1(e.value);
+                  dataLista.nombreProyecto = e.value.id;
+                }
+
+                if(!selectedCountry1 && project){
+                  setProject(e.value);
+                  dataLista.nombreProyecto = e.value.id;
+                }
+              }}
+              dropdown
+              aria-label='partidaPresupuestal'
+              dropdownAriaLabel='Seleccionar partida presupuestal'
             />
             {formik.touched.partidaPresupuestal &&
               formik.errors.partidaPresupuestal && (

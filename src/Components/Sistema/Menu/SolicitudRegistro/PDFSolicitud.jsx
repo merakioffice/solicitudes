@@ -8,6 +8,8 @@ import { fetchGet } from '../../../../api';
 const PDFSolicitud = () => {
   const { solicitud } = useSelector((state) => state.solicitudDinero);
 
+  console.log(solicitud,'SOLICITUD')
+
   let proyecto;
   let lugar;
 

@@ -331,13 +331,14 @@ function RegistroDinero() {
                 <label htmlFor='numeroSolicitud' className='block'>
                   N. solicitud
                 </label>
-                <InputText
+{/*                 <InputText
                   disabled
                   id='numeroSolicitud'
                   name='numeroSolicitud'
                   type='text'
                   value={dataLista ? dataLista.numeroSolicitud : ''}
-                />
+                /> */}
+                <h5>{dataLista ? dataLista.numeroSolicitud : ''}</h5>
               </div>
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha Registro</label>

@@ -228,7 +228,13 @@ export default  function  AppMenu({isOpen}) {
           return
         }
 
-       
+        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Solicitudes'){
+          return
+        }
+
+        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Informes'){
+          return
+        }
           return (
             <div key={index}>
               <li>
