@@ -431,8 +431,8 @@ const RegistroRendicionGastos = () => {
       nombreApellido: '',
       lugarComision: '',
       objetoComision: '',
-      fechaInicio: '',
-      fechaFin: '',
+      fechaInicio: null,
+      fechaFin: null,
     },
     onSubmit: (values) => {
 

@@ -110,7 +110,7 @@ const ModalRendicionGastos = ({
       const project = encodeURIComponent(edit?.partidaPresupuestal)
       fetchGet(`regProyectos/${project}`).then((res) => {
 
-        setProject(res.registroProyecto.nombreAbreviado)
+        setProject(res.registroProyecto)
         console.log(res.registroProyecto.nombreAbreviado)
          
       })
@@ -166,7 +166,7 @@ const ModalRendicionGastos = ({
 
   const formik = useFormik({
     initialValues: {
-      fecha: edit ? new Date(edit?.fecha)  : '',
+      fecha: edit ? new Date(edit?.fecha)  : null,
       serie: edit ? edit?.serie : '',
       numero: edit ? edit?.numero : '',
       ruc: edit ? edit?.ruc : '',
@@ -178,6 +178,7 @@ const ModalRendicionGastos = ({
     onSubmit: (values) => {
 /*        values.importe = Number(values.importe);
        values.solicitudId = uuid; */
+       console.log(project,'PROYECTO')
        values.partidaPresupuestal = project? project.nombreAbreviado : selectedCountry1.nombreAbreviado;
 
         if(edit){
@@ -242,6 +243,7 @@ const ModalRendicionGastos = ({
     data.fecha = datosRegistros;
     data.rendicionGastosId = uuid;
      data.tipo = selectedProyecto.id; 
+     data.partidaPresupuestal
      data.ruc = selectedRuc.id;
      console.log(data, 'updated');
     fetchPut(`rendGastosProducts/${edit?.id}`, 'PUT', data).then(() => {
@@ -271,7 +273,7 @@ const ModalRendicionGastos = ({
           <div className='field col-12 md:col-6'>
             <label htmlFor='fecha'>Fecha</label>
             <Calendar
-              value={new Date(formik.values.fecha) }
+              value={formik.values.fecha !== null ? new Date(formik.values.fecha) : null}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               style={{ marginBottom: '5px' }}
