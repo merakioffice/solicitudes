@@ -107,14 +107,14 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
 
   const megamenuItems = [
     {
-      label: 'RR.HH',
+      label: 'Solicitudes',
       items: [
         [
           {
-            label: 'RR.HH',
+            label: 'Solicitudes',
             items: [
               {
-                label: 'Solicitudes',
+                label: 'RR.HH',
                 className: 'disabled',
                 command: () => {
                   handleClick();
@@ -126,17 +126,18 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
       ],
     },
   ];
+  
 
   const megaMenuMain = [
     {
-      label: 'Solicitudes',
+      label: 'RR.HH',
       items: [
         [
           {
-            label: 'Solicitud ',
+            label: 'RR.HH ',
             items: [
               {
-                label: 'RR.HH',
+                label: 'Solicitudes',
                 command: () => {
                   handleClickMain();
                 },
@@ -176,11 +177,17 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
       
       <ul className='layout-topbar-menu lg:flex origin-top'>
       <li className='mr-5'>
-          {!estado ? (
-            <MegaMenu model={megamenuItems} />
+        {dataUser?.rol == "ADMIN_ROLE"  ? (
+            !estado ? (
+            
+              <MegaMenu model={megamenuItems} />
+            ) : (
+              <MegaMenu model={megaMenuMain} />
+            )
           ) : (
-            <MegaMenu model={megaMenuMain} />
+            ''
           )}
+       
  
         </li>
 
