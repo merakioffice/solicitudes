@@ -44,7 +44,11 @@ function RegistroDinero() {
   const [project, setProject] = useState('');
   const [lugarCom, setLugarComision] = useState('');
 
+  const [date, setDate] = useState(new Date());
 
+  const handleDateChange = (date) => {
+    setDate(date);
+  };
 
   useEffect(() => {
 
@@ -320,7 +324,7 @@ function RegistroDinero() {
           <Toolbar className='mb-4' right={<PDFSolicitud />} />
 
           <form onSubmit={formik.handleSubmit} noValidate>
-            <h4>Datos Personales</h4>
+            <h4>Datos de la solicitud</h4>
 
             <div className='p-fluid formgrid grid'>
               <div className='field col-12 md:col-6'>

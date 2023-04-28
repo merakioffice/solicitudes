@@ -33,7 +33,7 @@ const ModalRegistroDocumentos = ({
     validationSchema: Yup.object({
       codigo: Yup.string()
         .required('El campo es requerido')
-        .min(5, 'El código debe tener mas de 5 caracteres'),
+        .min(2, 'El código debe tener mas de 1 caracteres'),
       nombre: Yup.string().required('El campo es requerido'),
     }),
   });
