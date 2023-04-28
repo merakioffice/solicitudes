@@ -25,10 +25,12 @@ function SolicitudDinero() {
   const [addData, setAddData] = useState([]);
 
   const listData = (filters) => {
-    const {page, rows} = filters || {page: 0, rows: 10, first: 10};
+    const {page, rows} = datatableState || {page: 0, rows: 10, first: 10};
    
     
     fetchGet(`/solicitud?page=${page + 1}&pageSize=${rows}`).then(( { personal, count } ) => {
+
+      console.log(personal)
 
       setTotalRecords(count);
 
