@@ -30,7 +30,7 @@ function SolicitudDinero() {
     
     fetchGet(`/solicitud?page=${page + 1}&pageSize=${rows}`).then(( { personal, count } ) => {
 
-      console.log(personal)
+      console.log(personal,'PERODSNALK')
 
       setTotalRecords(count);
 
