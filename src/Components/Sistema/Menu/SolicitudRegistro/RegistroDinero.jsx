@@ -265,9 +265,9 @@ function RegistroDinero() {
 
   const formik = useFormik({
     initialValues: {
-      fechaFin: !validaciones ? new Date(edit.fechaFin)  : '',
-      fechaInicio: !validaciones ? edit.fechaInicio : '',
-      fechaRegistro: !validaciones ? edit.fechaRegistro : '',
+      fechaFin: !validaciones ? new Date(edit.fechaFin)  : null,
+      fechaInicio: !validaciones ? edit.fechaInicio : null,
+      fechaRegistro: !validaciones ?  edit.fechaRegistro : null,
       itinerarioTransporte: !validaciones ? edit.itinerarioTransporte : '',
     
       nombre: !validaciones ? edit.nombre : '',
@@ -349,8 +349,9 @@ function RegistroDinero() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  value={new Date(formik.values.fechaRegistro)}
+                  value={formik.values.fechaRegistro  !== null ? new Date(formik.values.fechaRegistro) : null }
                   showIcon
+                  
                 />
                 {formik.touched.fechaRegistro &&
                   formik.errors.fechaRegistro && (
@@ -372,6 +373,7 @@ function RegistroDinero() {
                   style={{ marginBottom: '5px' }}
                   type='text'
                   value={formik.values.nombre}
+                  
                 />
                 {formik.touched.nombre && formik.errors.nombre && (
                   <span style={{ color: '#e5432d' }}>
@@ -518,7 +520,8 @@ function RegistroDinero() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  value={new Date(formik.values.fechaInicio)}
+                 
+                  value={formik.values.fechaInicio  !== null ? new Date(formik.values.fechaInicio) : null }
                   showIcon
                 />
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
@@ -535,7 +538,8 @@ function RegistroDinero() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   style={{ marginBottom: '5px' }}
-                  value={new Date(formik.values.fechaFin)}
+                  
+                  value={formik.values.fechaFin  !== null ? new Date(formik.values.fechaFin) : null }
                   showIcon
                 />
                 {formik.touched.fechaFin && formik.errors.fechaFin && (
