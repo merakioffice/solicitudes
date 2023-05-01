@@ -200,7 +200,7 @@ const RegistroRendicionGastos = () => {
   const listProject = () => {
 
 
-    fetchGet(`regProyecto`).then(({ registroProyecto }) => {
+    fetchGet(`regProyectoAll`).then(({ registroProyecto }) => {
       const data = registroProyecto.map((element) => {
         return element;
       });
@@ -399,7 +399,8 @@ const RegistroRendicionGastos = () => {
         _filteredCountries = [...countries];
       } else {
         _filteredCountries = countries.filter((country) => {
-          return country.nombre
+          
+          return country.numeroSolicitud
             .toLowerCase()
             .startsWith(event.query.toLowerCase());
         });
@@ -525,7 +526,8 @@ const RegistroRendicionGastos = () => {
 
 
   const sumRecibido = () => {
-    if (!validaciones && selectedCountry1.solicitud_productos.length > 0) {
+    console.log(selectedCountry1, 'country')
+    if (!validaciones && selectedCountry1?.solicitud_productos?.length > 0) {
       const suma = selectedCountry1.solicitud_productos
         .map((item) => {
           let variable = Number(item.importe);
@@ -616,7 +618,7 @@ const RegistroRendicionGastos = () => {
                   suggestions={filteredCountries}
                   completeMethod={searchProject}
                   field='numeroSolicitud'
-                  name='nombreProyecto'
+                  name='numeroSolicitud'
                   onChange={(e) => {
                     setSelectedCountry1(e.value);
                   }}

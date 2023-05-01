@@ -91,7 +91,7 @@ function RegistroDinero() {
   });
 
   const listData = () => {
-    fetchGet('regProyecto').then(({ registroProyecto }) => {
+    fetchGet('regProyectoAll').then(({ registroProyecto }) => {
       const data = registroProyecto.map((element, item) => element);
       setCountries(data);
     });

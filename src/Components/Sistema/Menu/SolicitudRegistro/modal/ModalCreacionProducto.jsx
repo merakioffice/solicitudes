@@ -62,7 +62,7 @@ export default function ModalCreacionProducto({
   }, [])
  
   const listData = () => {
-    fetchGet('regProyecto').then(({ registroProyecto }) => {
+    fetchGet('regProyectoAll').then(({ registroProyecto }) => {
       const data = registroProyecto.map((element, item) => {
         return element;
       });
