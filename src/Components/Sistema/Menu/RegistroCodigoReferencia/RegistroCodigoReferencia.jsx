@@ -24,15 +24,41 @@ const RegistroCodigoReferencia = () => {
     const {page, rows} = filters || {page: 0, rows: 10, first: 10};
     setLoading(true);
     
-    fetchGet(`/registroReferenciaAll?page=${page + 1}&pageSize=${rows}`).then(( { codigoReferencias, count } ) => {
+    fetchGet(`/registroReferenciaAll?page=${page + 1}&pageSize=${rows}`).then(async  ( { codigoReferencias, count } ) => {
       setTotalRecords(count);
 
-      const data = codigoReferencias.map((element, item) => {
+      const data = codigoReferencias.map( async (element, item) => {
+        const tipo =  await fetchGet(`tipo-documento/${element?.codidoc}`)
+
+
+
+        element.codidoc = tipo?.result?.nombre
+
+        if(element.exonerar === 'true'){
+
+          element.exonerar = 'SI'
+
+        } else {
+          element.exonerar = "NO"
+        }
+
+  
+          
+      
+
         element.index = item;
         return element;
       });
 
-      setAddData(data);
+
+      Promise.all(data).then((data) => {
+        
+     console.log(data,'DATA')
+        setAddData(data);
+      })
+
+    
+ 
       setLoading(false);
     });
   };
@@ -128,7 +154,7 @@ const editData = (data) => {
   };
 
   const readExcel = ({ files }) => {
-    const [File] = files;
+    const [file] = files;
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
 
@@ -142,7 +168,7 @@ const editData = (data) => {
       try {
         const formData = new FormData();
 
-        formData.append('file', File);
+        formData.append('file', file);
   
         await createFormData("registroReferenciaAddAll", 'POST' , formData);  
 
@@ -162,8 +188,8 @@ const editData = (data) => {
       }
     };
 
-    if (rABS) reader.readAsBinaryString(File);
-    else reader.readAsArrayBuffer(File);
+    if (rABS) reader.readAsBinaryString(file);
+    else reader.readAsArrayBuffer(file);
   };
 
   useEffect(() => {
@@ -204,12 +230,20 @@ const editData = (data) => {
             </Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='nombre' header='Nombre'></Column>
+            <Column field='exonerar' header='Exonerar'></Column>
+            <Column field='categoria' header='Categoria'></Column>
+           {/*  <Column field='codidoc' header='Codigo Doc'></Column> */}
+            <Column field='ruc' header='Ruc'></Column>
+            <Column field='telf' header='Telefono'></Column>
+            <Column field='direc' header='Direccion'></Column>
+            <Column field='apaterno' header='Apellido Paterno'></Column>
+            <Column field='amaterno' header='Apellido Materno'></Column>
             <Column body={tableButtonEdit}></Column>
             <Column body={tableButtonDelete}></Column>
           </DataTable>
         </div>
       </div>
-      <ModalRegistroCodigoReferencia setView={setView} edit={edit} setAddData={setAddData} view={view} />
+      <ModalRegistroCodigoReferencia setView={setView} edit={edit} setAddData={setAddData} listDatas={listData} view={view} />
     </div>
   );
 };

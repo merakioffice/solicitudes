@@ -88,12 +88,12 @@ const RegistroRendicionGastos = () => {
 
       const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
 
-      const ruc =  await fetchGet(`registroReferenciaAll/${product.ruc}`)
+/*       const ruc =  await fetchGet(`registroReferenciaAll/${product.ruc}`)
 
       console.log(product.ruc,'de nuevoi ruc')
-  
+   */
 
-        const result = {...product, tipo: tipo.result.nombre, ruc: `${ruc?.codigoReferencias?.codigo}-${ruc?.codigoReferencias?.nombre}`}
+        const result = {...product, tipo: tipo.result.nombre}
 
        
         return result;
@@ -302,11 +302,11 @@ const RegistroRendicionGastos = () => {
 
       const tipo =  await fetchGet(`tipo-documento/${product.tipo}`)
 
-      const ruc =  await fetchGet(`registroReferenciaAll/${product.ruc}`)
+/*       const ruc =  await fetchGet(`registroReferenciaAll/${product.ruc}`)
 
     console.log(ruc,'RUC')
-
-        const result = {...product, tipo: tipo.result.nombre, ruc: `${ruc.codigoReferencias.codigo}-${ruc.codigoReferencias.nombre}`}
+ */
+        const result = {...product, tipo: tipo.result.nombre}
 
         return result;
 

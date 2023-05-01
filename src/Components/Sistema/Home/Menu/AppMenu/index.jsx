@@ -25,7 +25,7 @@ export default  function  AppMenu({isOpen}) {
 
 
       
-      setDataUserRol(userData.rol)
+      setDataUserRol(userData?.rol)
 
     
     }
@@ -224,15 +224,15 @@ export default  function  AppMenu({isOpen}) {
   const main = () => {
     return menu
       ? menu.map((item, index) => {
-        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
+        if(dataUser?.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
           return
         }
 
-        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Solicitudes'){
+        if(dataUser?.rol !== 'ADMIN_ROLE' && item.label == 'Solicitudes'){
           return
         }
 
-        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Informes'){
+        if(dataUser?.rol !== 'ADMIN_ROLE' && item.label == 'Informes'){
           return
         }
           return (
@@ -244,7 +244,7 @@ export default  function  AppMenu({isOpen}) {
               <ul>
                 {item.items
                   ? item.items.map((item2, index2) => {
-                    if(dataUser.rol == 'ADMIN_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos'){
+                    if(dataUser?.rol == 'ADMIN_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos'){
                       return
                     }
                       return (
@@ -271,7 +271,7 @@ export default  function  AppMenu({isOpen}) {
   const fyaMain = () => {
     return menuFyA
       ? menuFyA.map((item, index) => {
-        if(dataUser.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
+        if(dataUser?.rol !== 'ADMIN_ROLE' && item.label == 'Movimientos'){
           return
         }
           return (

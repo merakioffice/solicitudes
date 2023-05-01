@@ -95,13 +95,17 @@ const ModalRendicionGastos = ({
 
       fetchGet(`rendGastosProducts/${edit?.id}`).then((res) => {
 
-        fetchGet(`registroReferenciaAll/${res.rendicionGastosProduct.ruc}`).then((res) =>{
+       
+
+        fetchGet(`registroReferencia/${res.rendicionGastosProduct.ruc}`).then((res) =>{
+
+          console.log(res,'DATAA')
 
           setSelectedRuc(res.codigoReferencias) 
      })
       })
 
-      console.log(edit, 'edit')
+
       fetchGet(`tipo-documento/tipo/${edit?.tipo}`).then((res) => {
         console.log(res.result)
         setSelectedProyecto(res.result)
@@ -154,7 +158,7 @@ const ModalRendicionGastos = ({
         _filteredCountries = [...rucs];
       } else {
         _filteredCountries = rucs.filter((ruc) => {
-          return  ruc.codigo
+          return  ruc.ruc
             .toLowerCase()
             .startsWith(event.query.toLowerCase());
         });
@@ -222,7 +226,7 @@ const ModalRendicionGastos = ({
     data.fecha = datosRegistros;
     data.rendicionGastosId = uuid;
     data.tipo = selectedProyecto.id;
-    data.ruc = selectedRuc.id;
+    data.ruc = `${selectedRuc.ruc}`;
      console.log(data, 'data producto gastos');
     fetchPost('rendGastosProducts', 'POST', data).then(() => {
       setView(false);
@@ -244,7 +248,8 @@ const ModalRendicionGastos = ({
     data.rendicionGastosId = uuid;
      data.tipo = selectedProyecto.id; 
      data.partidaPresupuestal
-     data.ruc = selectedRuc.id;
+     console.log(selectedRuc.ruc,'RUC')
+     data.ruc = `${selectedRuc.ruc}`
      console.log(data, 'updated');
     fetchPut(`rendGastosProducts/${edit?.id}`, 'PUT', data).then(() => {
       setView(false);
@@ -342,7 +347,7 @@ const ModalRendicionGastos = ({
               value={selectedRuc}
               suggestions={filteredRuc}
               completeMethod={searchRuc}
-              field='nombre'
+              field='ruc'
               name='tipo'
               id='tipo'
               onChange={(e) => {

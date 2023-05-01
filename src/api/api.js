@@ -1,9 +1,11 @@
 import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
 import { useNavigate } from 'react-router-dom';
+
 const { VITE_API_URL }  = import.meta.env;
 
 function handle401(status) {
+  console.log('status', status)
   if(status === 401 && window.location.pathname  !== "/") {
     fetchUserLogout();
   }
@@ -39,7 +41,7 @@ const firmarDoc = async (data) => {
     body: JSON.stringify(data),
   });
 
-
+  handle401(response.status);
   return response
   
 }
@@ -182,8 +184,10 @@ const fetchSearchUser = async (url = '', method = '', id)=> {
       
     }
   })
-     handle401(res.status);
 
+  console.log(res.status)
+     handle401(res.status);
+    
      const result = await res.json();
 
      return result;
@@ -192,9 +196,10 @@ const fetchSearchUser = async (url = '', method = '', id)=> {
 
 
 const fetchUserLogout=  ()=> {
-  const navigate = useNavigate();
+  
+
   localStorage.removeItem('token');
-  navigate('/')
+  window.location.replace('/');
 
 
 }
