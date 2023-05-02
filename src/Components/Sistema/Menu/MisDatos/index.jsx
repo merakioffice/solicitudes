@@ -490,10 +490,10 @@ useEffect( () =>  {
             <Image
                width='80px'
                height='100px'
-               src={`${mainUrlmin}/uploads/firmas/${dataUser?.imgfirma}.jpg `} 
+               src={`${mainUrlmin}/api/uploads/firmas/${dataUser?.imgfirma}.jpg `} 
             ></Image>
           ) : (
-            <Image src={`${mainUrlmin}/uploads/firmas/${dataUser?.imgfirma}.jpg `}></Image>
+            <Image src={`${mainUrlmin}/api/uploads/firmas/${dataUser?.imgfirma}.jpg `}></Image>
           )}
         </center>
       </div>
