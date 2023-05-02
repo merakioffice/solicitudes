@@ -1,5 +1,14 @@
 
 import { fetchSearchUser } from "../api/api";
+import { useNavigate } from 'react-router-dom';
+
+function handle401(status) {
+    if(status === 401 && window.location.pathname  !== "/") {
+      fetchUserLogout();
+    }
+  } 
+
+
 export const getUser = async () => {
 
     const token =  localStorage.getItem('token');
@@ -10,12 +19,25 @@ export const getUser = async () => {
     const decodedPayload = JSON.parse(atob(payload));
      
      
-    const {usuario} = await fetchSearchUser('usuario', 'GET', decodedPayload.id);
+    const res = await fetchSearchUser('usuario', 'GET', decodedPayload.id);
+
     
     
-    return usuario;
+    handle401(res.status);
+    return res.usuario;
     }
     
     return null
 
+   
+
     }
+
+
+    const fetchUserLogout=  ()=> {
+        const navigate = useNavigate();
+        localStorage.removeItem('token');
+        navigate('/')
+      
+      
+      }
