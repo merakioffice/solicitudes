@@ -95,7 +95,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
     },
     onSubmit: (values) => {
 
-      values.codidoc = selectedProyecto.id
+     /*  values.codidoc = selectedProyecto.id */
     
 
       console.log(values)
