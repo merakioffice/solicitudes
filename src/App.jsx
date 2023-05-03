@@ -115,12 +115,12 @@ console.log(isDarkMode)
           <Route
             exact
             path={'mis-datos'}
-            element={<MisDatos />}
+            element={<MisDatos isDarkMode={isDarkMode} />}
           />
           <Route
             exact
             path={'visor-documento'}
-            element={<VisorDocumento />}
+            element={<VisorDocumento  isDarkMode={isDarkMode} />}
           />
           <Route
             exact

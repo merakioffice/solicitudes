@@ -11,7 +11,7 @@ import { fetchGet } from '../../../../api';
 
 
 
-const VisorDocumento = () => {
+const VisorDocumento = ({isDarkMode}) => {
   let empty = {
     id: null,
     codigo: '',
@@ -179,7 +179,7 @@ const VisorDocumento = () => {
     console.log('=> data', data);
     localStorage.setItem('visor', JSON.stringify(data));
     return (
-      <div className='orders-subtable'>
+      <div  className={isDarkMode ?  'dark-mode-table orders-subtable' : 'orders-subtable'  }>
         <h5>Detalle de Documentos para: {data.nombre}</h5>
         <DataTable
           ref={dt}
@@ -261,9 +261,9 @@ const VisorDocumento = () => {
   ); */
 
   return (
-    <div className='grid table-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid table-demo' : 'grid table-demo'  }>
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
           <h5>Relacion de Empleados por Documento</h5>
           <DataTable
             value={products}
