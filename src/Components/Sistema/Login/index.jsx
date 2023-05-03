@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // PrimeReact
 import sd from "./descocentro.jpg";
-import logo from "./login1.png";
+import logo from "./logo.png";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
@@ -50,7 +50,7 @@ export default function Login() {
               <img src={logo} alt="hyper" class="mb-1 img-logo"/>
             </center>
 
-            <div class="title text-900 text-3xl font-medium mb-5">Desco Centro</div>
+            <div class="title text-900 text-3xl font-medium mb-5">FE Y ALEGRIA DEL PERU</div>
 
             <div className="field">
               <label htmlFor="Correo electronico">
