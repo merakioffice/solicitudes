@@ -307,7 +307,7 @@ export default  function  AppMenu({isOpen}) {
       : null;
   };
   return (
-    <div className='layout-menu-container eliminar-li'>
+    <div className='layout-menu-container eliminar-li '>
       <ul className='layout-menu'>{!estado ? main() : fyaMain()}</ul>
     </div>
   );

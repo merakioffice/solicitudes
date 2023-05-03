@@ -12,7 +12,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { LeftToolBarTemplate } from '../../../Molecula';
 import { useDispatch } from 'react-redux';
 
-const RegistroActividad = () => {
+const RegistroActividad = ({isDarkMode}) => {
   const dispatch = useDispatch();
   const [addData, setAddData] = useState([]);
   const navigate = useNavigate();
@@ -104,14 +104,14 @@ const RegistroActividad = () => {
   }, []);
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  } >
       <Toast ref={toast} />
       <ConfirmDialog />
 
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
           <Toolbar
-            className='mb-4'
+             className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  }
             right={LeftToolBarTemplate({
               openNew: openSolicitud,
               nameBtn: 'Generar Actividad',

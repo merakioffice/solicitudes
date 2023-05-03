@@ -105,7 +105,7 @@ async function arrayToJson(array) {
 }
 
 
-const RegistroEmpleado = () => {
+const RegistroEmpleado = ({isDarkMode}) => {
   let emptyProduct = {
     id: null,
     codigo: '',
@@ -677,12 +677,12 @@ const RegistroEmpleado = () => {
   //   };
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  } >
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  } >
           <Toast ref={toast} />
           <Toolbar
-            className='mb-4'
+            className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  }
             // left={leftToolbarTemplate}
             right={rightToolbarTemplate}
           ></Toolbar>

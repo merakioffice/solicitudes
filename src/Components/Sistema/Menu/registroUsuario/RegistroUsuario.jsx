@@ -173,7 +173,7 @@ import { InputText } from 'primereact/inputtext';
 import { InputSwitch } from 'primereact/inputswitch';
 import { fetchDelete, fetchGet, fetchPut, postUser } from '../../../../api';
 
-const RegistroUsuario = () => {
+const RegistroUsuario = ({isDarkMode}) => {
   let empty = {
     codigo: '',
     nombre: '',
@@ -476,11 +476,11 @@ const RegistroUsuario = () => {
   );
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  }>
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
           <Toast ref={toast} />
-          <Toolbar className='mb-4' left={leftToolbarTemplate}></Toolbar>
+          <Toolbar className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  } left={leftToolbarTemplate}></Toolbar>
           <TablaUsuario
             dt={dt}
             listProduct={listProduct}

@@ -318,7 +318,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 
 
-const MisDatos = () => {
+const MisDatos = ({isDarkMode}) => {
 /*   let empty = {
     codigo: '',
     nombre: null,
@@ -365,10 +365,21 @@ useEffect( () =>  {
     setProducts(_product);
   }; */
 
-  const onUpload = ({ files }) => {
-    // console.log(files);
-    setViewImage(files[0].objectURL);
-    viewPerfil();
+  const onUpload = async  ({ files }) => {
+
+    
+
+
+        const userData = await getUser();
+
+       console.log(userData)
+        
+        setDataUser(userData);
+    
+      
+      
+/*     setViewImage(files[0].objectURL);
+    viewPerfil(); */
   };
 
   var usuario_nombre = localStorage.getItem('nombre');
@@ -421,7 +432,7 @@ useEffect( () =>  {
   }, []);
 
   return (
-    <div className='card p-fluid'>
+    <div className={isDarkMode ?  'dark-mode card p-fluid' : 'card p-fluid'  } >
       <Toast ref={toast}></Toast>
       <h5>Mis Datos</h5>
 
@@ -466,7 +477,7 @@ useEffect( () =>  {
           }}
         />
       </div>
-      <div className='card'>
+      <div className={isDarkMode ?  'dark-mode card ' : 'card '  }>
         <h5>
           Seleccionar Firma{' '}
           <span

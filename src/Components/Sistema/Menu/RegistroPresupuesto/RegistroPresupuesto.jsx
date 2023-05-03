@@ -11,7 +11,7 @@ import { fetchGet, createFormData, fetchDelete } from '../../../../api';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-const RegistroPresupuesto = () => {
+const RegistroPresupuesto = ({isDarkMode}) => {
   const navigate = useNavigate();
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
@@ -258,13 +258,13 @@ const RegistroPresupuesto = () => {
     listData();
   }, []);
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  } >
        <Toast ref={toast} /> 
         <ConfirmDialog />
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
           <Toolbar
-            className='mb-4'
+            className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  }
             right={RightToolBarTemplate}
             left={LeftToolBarTemplate({
               openNew: openModal,

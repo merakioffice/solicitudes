@@ -21,7 +21,7 @@ import { useSelector } from 'react-redux';
 import PDFRendicionGastos from './PDFRedicionGastos';
 import ModalRendicionGastos from './modal/ModalRendicionGastos';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-const RegistroRendicionGastos = () => {
+const RegistroRendicionGastos = ({isDarkMode}) => {
 
 
 
@@ -600,12 +600,12 @@ const RegistroRendicionGastos = () => {
   }, [data]);
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  }>
       <Toast ref={toast} />
       <ConfirmDialog />
-      <div className='col-12'>
-        <div className='card'>
-          <Toolbar className='mb-4' right={<PDFRendicionGastos rendidoCount={countRendido} />}></Toolbar>
+      <div className={isDarkMode ?  'dark-mode col-12' : 'col-12'  }>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
+          <Toolbar className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  } right={<PDFRendicionGastos rendidoCount={countRendido} />}></Toolbar>
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

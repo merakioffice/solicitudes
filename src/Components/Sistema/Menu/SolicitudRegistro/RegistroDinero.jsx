@@ -19,7 +19,7 @@ import { fetchDelete, fetchGet, fetchPost, fetchPut } from '../../../../api';
 
 import PDFSolicitud from './PDFSolicitud';
 
-function RegistroDinero() {
+function RegistroDinero({isDarkMode}) {
   const { solicitud, isEditSolicitud } = useSelector(
     (state) => state.solicitudDinero
   );
@@ -316,12 +316,12 @@ function RegistroDinero() {
   }, []);
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  }>
       <Toast ref={toast} />
 
-      <div className='col-12'>
-        <div className='card'>
-          <Toolbar className='mb-4' right={<PDFSolicitud />} />
+      <div className={isDarkMode ?  'dark-mode col-12' : 'col-12'  }>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
+          <Toolbar className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  } right={<PDFSolicitud />} />
 
           <form onSubmit={formik.handleSubmit} noValidate>
             <h4>Datos de la solicitud</h4>
@@ -607,6 +607,7 @@ function RegistroDinero() {
                 color: '#fff',
                 backgroundColor: '#fff',
               }}
+              className={isDarkMode ?  'dark-mode ' : ''  }
               disabled
             />
             <button
@@ -628,6 +629,7 @@ function RegistroDinero() {
                 backgroundColor: '#ececec',
                 color: '#575D63',
               }}
+             
               disabled
             >
               {totales.toFixed(2)}

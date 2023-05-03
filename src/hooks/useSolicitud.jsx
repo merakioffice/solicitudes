@@ -12,6 +12,7 @@ const useSolicitud = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [dataRegistro, setDataRegistro] = useState([]);
+  const [darkMode, setDarkMode] = useState(false)
 
   const toast = useRef(null);
 
@@ -112,6 +113,7 @@ const useSolicitud = () => {
     buttonCoordinator,
     dataRegistro,
     toast,
+    setDarkMode
   ];
 };
 
