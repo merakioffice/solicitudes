@@ -9,7 +9,7 @@ import useRendicionSolicitud from '../../../../hooks/useRendicionSolicitud';
 import { fetchDelete, fetchGet } from '../../../../api';
 import { Button } from 'primereact/button';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-const RendicionGastos = () => {
+const RendicionGastos = ({isDarkMode}) => {
   const [
     addData,
     listData,
@@ -91,13 +91,13 @@ const RendicionGastos = () => {
   }, [datatableState])
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  } >
       <Toast ref={toast} />
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  } >
         <ConfirmDialog />
           <Toolbar
-            className='mb-4'
+            className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  }
             right={LeftToolBarTemplate({
               openNew: openSolicitud,
               nameBtn: 'Generar rendición',

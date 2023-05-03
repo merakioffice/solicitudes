@@ -9,7 +9,7 @@ import useSolicitud from '../../../../hooks/useSolicitud';
 import { fetchDelete, fetchGet } from '../../../../api';
 import { Button } from 'primereact/button';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-function SolicitudDinero() {
+function SolicitudDinero({isDarkMode}) {
   const [
     listaSolicitud,
     openSolicitud,
@@ -19,11 +19,15 @@ function SolicitudDinero() {
     buttonCoordinator,
     dataRegistro,
     toast,
+    setDarkMode
   ] = useSolicitud();
   const [totalRecords, setTotalRecords] = useState(0);
   const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const [addData, setAddData] = useState([]);
 
+
+
+  
   const listData = (filters) => {
     const {page, rows} = datatableState || {page: 0, rows: 10, first: 10};
    
@@ -90,13 +94,14 @@ function SolicitudDinero() {
 
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  }    >
       <Toast ref={toast} />
       <ConfirmDialog />
-      <div className='col-12'>
-        <div className='card'>
+      <div  className={isDarkMode ?  'dark-mode col-12' : 'col-12'  } >
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  } >
           <Toolbar
-            className='mb-4'
+          className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  }
+            
             right={LeftToolBarTemplate({
               openNew: openSolicitud,
               nameBtn: 'Generar solicitud',
@@ -104,6 +109,8 @@ function SolicitudDinero() {
           />
 
           <DataTable value={addData}
+    
+          
           lazy
           first={datatableState.first}
           rows={10}  
@@ -113,7 +120,7 @@ function SolicitudDinero() {
             paginator
           
           >
-            <Column field='id' header='Item' />
+            <Column  field='id' header='Item' />
             <Column field='nombre' header='Nombre' />
             <Column field='fechaInicio' header='Fecha Inicio' />
             <Column field='fechaFin' header='Fecha Fin' />

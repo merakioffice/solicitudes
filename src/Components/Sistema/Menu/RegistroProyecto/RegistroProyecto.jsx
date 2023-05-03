@@ -11,7 +11,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { createFormData, fetchDelete, fetchGet, fetchPost } from '../../../../api';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
-const RegistroProyecto = () => {
+const RegistroProyecto = ({isDarkMode}) => {
   const [view, setView] = useState(false);
   const [addData, setAddData] = useState([]);
   const [edit, setEdit] = useState(null);
@@ -176,13 +176,13 @@ const RegistroProyecto = () => {
   }, []);
 
   return (
-    <div className='grid crud-demo'>
+    <div  className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  }>
       <Toast ref={toast} />
       <ConfirmDialog />
       <div className='col-12'>
-        <div className='card'>
+        <div className={isDarkMode ?  'dark-mode card' : 'card'  }>
           <Toolbar
-            className='mb-4'
+            className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  }
             left={LeftToolBarTemplate({
               openNew: openModal,
               nameBtn: 'Agregar Proyecto',

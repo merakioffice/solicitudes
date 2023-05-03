@@ -8,8 +8,9 @@ import {
   
 } from '../../../../../store/slices/solicitud/MenuRRHHSlice';
 import { getUser } from "../../../../../utils/getUser";
+import { InputSwitch } from 'primereact/inputswitch';
 import { useDispatch } from 'react-redux'
-export default function AppTopbar({isOpen, setMenuIsOpen}) {
+export default function AppTopbar({isOpen, setMenuIsOpen, setIsDarkMode}) {
   const dispatch = useDispatch();
    const navigate = useNavigate();
   const { estado } = useSelector((state) => {
@@ -19,6 +20,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
 
   const [dataUser, setDataUser] = useState();
   const [menuState, setMenuState] = useState(false);
+  const [value, setValue] = useState(false);
 
   useEffect( () =>  {
     async function doIt(){
@@ -35,7 +37,12 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
   }, [])
 
 
-  console.log(dataUser?.rol)
+  const switchFondo = () => {
+     setIsDarkMode(!value)
+    setValue( !value);
+   
+    console.log(value)
+  };
 
   const handleClick = () => {
     dispatch(stateMenu());
@@ -155,7 +162,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
 
 
   return (
-    <div className='layout-topbar '>
+    <div   className={value ?  'dark-mode layout-topbar ' : 'layout-topbar'  }  >
       <Link to='/Dashboard' className='layout-topbar-logo'>
         <span>Proyecto OTE</span>
       </Link>
@@ -176,13 +183,17 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
       </button>
       
       <ul className='layout-topbar-menu lg:flex origin-top'>
+        <li className='mr-5'>
+        <InputSwitch checked={value} onChange={(e) => switchFondo()} />
+        </li>
       <li className='mr-5'>
+    
         {dataUser?.rol == "ADMIN_ROLE"  ? (
             !estado ? (
             
-              <MegaMenu model={megamenuItems} />
+              <MegaMenu className={value ?  'dark-mode-button' : ''  } model={megamenuItems} />
             ) : (
-              <MegaMenu model={megaMenuMain} />
+              <MegaMenu className={value ?  'dark-mode-button' : ''  } model={megaMenuMain} />
             )
           ) : (
             ''
@@ -193,7 +204,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
 
         <li className='mr-5'>  
         {dataUser?.rol == "ADMIN_ROLE"  ? (
-            <MegaMenu model={megaMenuaddUser} /> 
+            <MegaMenu className={value ?  'dark-mode-button' : ''  } model={megaMenuaddUser} /> 
           ) : (
             ''
           )}
@@ -202,7 +213,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen}) {
         </li>
       
         <li className='mr-5'>     
-            <MegaMenu model={megaMenulogout} /> 
+            <MegaMenu className={value ?  'dark-mode-button' : ''  } model={megaMenulogout} /> 
         </li>
       </ul>
     </div>

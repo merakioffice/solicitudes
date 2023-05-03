@@ -20,6 +20,51 @@
     margin-left: -22vw;
 }
 
+
+
+.dark-mode {
+    background-color: black !important;
+    color: white;
+
+    span {
+        color: white !important; 
+    }
+
+  
+  }
+
+
+  .body-dark {
+    background-color: rgb(22, 22, 22) !important;  
+}  
+
+
+
+
+
+  .dark-mode-button {
+    background-color: black !important;
+    color: white;
+    
+    :hover {
+        background-color: black !important;
+        color: white; 
+    }
+
+    ul {
+        background-color: black !important;
+        color: azure !important;
+    }
+
+
+    li {
+        background-color: black !important;
+        color: azure !important;
+    }
+
+
+  }
+
 @media (min-width:1500px){
     .expand-menu{
         max-width: 118vw !important;
@@ -27,6 +72,9 @@
     }
         
 }
+
+
+
 
 @media (min-width:1800px){
     .expand-menu{

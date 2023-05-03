@@ -15,7 +15,7 @@ import PDFActividad from './PDFActividad';
 import { useLocation } from 'react-router-dom';
 import { InputTextarea } from 'primereact/inputtextarea';
 
-const InformeRegistroActividad = () => {
+const InformeRegistroActividad = ({isDarkMode}) => {
   const { registroActividad } = useSelector((state) => state.solicitudDinero);
   
   const [boolCreate, setBoolCreate] = useState(false);
@@ -125,13 +125,13 @@ const InformeRegistroActividad = () => {
   };
 
   return (
-    <div className='grid crud-demo'>
+    <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  }>
       <Toast ref={toast} />
 
       <div className='col-12'>
-        <div className='card'>
+        <div  className={isDarkMode ?  'dark-mode card' : 'card'  }>
           <form onSubmit={formik.handleSubmit}>
-            <Toolbar className='mb-4' /* right={<PDFActividad edit={edit} data={data} />} */></Toolbar>
+            <Toolbar className={isDarkMode ?  'dark-mode mb-4' : 'mb-4'  } /* right={<PDFActividad edit={edit} data={data} />} */></Toolbar>
 
             <h4>Datos Personales</h4>
 

@@ -9,7 +9,7 @@ import './styles.scss';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
-export default function Home({isLogged}) {
+export default function Home({setDarkMode}) {
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -31,15 +31,18 @@ export default function Home({isLogged}) {
   
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [openMenuActive, setOpenMenuActive] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState();
+
+  setDarkMode(isDarkMode)
 
   return (
     <div>
-      <AppTopbar isOpen={openMenuActive} setMenuIsOpen={setOpenMenuActive}/>
-    { openMenuActive && <div className='layout-sidebar'>
+      <AppTopbar isOpen={openMenuActive} setMenuIsOpen={setOpenMenuActive} setIsDarkMode={setIsDarkMode}/>
+    { openMenuActive && <div className={isDarkMode ?  'dark-mode layout-sidebar' : 'layout-sidebar'  } >
         <AppMenu />
       </div>}
 
-      { !openMenuActive && <div className='layout-sidebar layout-expand'>
+      { !openMenuActive && <div  className={isDarkMode ?  'dark-mode layout-sidebar layout-expand' : 'layout-sidebar layout-expand'  } >
         <AppMenu />
       </div>}
 

@@ -50,7 +50,7 @@ import { RegistroPresupuestoFinanciero } from './Components/Sistema/Menu/Registr
 
 
 function App() {
- 
+  const [isDarkMode, setDarkMode] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -62,12 +62,14 @@ function App() {
     
   }, [localStorage.getItem('token')]);
 
+console.log(isDarkMode)
+
   return (
-    <div>
+    <div className={isDarkMode ?  'body-dark ' : ''  }>
       <Routes>
         <Route exact path={'/'} element={<Login />} />
 
-        <Route exact path={'/'} element={<Home />}>
+        <Route exact path={'/'} element={<Home setDarkMode={setDarkMode} />}>
            <Route exact path={'Dashboard'}  element={<Dashboard />} /> 
            <Route
             path={'viewpdf'}
@@ -77,38 +79,38 @@ function App() {
           <Route
             exact
             path={'registro-usuario'}
-            element={<RegistroUsuario />}
+            element={<RegistroUsuario  isDarkMode={isDarkMode} />}
           />
           <Route
             exact
             path={'registro-empleado'}
-            element={<RegistroEmpleado />}
+            element={<RegistroEmpleado isDarkMode={isDarkMode} />}
           />
 
           <Route
             exact
             path={'solicitud-dinero'}
-            element={<SolicitudDinero />}
+            element={<SolicitudDinero isDarkMode={isDarkMode} />}
           />
           <Route
             exact
             path={'rendicion-gastos'}
-            element={<RendicionGastos />}
+            element={<RendicionGastos isDarkMode={isDarkMode} />}
           />
           <Route
             exact
             path={'RegistroRendicionGastos'}
-            element={<RegistroRendicionGastos />}
+            element={<RegistroRendicionGastos isDarkMode={isDarkMode}  />}
           />
           <Route
             exact
             path={'RegistroSolicitudDinero'}
-            element={<RegistroDinero />}
+            element={<RegistroDinero  isDarkMode={isDarkMode}/>}
           />
           <Route
             exact
             path={'informe-actividad'}
-            element={<RegistroActividad />}
+            element={<RegistroActividad isDarkMode={isDarkMode}/>}
           />
           <Route
             exact
@@ -123,35 +125,35 @@ function App() {
           <Route
             exact
             path={'registro-actividad'}
-            element={<InformeRegistroActividad />}
+            element={<InformeRegistroActividad  isDarkMode={isDarkMode}/>}
           />
           <Route
             exact
             path={'registro-proyecto'}
-            element={<RegistroProyecto />}
+            element={<RegistroProyecto  isDarkMode={isDarkMode}/>}
           />
           <Route
             exact
             path={'registro-presupuesto'}
-            element={<RegistroPresupuesto />}
+            element={<RegistroPresupuesto isDarkMode={isDarkMode} />}
           />
             <Route
             exact
             path={'registro-presupuesto-financiero'}
-            element={<RegistroPresupuestoFinanciero />}
+            element={<RegistroPresupuestoFinanciero isDarkMode={isDarkMode}  />}
           />
           <Route
             exact
             path={'registro-referencia'}
-            element={<RegistroCodigoReferencia />}
+            element={<RegistroCodigoReferencia isDarkMode={isDarkMode} />}
           />
-          <Route exact path={'registro-cargos'} element={<RegistroCargos />} />
+          <Route exact path={'registro-cargos'} element={<RegistroCargos  isDarkMode={isDarkMode}/>} />
           <Route
             exact
             path={'registro-documentos'}
-            element={<RegistroDocumentos />}
+            element={<RegistroDocumentos isDarkMode={isDarkMode} />}
           />
-          <Route exact path={'lugar-comision'} element={<LugarComision />} />
+          <Route exact path={'lugar-comision'} element={<LugarComision isDarkMode={isDarkMode} />} />
         </Route>
       </Routes>
     </div>
