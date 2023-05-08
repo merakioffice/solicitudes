@@ -187,7 +187,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label={edit ? 'Editar' : 'Crear'}
+            label={edit ? 'Guardar' : 'Guardar'}
             icon='pi pi-check'
             type='submit'
           />

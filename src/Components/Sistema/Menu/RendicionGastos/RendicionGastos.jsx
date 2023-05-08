@@ -44,6 +44,8 @@ const RendicionGastos = ({isDarkMode}) => {
       });
 
       Promise.all(promises).then((data) => {
+        data.sort((a, b) => b.id - a.id);
+        console.log(data,'data')
         setAddDatas(data);
       });
      
@@ -114,7 +116,7 @@ const RendicionGastos = ({isDarkMode}) => {
           onPage={(e) => changeDatatableState(e)}
             paginator
           >
-            <Column field='index' header='Id'></Column>
+            <Column field='id' header='Id'></Column>
             <Column field='nombreApellido' header='Nombre'></Column>
             <Column field='proyectoName' header='Proyecto'></Column>
             <Column field='lugarComision' header='Lugar Comisión'></Column>

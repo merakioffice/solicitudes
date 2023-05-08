@@ -58,11 +58,11 @@ const ModalRegistroCargo = ({ setView, view, listData, edit, setEdit }) => {
 
   const updateAdd = (data) => {
     fetchPut(`registrocargo/${edit.id}`, 'PUT', data).then(({ message }) => {
-      if (message === 'El código ya existe') {
+      if (message === 'Hable con el administrador') {
         toast.current.show({
           severity: 'warn',
-          summary: 'Datos duplicados',
-          detail: message,
+          summary: 'Verifique que el codigo no sea repetido',
+        
         });
       } else {
         toast.current.show({
@@ -139,7 +139,7 @@ const ModalRegistroCargo = ({ setView, view, listData, edit, setEdit }) => {
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label={edit ? 'Editar' : 'Crear'}
+            label={edit ? 'Guardar' : 'Guardar'}
             icon='pi pi-check'
             type='submit'
           />

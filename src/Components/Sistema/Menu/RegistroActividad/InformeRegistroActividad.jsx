@@ -190,6 +190,7 @@ const InformeRegistroActividad = ({isDarkMode}) => {
                   name='fechaInicio'
                   disabled={boolCreate}
                   showIcon
+                  dateFormat="dd/mm/yy"
                 ></Calendar>
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
                   <span style={{ color: '#e5432d' }}>
@@ -207,6 +208,7 @@ const InformeRegistroActividad = ({isDarkMode}) => {
                   name='fechaFin'
                   showIcon
                   disabled={boolCreate}
+                  dateFormat="dd/mm/yy"
                 >
                   
                 </Calendar>
@@ -300,7 +302,7 @@ const InformeRegistroActividad = ({isDarkMode}) => {
               />
               <Button
                 style={{ width: '100px', marginLeft: '20px' }}
-                label='Crear'
+                label='Guardar'
                 type='submit'
               />
             </div>
