@@ -41,8 +41,8 @@ const InformeRegistroActividad = ({isDarkMode}) => {
     initialValues: {
       nombreApellido: edit  ? edit?.nombreApellido : '',
       destino: edit ? edit?.destino : '',
-      fechaFin: edit ? new Date(edit?.fechaFin)  : '',
-      fechaInicio: edit ?  new Date(edit?.fechaInicio)  : '',
+      fechaFin: edit ? new Date(edit?.fechaFin)  : null,
+      fechaInicio: edit ?  new Date(edit?.fechaInicio)  : null,
       objetoComision: edit ? edit?.objetoComision : '',
       detalleActividad: edit ? edit?.detalleActividad : '',
       otros: edit ? edit?.otros : '',
@@ -190,6 +190,7 @@ const InformeRegistroActividad = ({isDarkMode}) => {
                   name='fechaInicio'
                   disabled={boolCreate}
                   showIcon
+                  dateFormat="dd/mm/yy"
                 ></Calendar>
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
                   <span style={{ color: '#e5432d' }}>
@@ -207,6 +208,7 @@ const InformeRegistroActividad = ({isDarkMode}) => {
                   name='fechaFin'
                   showIcon
                   disabled={boolCreate}
+                  dateFormat="dd/mm/yy"
                 >
                   
                 </Calendar>
@@ -300,7 +302,7 @@ const InformeRegistroActividad = ({isDarkMode}) => {
               />
               <Button
                 style={{ width: '100px', marginLeft: '20px' }}
-                label='Crear'
+                label='Guardar'
                 type='submit'
               />
             </div>

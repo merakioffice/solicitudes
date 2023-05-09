@@ -18,6 +18,7 @@ const RegistroProyecto = ({isDarkMode}) => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
   const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
+  
  
   useEffect(() => {
     listData(datatableState)
@@ -135,7 +136,10 @@ const RegistroProyecto = ({isDarkMode}) => {
 
         formData.append('file', File);
   
-        await createFormData("regProyectoAddAll", 'POST' , formData);  
+        setLoading(true);
+        await createFormData("regProyectoAddAll", 'POST' , formData).then((res) => {
+          setLoading(false)
+        })  
         listData();
         toast.current.show({
           severity: 'success',

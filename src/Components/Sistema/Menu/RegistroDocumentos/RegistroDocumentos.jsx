@@ -32,12 +32,12 @@ setLoading(true);
   fetchGet(`tipo-documento?page=${page + 1}&pageSize=${rows}`).then(( { result, count } ) => {
     console.log(result)
     setTotalRecords(count);
-    const data = result.map((element, item) => {
+/*     const data = result.map((element, item) => {
       element.index = item + 1;
       return element;
-    });
+    }); */
 
-    setAddData(data);
+    setAddData(result);
     setLoading(false);
   });
 }
@@ -191,11 +191,7 @@ const deleteData = async(id) => {
                           loading={loading}
           >
             <Column field='id' header='Id'>
-              {addData.map((item, index) => {
-                {
-                  index + 1;
-                }
-              })}
+
             </Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='nombre' header='Nombre'></Column>

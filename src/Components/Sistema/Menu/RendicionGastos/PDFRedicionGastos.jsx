@@ -12,10 +12,11 @@ const PDFRendicionGastos = (countRendido) => {
   const [data3, setData] = useState();
   const [rendido, setRendido] = useState();
   const { rendicionGastos } = useSelector((state) => state.rendicionGastos);
+ 
 
   let proyecto;
   let lugar;
-
+  let recibido; 
   fetchGet(`regProyecto/${rendicionGastos.proyecto}`).then((res) => {
     proyecto = res.registroProyecto.nombreAbreviado
      
@@ -24,6 +25,15 @@ const PDFRendicionGastos = (countRendido) => {
 
     lugar = rendicionGastos.lugarComision
   } )
+
+  if(isNaN(Number(rendicionGastos.recibido ))){
+    console.log('si')
+    recibido = Number(0).toFixed(2);
+  }else {
+    console.log('no')
+    recibido = Number(rendicionGastos.recibido).toFixed(2);
+  }
+
   useEffect(() => {
 
 
@@ -144,10 +154,10 @@ const PDFRendicionGastos = (countRendido) => {
 
     doc.rect(20, 66, 169, 11);
     doc.text('Resumen de la rendición de cuentas', 25, 70);
-    doc.text(`RECIBIDO: $/ ${rendicionGastos.recibido}`, 25, 75);
+    doc.text(`RECIBIDO: $/ ${recibido}`, 25, 75);
     doc.text(`RENDIDO: $/ ${countRendido.rendidoCount.toFixed(2)}`, 90, 75);
     doc.text(
-      `SALDO: $/ ${(Number(rendicionGastos.recibido) + Number(countRendido.rendidoCount)).toFixed(2)}`,
+      `SALDO: $/ ${( Number(recibido) + Number(countRendido.rendidoCount)).toFixed(2)}`,
       150,
       75
     );

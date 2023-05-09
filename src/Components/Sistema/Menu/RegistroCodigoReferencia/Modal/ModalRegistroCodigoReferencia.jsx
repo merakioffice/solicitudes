@@ -20,6 +20,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
   const [filteredProyecto, setFilteredProyecto] = useState(null);
   const [rucs, setRucs] = useState([]);
   const [proyecto, setProyecto] = useState([]);
+
   const listData = () => {
     fetchGet(`tipo-documento`).then(({ result }) => {
       const data = result.map((element, item) => {
@@ -32,7 +33,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
     });
 
 
-   
+
 
     fetchGet(`registroReferencia`).then(({ codigoReferencias }) => {
       const data = codigoReferencias.map((element, item) => {
@@ -47,6 +48,8 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
 
 
   };
+
+
   const searchRuc = (event) => {
     setTimeout(() => {
       let _filteredCountries;
@@ -83,6 +86,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
 
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       codigo: edit ? edit?.codigo : '',
       categoria: edit ? edit?.categoria : '',
@@ -94,11 +98,11 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
       ruc: edit ? edit?.ruc : ''
     },
     onSubmit: (values) => {
-
+      
      /*  values.codidoc = selectedProyecto.id */
     
 
-      console.log(values)
+    
 
       if(value === undefined || value === null){
         values.exonerar = false
@@ -165,6 +169,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
             summary: 'Creado',
             detail: message,
           });
+          setView(false);
 /*           setTimeout(() => {
             formik.resetForm();
             fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
@@ -202,6 +207,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
           summary: 'Actualizado',
           detail: response.message,
         });
+        setView(false);
 /*         setTimeout(() => {
           formik.resetForm();
 
@@ -276,6 +282,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
               <TriStateCheckbox
                value={value} onChange={(e) => setValue(e.value)}
                 style={{ marginLeft: '5px' }}
+               
               />
             </div>
             <div
@@ -516,7 +523,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label='Guardar'
             icon='pi pi-check'
             type='submit'
           />

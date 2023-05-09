@@ -130,7 +130,7 @@ const RegistroActividad = ({isDarkMode}) => {
                                    
           
           responsiveLayout='scroll'>
-            <Column field='index' header='Id'></Column>
+            <Column field='id' header='Id'></Column>
             <Column field='nombreApellido' header='Nombre'></Column>
             <Column field='fechaInicio' header='Fecha'></Column>
             <Column field='destino' header='Destino'></Column>

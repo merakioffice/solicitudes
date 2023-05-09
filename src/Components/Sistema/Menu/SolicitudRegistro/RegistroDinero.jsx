@@ -343,6 +343,11 @@ function RegistroDinero({isDarkMode}) {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaRegistro'>Fecha Registro</label>
                 <Calendar
+                dateFormat="dd/mm/yy"
+                showYearDropdown
+                scrollableYearDropdown
+                yearDropdownItemNumber={15}
+                showMonthDropdown
                   disabled={boolCreate}
                   id='fechaRegistro'
                   name='fechaRegistro'
@@ -515,6 +520,7 @@ function RegistroDinero({isDarkMode}) {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaInicio'>Fecha inicio</label>
                 <Calendar
+                dateFormat="dd/mm/yy"
                   disabled={boolCreate}
                   name='fechaInicio'
                   onBlur={formik.handleBlur}
@@ -533,6 +539,7 @@ function RegistroDinero({isDarkMode}) {
               <div className='field col-12 md:col-6'>
                 <label htmlFor='fechaFin'>Fecha fin</label>
                 <Calendar
+                dateFormat="dd/mm/yy"
                   disabled={boolCreate}
                   name='fechaFin'
                   onBlur={formik.handleBlur}
@@ -563,7 +570,7 @@ function RegistroDinero({isDarkMode}) {
               />
               <Button
                 style={{ width: '100px', marginLeft: '20px' }}
-                label={isEditSolicitud ? 'Editar' : 'Guardar'}
+                label={isEditSolicitud ? 'Guardar' : 'Guardar'}
                 type='submit'
                 // disabled={!!dataLista.numeroSolicitud}
               />

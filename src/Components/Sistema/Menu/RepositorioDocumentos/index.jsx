@@ -16,7 +16,7 @@ import { Dropdown } from 'primereact/dropdown';
 import JSZipUtils from '../assets/JSZipUtils';
 let zip = new JSZip();
  */
-const RegistroDocumentos = () => {
+const RegistroDocumentos = ({isDarkMode}) => {
 
  /*  const mainUrlmin = str.slice(0, -4); */
   const toast = useRef(null);
@@ -172,7 +172,7 @@ const RegistroDocumentos = () => {
 
 
     return (
-      <div className='grid crud-demo'>
+      <div className={isDarkMode ?  'dark-mode-table grid crud-demo' : 'grid crud-demo'  } >
         <Button
           label='Importar Documentos'
           icon='pi pi-upload'
@@ -610,10 +610,10 @@ const RegistroDocumentos = () => {
 
   return (
     <>
-      <div className='grid table-demo'>
+      <div className={isDarkMode ?  'dark-mode-table grid table-demo' : 'grid table-demo'  }  >
         <Toast ref={toast} />
         <div className='col-12'>
-          <div className='card'>
+          <div className={isDarkMode ?  'dark-mode card' : 'card'  } >
             <h5>Relacion de Empleados por Documentos</h5>
             <Toolbar className='mb-4' right={rightToolbarTemplate}></Toolbar>
 

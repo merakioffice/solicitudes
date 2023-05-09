@@ -30,12 +30,12 @@ const RegistroCargos = ({isDarkMode}) => {
     fetchGet(`registrocargo?page=${page + 1}&pageSize=${rows}`).then(( { registroCargo, count } ) => {
       setTotalRecords(count);
 
-      const data = registroCargo.map((element, item) => {
+/*       const data = registroCargo.map((element, item) => {
         element.index = item + 1;
         return element;
-      });
+      }); */
 
-      setAddData(data);
+      setAddData(registroCargo);
       setLoading(false);
     });
   };
@@ -180,7 +180,7 @@ const RegistroCargos = ({isDarkMode}) => {
                       onPage={(e) => changeDatatableState(e)}   
                       loading={loading}
               >
-            <Column field='index' header='Id'></Column>
+            <Column field='id' header='Id'></Column>
             <Column field='codigo' header='Código'></Column>
             <Column field='descripcion' header='Descripción'></Column>
             <Column body={tableButtonEdit}></Column>

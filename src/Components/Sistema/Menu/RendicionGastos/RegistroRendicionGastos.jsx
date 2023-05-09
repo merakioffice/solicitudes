@@ -113,8 +113,13 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
       
       }
 
+      if(isNaN(Number(edit?.recibido))){
+        setCountRecibido(0)
+      }else {
+        setCountRecibido(edit?.recibido)  
+      }
 
-      setCountRecibido(edit?.recibido)  
+      
      
     }
 
@@ -535,13 +540,10 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
         })
         .reduce((prev, curr) => prev + curr, 0);
 
-        if(suma){
-          console.log('si')
-        }else {
-          console.log('no')
-        }
         
       setCountRecibido(suma);
+    } else {
+      setCountRecibido(0);
     }
   };
 
@@ -784,13 +786,14 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                       ? new Date(data?.fechaInicio)
                       : new Date(edit?.fechaInicio)
                   }
-            
+                  dateFormat="dd/mm/yy"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaInicio'
                   disabled={boolCreate}
                   showIcon
+                  
                 ></Calendar>
                 {formik.touched.fechaInicio && formik.errors.fechaInicio && (
                   <span style={{ color: '#e5432d' }}>
@@ -813,6 +816,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                   name='fechaFin'
                   showIcon
                   disabled={boolCreate}
+                  dateFormat="dd/mm/yy"
                 >
                   
                 </Calendar>

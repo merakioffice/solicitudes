@@ -274,7 +274,7 @@ export default function ModalCreacionProducto({
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label='Guardar'
             icon='pi pi-check'
             type='submit'
           />

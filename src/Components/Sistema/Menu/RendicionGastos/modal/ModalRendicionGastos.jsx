@@ -56,7 +56,7 @@ const ModalRendicionGastos = ({
 
     fetchGet(`registroReferencia`).then(({ codigoReferencias }) => {
       const data = codigoReferencias.map((element, item) => {
-        element.nombre = `${element.codigo}-${element.nombre}`
+        element.nombre = `${element.ruc}-${element.nombre}`
         return element;
       });
 
@@ -95,13 +95,13 @@ const ModalRendicionGastos = ({
 
       fetchGet(`rendGastosProducts/${edit?.id}`).then((res) => {
 
-       
+        const ruc =  res.rendicionGastosProduct.ruc.split('-')
 
-        fetchGet(`registroReferencia/${res.rendicionGastosProduct.ruc}`).then((res) =>{
+        fetchGet(`registroReferencia/${ruc[0]}`).then((res) =>{
 
-          console.log(res,'DATAA')
+          const ruc = {...res.codigoReferencias, nombre: `${res.codigoReferencias.ruc}-${res.codigoReferencias.nombre}`}
 
-          setSelectedRuc(res.codigoReferencias) 
+          setSelectedRuc(ruc) 
      })
       })
 
@@ -158,7 +158,7 @@ const ModalRendicionGastos = ({
         _filteredCountries = [...rucs];
       } else {
         _filteredCountries = rucs.filter((ruc) => {
-          return  ruc.ruc
+          return  ruc.nombre
             .toLowerCase()
             .startsWith(event.query.toLowerCase());
         });
@@ -226,8 +226,8 @@ const ModalRendicionGastos = ({
     data.fecha = datosRegistros;
     data.rendicionGastosId = uuid;
     data.tipo = selectedProyecto.id;
-    data.ruc = `${selectedRuc.ruc}`;
-     console.log(data, 'data producto gastos');
+    data.ruc = `${selectedRuc.ruc}-${selectedRuc.nombre}`;
+ 
     fetchPost('rendGastosProducts', 'POST', data).then(() => {
       setView(false);
       formik.resetForm();
@@ -249,7 +249,7 @@ const ModalRendicionGastos = ({
      data.tipo = selectedProyecto.id; 
      data.partidaPresupuestal
      console.log(selectedRuc.ruc,'RUC')
-     data.ruc = `${selectedRuc.ruc}`
+     data.ruc = `${selectedRuc.ruc}-${selectedRuc.nombre}`
      console.log(data, 'updated');
     fetchPut(`rendGastosProducts/${edit?.id}`, 'PUT', data).then(() => {
       setView(false);
@@ -278,6 +278,7 @@ const ModalRendicionGastos = ({
           <div className='field col-12 md:col-6'>
             <label htmlFor='fecha'>Fecha</label>
             <Calendar
+            dateFormat="dd/mm/yy"
               value={formik.values.fecha !== null ? new Date(formik.values.fecha) : null}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -347,7 +348,7 @@ const ModalRendicionGastos = ({
               value={selectedRuc}
               suggestions={filteredRuc}
               completeMethod={searchRuc}
-              field='ruc'
+              field='nombre'
               name='tipo'
               id='tipo'
               onChange={(e) => {
@@ -439,7 +440,7 @@ const ModalRendicionGastos = ({
           />
           <Button
             style={{ width: '100px', marginLeft: '20px' }}
-            label='Crear'
+            label='Guardar'
             icon='pi pi-check'
             type='submit'
           />
