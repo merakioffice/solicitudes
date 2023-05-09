@@ -41,8 +41,8 @@ const InformeRegistroActividad = ({isDarkMode}) => {
     initialValues: {
       nombreApellido: edit  ? edit?.nombreApellido : '',
       destino: edit ? edit?.destino : '',
-      fechaFin: edit ? new Date(edit?.fechaFin)  : '',
-      fechaInicio: edit ?  new Date(edit?.fechaInicio)  : '',
+      fechaFin: edit ? new Date(edit?.fechaFin)  : null,
+      fechaInicio: edit ?  new Date(edit?.fechaInicio)  : null,
       objetoComision: edit ? edit?.objetoComision : '',
       detalleActividad: edit ? edit?.detalleActividad : '',
       otros: edit ? edit?.otros : '',
