@@ -75,7 +75,7 @@ console.log(isDarkMode)
             path={'viewpdf'}
             element={<Pdf />}
           />
-          <Route exact path={'repositorio-documentos'} element={<RepositorioDocumentos />} />
+          <Route exact path={'repositorio-documentos'} element={<RepositorioDocumentos isDarkMode={isDarkMode} />} />
           <Route
             exact
             path={'registro-usuario'}
