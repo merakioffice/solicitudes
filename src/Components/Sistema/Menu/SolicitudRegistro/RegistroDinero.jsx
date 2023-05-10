@@ -52,24 +52,28 @@ function RegistroDinero({isDarkMode}) {
 
   useEffect(() => {
 
-    console.log(edit)
-    if(edit)
-
-    fetchGet(`regProyecto/${edit?.nombreProyecto}`).then((res) => {
+  
+    if(edit.nombreProyecto) {
+      fetchGet(`regProyecto/${edit?.nombreProyecto}`).then((res) => {
       
-      setProject(res.registroProyecto.nombreAbreviado)
-      console.log(res.registroProyecto.nombreAbreviado)
-       
-    })
+        setProject(res.registroProyecto.nombreAbreviado)
+    
+         
+      })
+    }
+
+    if(edit?.lugarComision){
+      fetchGet(`comision/${edit?.lugarComision}`).then((res) => {
+      
+        setLugarComision(res.lugarComision.descripcion) 
+        
+         
+      })
+     
+    }
 
 
-    fetchGet(`comision/${edit?.lugarComision}`).then((res) => {
-      
-      setLugarComision(res.lugarComision.descripcion) 
-      
-       
-    })
-   
+
     
   }, [edit])
  
@@ -99,7 +103,7 @@ function RegistroDinero({isDarkMode}) {
 
     fetchGet('comisionAll').then(({ comisiones }) => {
       const data = comisiones.map((element, item) => element);
-      console.log(data)
+   
       setLugares(data);
     });
 
@@ -276,7 +280,7 @@ function RegistroDinero({isDarkMode}) {
       objetoComision: !validaciones ? edit.objetoComision : '',
     },
     onSubmit: (values) => {
-      console.log(values)
+
       values.lugarComision = selectedLugar.id;
       values.nombreProyecto = Number(selectedCountry1.id)
       values.registroProyectoId = Number(selectedCountry1.id) 
@@ -447,12 +451,12 @@ function RegistroDinero({isDarkMode}) {
                     setSelectedLugar(e.value);
                     if (selectedLugar && !lugarCom) {
                       setSelectedLugar(e.value);
-                      console.log('aqui 1')
+                     
                       dataLista.lugarComision = e.value.id;
                     }
 
                     if(!selectedLugar && lugarCom){
-                      console.log('aqui 2')
+                  
                       setLugarComision(e.value);
                       dataLista.lugarComision = e.value.id;
                     }

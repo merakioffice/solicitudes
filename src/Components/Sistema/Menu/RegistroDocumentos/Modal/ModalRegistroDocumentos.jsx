@@ -23,10 +23,10 @@ const ModalRegistroDocumentos = ({
     },
     onSubmit: (values) => {
       if (edit) {
-        console.log('edito');
+     
         updateAdd(values);
       } else {
-        console.log('creo');
+     
         registreAdd(values);
       }
     },

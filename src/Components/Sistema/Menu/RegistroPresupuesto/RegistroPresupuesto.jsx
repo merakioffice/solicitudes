@@ -18,21 +18,23 @@ const RegistroPresupuesto = ({isDarkMode}) => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [datatableState,changeDatatableState] = useState({page: 0, rows: 10, first: 10});
   const toast = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState([]);
 
   const listData = (filters) => {
     const {page, rows} = filters || {page: 0, rows: 10, first: 10};
 
-    
+    setLoading(true);
     fetchGet(`/registroPresupuesto?page=${page + 1}&pageSize=${rows}`).then(( { presupuestos, count } ) => {
       setTotalRecords(count);
-
+    
       const data = presupuestos.map((element, item) => {
         element.index = item;
         return element;
       });
 
       setAddData(data);
+      setLoading(false);
     
     });
   };
@@ -273,11 +275,13 @@ const RegistroPresupuesto = ({isDarkMode}) => {
           ></Toolbar>
           <DataTable value={addData}                         
                           lazy
+                         
                           first={datatableState.first}
                           rows={10}  
                           totalRecords={totalRecords}
                           responsiveLayout='scroll'
                           onPage={(e) => changeDatatableState(e)}
+                          loading={loading}
                             paginator>
             <Column field='id' header='Id'>
             </Column>

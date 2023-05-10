@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const { VITE_API_URL }  = import.meta.env;
 
 function handle401(status) {
-  console.log('status', status)
+
   if(status === 401 && window.location.pathname  !== "/") {
     fetchUserLogout();
   }
@@ -147,7 +147,7 @@ const createFormData = async  (url = '', method = '', data) =>  {
 
         return jsonData;
     } catch (error) {
-        console.error("CREATE FORMDATA ERROR ", error)
+     
         console.log(error)
     }
   }
@@ -185,7 +185,7 @@ const fetchSearchUser = async (url = '', method = '', id)=> {
     }
   })
 
-  console.log(res.status)
+
      handle401(res.status);
     
      const result = await res.json();
