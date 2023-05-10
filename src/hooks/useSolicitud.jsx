@@ -31,14 +31,17 @@ const useSolicitud = () => {
     });
   };
 
-  const openSolicitud = () => {
-    navigate('/RegistroSolicitudDinero');
-  };
+
 
   const editData = (data) => {
     dispatch(startEditSolicitud());
     dispatch(oneIdSolicitud(data));
     navigate('/RegistroSolicitudDinero');
+  };
+
+  const openSolicitud = () => {
+    editData({})
+    /* navigate('/RegistroSolicitudDinero'); */
   };
 
   const tableButtonEdit = (rowData) => {

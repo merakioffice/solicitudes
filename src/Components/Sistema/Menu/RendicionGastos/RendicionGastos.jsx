@@ -45,7 +45,7 @@ const RendicionGastos = ({isDarkMode}) => {
 
       Promise.all(promises).then((data) => {
         data.sort((a, b) => b.id - a.id);
-        console.log(data,'data')
+       
         setAddDatas(data);
       });
      

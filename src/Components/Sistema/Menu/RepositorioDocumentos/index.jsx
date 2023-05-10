@@ -631,7 +631,7 @@ const RegistroDocumentos = ({isDarkMode}) => {
               rowsPerPageOptions={[5, 10, 25]}
               globalFilter={globalFilter}
               emptyMessage='No Data found.'
-              header={header}
+            
             >
               <Column expander style={{ width: '3em' }} />
               <Column field='codigo' header='Codigo' sortable />
