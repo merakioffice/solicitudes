@@ -32,10 +32,7 @@ const useRendicionSolicitud = () => {
   };
   
 
-  const openSolicitud = () => {
-    console.log('click');
-    navigate('/RegistroRendicionGastos');
-  };
+
 
   const editData = (data) => {
     console.log(data)
@@ -43,6 +40,13 @@ const useRendicionSolicitud = () => {
     dispatch(oneIdRendicion(data));
     navigate('/RegistroRendicionGastos');
   };
+
+  const openSolicitud = () => {
+    console.log('click');
+    editData({})
+    /* navigate('/RegistroRendicionGastos'); */
+  };
+
 
   const tableButtonEdit = (rowData) => {
     return (

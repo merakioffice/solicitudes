@@ -584,14 +584,14 @@ const RegistroEmpleado = ({isDarkMode}) => {
         optionLabel='name'
         placeholder='Seleccionar'
       />
-      <span className='block mt-2 md:mt-0 p-input-icon-left'>
+{/*       <span className='block mt-2 md:mt-0 p-input-icon-left'>
         <i className='pi pi-search' />
         <InputText
           type='search'
           onInput={(e) => setGlobalFilter(e.target.value)}
           placeholder='Buscar...'
         />
-      </span>
+      </span> */}
     </div>
   );
 

@@ -134,7 +134,7 @@ const RegistroCargos = ({isDarkMode}) => {
         listData();
         toast.current.show({
           severity: 'success',
-          summary: 'Registro lugar comisión',
+          summary: 'Registro Creado',
           life: 3000,
         });
       } catch (error) {

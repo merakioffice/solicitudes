@@ -36,8 +36,8 @@ const RendicionGastos = ({isDarkMode}) => {
         return fetchGet(`regProyecto/${element.proyecto}`).then(async (res) => {
           const comision = await fetchGet(`/comision/${element.lugarComision}`)
          
-          element.lugarComision = comision.lugarComision.descripcion
-          element.proyectoName = res.registroProyecto.nombreAbreviado;
+          element.lugarComision = comision?.lugarComision?.descripcion || 'No existe Comision';
+          element.proyectoName = res?.registroProyecto?.nombreAbreviado || 'No Existe Proyecto';
           element.index = item + 1;
           return element;
         });
@@ -45,7 +45,7 @@ const RendicionGastos = ({isDarkMode}) => {
 
       Promise.all(promises).then((data) => {
         data.sort((a, b) => b.id - a.id);
-        console.log(data,'data')
+       
         setAddDatas(data);
       });
      

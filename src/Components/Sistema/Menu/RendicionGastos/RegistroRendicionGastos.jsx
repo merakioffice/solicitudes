@@ -194,7 +194,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
       });
       setCountries(data);
     });
-    fetchGet('comision').then(({ comisiones }) => {
+    fetchGet('comisionAll').then(({ comisiones }) => {
       const data = comisiones.map((element, item) => element);
      
       setLugares(data);
@@ -432,6 +432,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
   };
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       proyecto: '',
       nombreApellido: '',
