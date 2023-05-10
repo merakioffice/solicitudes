@@ -132,11 +132,12 @@ const RegistroProyecto = ({isDarkMode}) => {
 
 
       try {
+        setLoading(true);
         const formData = new FormData();
 
         formData.append('file', File);
   
-        setLoading(true);
+       
         await createFormData("regProyectoAddAll", 'POST' , formData).then((res) => {
           setLoading(false)
         })  

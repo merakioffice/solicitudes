@@ -216,7 +216,7 @@ const RegistroPresupuesto = ({isDarkMode}) => {
           toast.current.show({
             severity: 'success',
             summary: 'Successful',
-            detail: 'Empleados Created',
+            detail: 'Presupuesto Creado',
             life: 3000,
           });
          

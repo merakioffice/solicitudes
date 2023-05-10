@@ -37,7 +37,7 @@ const RendicionGastos = ({isDarkMode}) => {
           const comision = await fetchGet(`/comision/${element.lugarComision}`)
          
           element.lugarComision = comision?.lugarComision?.descripcion || 'No existe Comision';
-          element.proyectoName = res?.registroProyecto.nombreAbreviado;
+          element.proyectoName = res?.registroProyecto?.nombreAbreviado || 'No Existe Proyecto';
           element.index = item + 1;
           return element;
         });

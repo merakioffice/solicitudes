@@ -10,7 +10,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import * as Yup from 'yup';
 import { fetchGet, fetchPost, fetchPut } from '../../../../../api';
 
-const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDatas }) => {
+const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDatas, setEdit }) => {
   const toast = useRef(null);
   const [value, setValue] = useState();
   const [selectedRuc, setSelectedRuc] = useState(null);
@@ -160,16 +160,18 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
         if (!codigoReferencias) {
           toast.current.show({
             severity: 'warn',
-            summary: 'ocurrio un eror',
+            summary: 'ocurrio un error',
             detail: message,
           });
+          
         } else {
           toast.current.show({
             severity: 'success',
             summary: 'Creado',
             detail: message,
           });
-          setView(false);
+          formik.resetForm({});
+          
 /*           setTimeout(() => {
             formik.resetForm();
             fetchGet(`/registroReferenciaAll`).then(( { codigoReferencias } ) => {
@@ -187,6 +189,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
  
           }, 500); */
           listDatas()
+        
         }
       }
     );
@@ -194,6 +197,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
 
 
   const updateAdd = (data) => {
+    setView(false)
     fetchPut(`registroReferenciaAll/${edit?.id}`, 'PUT', data).then((response) => {
       if (response.codigoReferencias === undefined) {
         toast.current.show({
@@ -201,13 +205,14 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
           summary: 'Datos duplicados',
           detail: response.message,
         });
+        
       } else {
         toast.current.show({
           severity: 'success',
           summary: 'Actualizado',
           detail: response.message,
         });
-        setView(false);
+
 /*         setTimeout(() => {
           formik.resetForm();
 
@@ -519,6 +524,8 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
             onClick={() => {
               setView(false);
               formik.resetForm({});
+              setEdit(null)
+              
             }}
           />
           <Button

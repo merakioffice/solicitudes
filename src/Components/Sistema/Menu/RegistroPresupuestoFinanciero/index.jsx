@@ -151,7 +151,7 @@ const RegistroPresupuestoFinanciero = ({isDarkMode}) => {
           toast.current.show({
             severity: 'success',
             summary: 'Successful',
-            detail: 'Empleados Created',
+            detail: 'Presupuesto financiador creado',
             life: 3000,
           });
           listData();

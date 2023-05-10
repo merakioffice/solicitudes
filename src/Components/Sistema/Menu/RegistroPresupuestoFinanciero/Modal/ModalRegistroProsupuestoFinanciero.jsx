@@ -46,7 +46,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
         } else {
           toast.current.show({
             severity: 'success',
-            summary: 'Creado',
+            summary: 'Presupuesto financiador creado',
             detail: message,
           });
           setTimeout(() => {

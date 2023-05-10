@@ -166,20 +166,26 @@ const editData = (data) => {
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
       try {
+        setLoading(true)
         const formData = new FormData();
 
         formData.append('file', file);
-  
-        await createFormData("registroReferenciaAddAll", 'POST' , formData);  
+       
+        await createFormData("registroReferenciaAddAll", 'POST' , formData).then((res) =>{
+           setLoading(false)
+        }).catch((res) => {
+          setLoading(false)
+        })  
 
         listData();
+       
         toast.current.show({
           severity: 'success',
-          summary: 'Registro lugar comisión',
+          summary: 'Registro codigo referencia',
           life: 3000,
         });
       } catch (error) {
-        console.log(error)
+        setLoading(false)
         toast.current.show({
           severity: 'error',
           summary: 'Error al subir el archivo',
@@ -243,7 +249,7 @@ const editData = (data) => {
           </DataTable>
         </div>
       </div>
-      <ModalRegistroCodigoReferencia setView={setView} edit={edit} setAddData={setAddData} listDatas={listData} view={view} />
+      <ModalRegistroCodigoReferencia setView={setView} setEdit={setEdit} edit={edit} setAddData={setAddData} listDatas={listData} view={view} />
     </div>
   );
 };

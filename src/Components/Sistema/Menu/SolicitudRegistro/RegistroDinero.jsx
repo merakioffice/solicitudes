@@ -97,7 +97,7 @@ function RegistroDinero({isDarkMode}) {
     });
 
 
-    fetchGet('comision').then(({ comisiones }) => {
+    fetchGet('comisionAll').then(({ comisiones }) => {
       const data = comisiones.map((element, item) => element);
       console.log(data)
       setLugares(data);
@@ -278,8 +278,9 @@ function RegistroDinero({isDarkMode}) {
     onSubmit: (values) => {
       console.log(values)
       values.lugarComision = selectedLugar.id;
-      values.nombreProyecto = selectedCountry1.id;
-      values.proyectoId = selectedCountry1.id;
+      values.nombreProyecto = Number(selectedCountry1.id)
+      values.registroProyectoId = Number(selectedCountry1.id) 
+   
       values.user_id = dataUser?.id ;
 
       if (validaciones) {
