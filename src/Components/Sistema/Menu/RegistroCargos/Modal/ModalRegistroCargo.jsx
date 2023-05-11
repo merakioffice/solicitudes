@@ -134,6 +134,7 @@ const ModalRegistroCargo = ({ setView, view, listData, edit, setEdit }) => {
             type='button'
             onClick={() => {
               setView(false);
+              setEdit(null);
               // formik.resetForm({});
             }}
           />

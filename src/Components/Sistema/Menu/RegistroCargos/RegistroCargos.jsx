@@ -93,8 +93,13 @@ const RegistroCargos = ({isDarkMode}) => {
   };
 
   const openModal = () => {
+    setEdit(null)
     setView(!view);
   };
+
+  const editFalse = () => {
+    
+  }
 
   const RightToolBarTemplate = () => {
     return (
@@ -166,6 +171,7 @@ const RegistroCargos = ({isDarkMode}) => {
             left={LeftToolBarTemplate({
               openNew: openModal,
               nameBtn: 'Crear Cargo',
+              edit: editFalse
             })}
             right={RightToolBarTemplate}
           ></Toolbar>
