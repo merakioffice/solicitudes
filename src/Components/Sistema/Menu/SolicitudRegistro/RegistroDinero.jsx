@@ -41,8 +41,12 @@ function RegistroDinero({isDarkMode}) {
   const [lugares, setLugares] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(null);
   const [filteredLugarCom, setFilteredLugarCom] = useState(null);
-  const [project, setProject] = useState('');
+  const [project, setProject] = useState({});
   const [lugarCom, setLugarComision] = useState('');
+  const [selectedCountry1, setSelectedCountry1] = useState(
+  
+    !validaciones ? project : edit?.registroProyecto 
+  );
 
   const [date, setDate] = useState(new Date());
 
@@ -53,10 +57,13 @@ function RegistroDinero({isDarkMode}) {
   useEffect(() => {
 
   
-    if(edit.nombreProyecto) {
+    if(edit?.nombreProyecto) {
       fetchGet(`regProyecto/${edit?.nombreProyecto}`).then((res) => {
       
-        setProject(res.registroProyecto.nombreAbreviado)
+      
+        setProject(res.registroProyecto)
+        setSelectedCountry1(res.registroProyecto)
+    
     
          
       })
@@ -65,7 +72,7 @@ function RegistroDinero({isDarkMode}) {
     if(edit?.lugarComision){
       fetchGet(`comision/${edit?.lugarComision}`).then((res) => {
       
-        setLugarComision(res.lugarComision.descripcion) 
+        setLugarComision(res.lugarComision) 
         
          
       })
@@ -78,10 +85,6 @@ function RegistroDinero({isDarkMode}) {
   }, [edit])
  
 
-  const [selectedCountry1, setSelectedCountry1] = useState(
-  
-    !validaciones ? project : edit?.nombreProyecto 
-  );
 
   const [selectedLugar, setSelectedLugar] = useState(
   
@@ -207,6 +210,7 @@ function RegistroDinero({isDarkMode}) {
   };
 
   const editAdd = (values) => {
+    console.log(values)
     fetchPut(`solicitud/${edit.id}`, 'PUT', values).then((response) => {
    
       if (response.personal) {
@@ -281,8 +285,9 @@ function RegistroDinero({isDarkMode}) {
     },
     onSubmit: (values) => {
 
-      values.lugarComision = selectedLugar.id;
+      values.lugarComision = lugarCom.id;
       values.nombreProyecto = Number(selectedCountry1.id)
+
       values.registroProyectoId = Number(selectedCountry1.id) 
    
       values.user_id = dataUser?.id ;
@@ -400,7 +405,7 @@ function RegistroDinero({isDarkMode}) {
                 </label>
                 <AutoComplete
                   id='nombreProyecto'
-                  value={project ? project : selectedCountry1}
+                  value={ selectedCountry1}
                   suggestions={filteredCountries}
                   completeMethod={searchProject}
                   field='nombreAbreviado'
@@ -442,24 +447,24 @@ function RegistroDinero({isDarkMode}) {
                 </label>
                 <AutoComplete
                   id='lugarComision'
-                  value={lugarCom ? lugarCom : selectedLugar}
+                  value={lugarCom }
                   suggestions={filteredLugarCom}
                   completeMethod={searchLugares}
                   field='descripcion'
                   name='lugarComision'
                   onChange={(e) => {
-                    setSelectedLugar(e.value);
-                    if (selectedLugar && !lugarCom) {
-                      setSelectedLugar(e.value);
+                    setLugarComision(e.value);
+/*                     if (selectedLugar && !lugarCom) {
+                      setLugarComision(e.value);
                      
-                      dataLista.lugarComision = e.value.id;
-                    }
+                      dataLista.lugarComision = e.value.id; 
+                    } */
 
-                    if(!selectedLugar && lugarCom){
+/*                     if(!selectedLugar && lugarCom){
                   
                       setLugarComision(e.value);
                       dataLista.lugarComision = e.value.id;
-                    }
+                    } */
                   }}
                   dropdown
                   aria-label='nombreProyecto'

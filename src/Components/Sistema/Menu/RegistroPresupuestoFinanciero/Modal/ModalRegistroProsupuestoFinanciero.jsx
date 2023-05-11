@@ -131,7 +131,7 @@ const ModalRegistroProsupuesto = ({ setView, view, edit, setAddData }) => {
               {...formik.getFieldProps('codigo')}
               name='codigo'
               style={{ marginBottom: '5px' }}
-              disabled={edit ? true : false}
+            
             />
             {formik.touched.codigo && formik.errors.codigo && (
               <span style={{ color: '#e5432d' }}>{formik.errors.codigo}</span>

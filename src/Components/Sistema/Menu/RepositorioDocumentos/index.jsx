@@ -46,7 +46,6 @@ const RegistroDocumentos = ({isDarkMode}) => {
    const listarDatos = async  () => {
 
     const response =  await fetchGet('empleados')
-    console.log(response.registroEmpleados)
     setProducts(response.registroEmpleados);
 
 /*     empleadoService
@@ -56,6 +55,11 @@ const RegistroDocumentos = ({isDarkMode}) => {
       }); */
   };
  
+  const listarDatosState = async () => {
+    const response =  await fetchGet(`empleadosState/${selectedCity1?.name}`)
+    setProducts(response.registroEmpleados);
+  };
+
   // const getCustomers = (data) => {
   //   return [...(data || [])].map((d) => {
   //     d.fechaenvio = new Date(d.fechaenvio);
@@ -76,7 +80,11 @@ const RegistroDocumentos = ({isDarkMode}) => {
 
   useEffect(() => {
     listarDatos();
-  }, [selectedCity1]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    listarDatosState();
+  }, [selectedCity1]);
 
   useEffect(() => {
     console.log('');
@@ -103,7 +111,7 @@ const RegistroDocumentos = ({isDarkMode}) => {
     const renderFooter = (name) => {
       return (
         <div>
-          {/* <Button label="Aceptar" icon="pi pi-check" onClick={() => onHide(name)} className="p-button-text" /> */}
+          <Button label="Aceptar" icon="pi pi-check" onClick={() => onHide(name)} className="p-button-text" />
           <Button
             label='Aceptar'
             // icon='pi pi-check'
@@ -263,7 +271,7 @@ const RegistroDocumentos = ({isDarkMode}) => {
   };
 
   const editProduct = (product) => {
-    localStorage.setItem('pdfdetalle', JSON.stringify(product));
+  
 
     // var url = '/viewpdf';
     // history.push(url, { detail: product.nombredoc });
@@ -470,14 +478,18 @@ const RegistroDocumentos = ({isDarkMode}) => {
     );
   };
 
+  
+
   const cities = [{ name: 'todos' }, { name: 'activo' }, { name: 'inactivo' }];
   const onCityChange = (e) => {
+    console.log(e.value)
     setSelectedCity1(e.value);
   };
   // console.log(view);
   const getDownload = () => {
     console.log('click');
   };
+
   const header = (
     <div className='flex flex-column md:flex-row md:justify-content-between md:align-items-center'>
       <span className='block mt-2 md:mt-0 p-input-icon-left'>
@@ -631,7 +643,7 @@ const RegistroDocumentos = ({isDarkMode}) => {
               rowsPerPageOptions={[5, 10, 25]}
               globalFilter={globalFilter}
               emptyMessage='No Data found.'
-            
+              header={header}
             >
               <Column expander style={{ width: '3em' }} />
               <Column field='codigo' header='Codigo' sortable />
