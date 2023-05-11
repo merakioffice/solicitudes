@@ -8,21 +8,27 @@ import { fetchGet } from '../../../../api';
 const PDFSolicitud = () => {
   const { solicitud } = useSelector((state) => state.solicitudDinero);
 
-  console.log(solicitud,'SOLICITUD')
+
 
   let proyecto;
   let lugar;
 
-  fetchGet(`regProyecto/${solicitud.nombreProyecto}`).then((res) => {
-    proyecto = res.registroProyecto.nombreAbreviado
-     
-  })
+  if(solicitud.nombreProyecto){
+    fetchGet(`regProyecto/${solicitud?.nombreProyecto}`).then((res) => {
+      proyecto = res.registroProyecto.nombreAbreviado
+       
+    })
+  }
 
-  fetchGet(`comision/${solicitud?.lugarComision}`).then((res) => {
-    console.log(res)
-    lugar = res.lugarComision.descripcion
-     
-  })
+  if(solicitud.lugarComision){
+    fetchGet(`comision/${solicitud?.lugarComision}`).then((res) => {
+    
+      lugar = res.lugarComision.descripcion
+       
+    })
+  }
+
+
  
 
   const descarga = () => {

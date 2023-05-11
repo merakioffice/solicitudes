@@ -119,6 +119,7 @@ const RegistroProyecto = ({isDarkMode}) => {
   };
 
   const readExcel = async ({ files }) => {
+    setLoading(true);
     const [File] = files;
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
@@ -132,7 +133,7 @@ const RegistroProyecto = ({isDarkMode}) => {
 
 
       try {
-        setLoading(true);
+     
         const formData = new FormData();
 
         formData.append('file', File);

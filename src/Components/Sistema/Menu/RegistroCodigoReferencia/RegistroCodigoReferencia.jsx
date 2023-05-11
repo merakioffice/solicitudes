@@ -55,12 +55,9 @@ const RegistroCodigoReferencia = ({isDarkMode}) => {
         
      console.log(data,'DATA')
         setAddData(data);
-      })
-
-    
- 
-      setLoading(false);
+      }) 
     });
+    setLoading(false);
   };
 
   useEffect(() => {
