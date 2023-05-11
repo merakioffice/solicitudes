@@ -108,7 +108,7 @@ const deleteData = async(id) => {
   };
 
   const openModal = () => {
-    setEdit({})
+    setEdit(null)
     setView(!view);
   };
 
