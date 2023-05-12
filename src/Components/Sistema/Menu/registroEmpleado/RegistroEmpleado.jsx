@@ -348,6 +348,8 @@ const RegistroEmpleado = ({isDarkMode}) => {
       });
  */
 
+
+
      await fetchDelete(`empleado/${product.id}`)
      .then((res) => {
       toast.current.show({
@@ -370,6 +372,11 @@ const RegistroEmpleado = ({isDarkMode}) => {
 
 
 
+  };
+
+  const listarDatosState = async () => {
+    const response =  await fetchGet(`empleadosState/${selectedCity1?.name}`)
+    setProducts(response.registroEmpleados);
   };
 
   const findIndexById = (id) => {
@@ -453,6 +460,7 @@ const RegistroEmpleado = ({isDarkMode}) => {
   //     </React.Fragment>
   //   );
   // };
+  
 
   const rightToolbarTemplate = () => {
     return (
@@ -547,6 +555,11 @@ const RegistroEmpleado = ({isDarkMode}) => {
   //   );
   // };
 
+  useEffect(() => {
+    listarDatosState();
+  }, [selectedCity1]);
+
+
   const actionBodyTemplate = (rowData) => {
     return (
       <div className='actions'>
@@ -572,9 +585,10 @@ const RegistroEmpleado = ({isDarkMode}) => {
   const onCityChange = (e) => {
     setSelectedCity1(e.value);
   };
-  // console.log(selectedCity1);
+  console.log(globalFilter);
   const header = (
-    <div className='flex flex-column md:flex-row md:justify-content-between md:align-items-center'>
+    <div  className={isDarkMode ?  'dark-mode-table  flex flex-column md:flex-row md:justify-content-between md:align-items-center' : 'flex flex-column md:flex-row md:justify-content-between md:align-items-center'  }>
+      
       <h5 className='m-0'>Lista de Empleados</h5>
       <Dropdown
         id='state'
@@ -584,14 +598,14 @@ const RegistroEmpleado = ({isDarkMode}) => {
         optionLabel='name'
         placeholder='Seleccionar'
       />
-{/*       <span className='block mt-2 md:mt-0 p-input-icon-left'>
+      <span className='block mt-2 md:mt-0 p-input-icon-left'>
         <i className='pi pi-search' />
         <InputText
           type='search'
           onInput={(e) => setGlobalFilter(e.target.value)}
           placeholder='Buscar...'
         />
-      </span> */}
+      </span>
     </div>
   );
 

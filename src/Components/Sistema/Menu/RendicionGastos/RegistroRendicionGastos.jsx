@@ -93,7 +93,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
       console.log(product.ruc,'de nuevoi ruc')
    */
 
-        const result = {...product, tipo: tipo.result.nombre}
+        const result = {...product, tipo: tipo.result?.nombre}
 
        
         return result;
@@ -311,7 +311,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
 
     console.log(ruc,'RUC')
  */
-        const result = {...product, tipo: tipo.result.nombre}
+        const result = {...product, tipo: tipo.result?.nombre}
 
         return result;
 

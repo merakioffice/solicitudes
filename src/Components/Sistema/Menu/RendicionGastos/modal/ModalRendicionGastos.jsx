@@ -34,7 +34,7 @@ const ModalRendicionGastos = ({
     partidaPresupuestal: null,
   });
   const listData = () => {
-    fetchGet(`tipo-documento`).then(({ result }) => {
+    fetchGet(`tipo-documentoAll`).then(({ result }) => {
       const data = result.map((element, item) => {
         return element;
       });
@@ -119,13 +119,6 @@ const ModalRendicionGastos = ({
          
       })
 
-
-
-     
-/*       fetchGet(`registroReferencia/${code}`).then((res) =>{
-
-           setSelectedRuc(res.codigoReferencias) 
-      }) */
 
     }
 
@@ -229,9 +222,10 @@ const ModalRendicionGastos = ({
     data.ruc = `${selectedRuc.ruc}-${selectedRuc.nombre}`;
  
     fetchPost('rendGastosProducts', 'POST', data).then(() => {
-      setView(false);
+     
       formik.resetForm();
       listaSolicitudDinero();
+      setView(false);
     });
   };
 

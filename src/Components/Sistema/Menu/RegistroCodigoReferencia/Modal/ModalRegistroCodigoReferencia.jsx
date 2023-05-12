@@ -197,7 +197,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
 
 
   const updateAdd = (data) => {
-    setView(false)
+   
     fetchPut(`registroReferenciaAll/${edit?.id}`, 'PUT', data).then((response) => {
       if (response.codigoReferencias === undefined) {
         toast.current.show({
@@ -205,7 +205,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
           summary: 'Datos duplicados',
           detail: response.message,
         });
-        
+        listData()
       } else {
         toast.current.show({
           severity: 'success',
@@ -232,6 +232,7 @@ const ModalRegistroCodigoReferencia = ({ setView, view, edit, setAddData, listDa
          
         }, 500); */
         listDatas()
+        setView(false)
       }
     });
   };
