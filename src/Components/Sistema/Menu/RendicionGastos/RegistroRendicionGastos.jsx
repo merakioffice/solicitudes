@@ -673,7 +673,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                   dropdown
                   aria-label='nombreAbreviado'
                   dropdownAriaLabel='Seleccionar Proyect'
-                  disabled={boolCreate}
+                  disabled={true}
                 />
               </div>
               <div className='field col-12 md:col-12'>
@@ -727,7 +727,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                   dropdown
                   aria-label='nombreProyecto'
                   dropdownAriaLabel='Seleccionar Lugar Comision'
-                  disabled={boolCreate}
+                  disabled={true}
                 />
 {/*                 <InputText
                   name='lugarComision'
@@ -769,7 +769,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
-                  disabled={boolCreate}
+                  disabled={true}
                 />
                 {formik.touched.objetoComision &&
                   formik.errors.objetoComision && (
@@ -792,7 +792,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                   onBlur={formik.handleBlur}
                   style={{ marginBottom: '5px' }}
                   name='fechaInicio'
-                  disabled={boolCreate}
+                  disabled={true}
                   showIcon
                   
                 ></Calendar>
@@ -816,7 +816,7 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
                   style={{ marginBottom: '5px' }}
                   name='fechaFin'
                   showIcon
-                  disabled={boolCreate}
+                  disabled={true}
                   dateFormat="dd/mm/yy"
                 >
                   
