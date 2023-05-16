@@ -72,7 +72,9 @@ const ModalRegistroDocumentos = ({
           summary: 'Datos duplicados',
           detail: message,
         });
-      } else {
+
+      }    
+      else  {
         toast.current.show({
           severity: 'success',
           summary: 'Actualizado',

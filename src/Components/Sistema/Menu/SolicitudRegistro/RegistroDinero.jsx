@@ -354,7 +354,7 @@ function RegistroDinero({isDarkMode}) {
                 <label htmlFor='fechaRegistro'>Fecha Registro</label>
                 <Calendar
                 dateFormat="dd/mm/yy"
-                showYearDropdown
+                
                 scrollableYearDropdown
                 yearDropdownItemNumber={15}
                 showMonthDropdown

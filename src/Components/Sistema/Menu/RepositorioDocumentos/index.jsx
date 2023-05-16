@@ -482,7 +482,6 @@ const RegistroDocumentos = ({isDarkMode}) => {
 
   const cities = [{ name: 'todos' }, { name: 'activo' }, { name: 'inactivo' }];
   const onCityChange = (e) => {
-    console.log(e.value)
     setSelectedCity1(e.value);
   };
   // console.log(view);

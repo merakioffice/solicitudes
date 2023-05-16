@@ -67,20 +67,32 @@ const deleteData = async(id) => {
 
   fetchDelete(`delete-tipo-documento/${id}`).then((res) => {
 
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Tipo de documento eliminado',
-      life: 3000,
-    });
+     if(res.message === 'No se puede eliminar el tipo  porque tiene rendicion de gastos  asociadas.'){
+      toast.current.show({
+        severity: 'warn',
+        summary: 'Documento pertenece',
+        detail: message,
+      });
 
-    setAddData(res.result)
+    }  else {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'Tipo de documento eliminado',
+        life: 3000,
+      });
+  
+    }
+
+
+   /*  setAddData(res.result) */
+   listData()
 
   }).catch((res) => {
     toast.current.show({
       severity: 'error',
-      summary: 'Successful',
-      detail: 'Error al eliminar tipo de documento',
+      summary: 'Error',
+      detail: 'Error al eliminar tipo de documento, verifique que no pertenezca a una rendicion de gastos',
       life: 3000,
     });
   })
