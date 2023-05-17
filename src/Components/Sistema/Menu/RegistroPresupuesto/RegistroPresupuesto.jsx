@@ -32,9 +32,9 @@ const RegistroPresupuesto = ({isDarkMode}) => {
         element.index = item;
         return element;
       });
-
-      setAddData(data);
       setLoading(false);
+      setAddData(data);
+      
     
     });
   };
@@ -194,6 +194,7 @@ const RegistroPresupuesto = ({isDarkMode}) => {
   }; */
 
   const readExcel = ({ files }) => {
+    setLoading(true)
     const [File] = files;
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
@@ -221,6 +222,8 @@ const RegistroPresupuesto = ({isDarkMode}) => {
             detail: 'Presupuesto Creado',
             life: 3000,
           });
+
+          setLoading(false)
          
           resolve(res);
           async function doIt(){
