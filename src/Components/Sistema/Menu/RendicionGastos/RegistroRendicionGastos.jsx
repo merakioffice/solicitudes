@@ -101,7 +101,13 @@ const RegistroRendicionGastos = ({isDarkMode}) => {
       })
 
         Promise.all(promise).then((data) => {
-        rendGastosProducts.productos = data;
+          const productos = data.map((res) => {
+            const fechaSplit = res.fecha.split('/')
+            const fecha = fechaSplit[1] + '/' + fechaSplit[0] + '/' + fechaSplit[2];
+            res.fecha = fecha;
+            return res
+          })
+        rendGastosProducts.productos = productos;
      
         setDataRegistro(rendGastosProducts);
       })
