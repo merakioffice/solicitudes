@@ -145,7 +145,7 @@ const RegistroProyecto = ({isDarkMode}) => {
         listData();
         toast.current.show({
           severity: 'success',
-          summary: 'Registro lugar comisión',
+          summary: 'Se ha registrado con exito',
           life: 3000,
         });
       } catch (error) {

@@ -111,7 +111,7 @@ const RegistroDocumentos = ({isDarkMode}) => {
     const renderFooter = (name) => {
       return (
         <div>
-          <Button label="Aceptar" icon="pi pi-check" onClick={() => onHide(name)} className="p-button-text" />
+          <Button label="Cerrar" icon="pi pi-check" onClick={() => onHide(name)} className="p-button-text" />
           <Button
             label='Aceptar'
             // icon='pi pi-check'
@@ -272,9 +272,9 @@ const RegistroDocumentos = ({isDarkMode}) => {
 
   const editProduct = (product) => {
   
-
-    // var url = '/viewpdf';
-    // history.push(url, { detail: product.nombredoc });
+    localStorage.setItem('pdfdetalle', JSON.stringify(product));
+/*      var url = '/viewpdf';
+     history.push(url, { detail: product.nombredoc }); */
   };
 
   const actionBodyTemplate = (rowData) => {
