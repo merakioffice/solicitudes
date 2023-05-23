@@ -364,10 +364,20 @@ useEffect( () =>  {
 
     setProducts(_product);
   }; */
-
+  const fileUploadRef = useRef(null);
   const onUpload = async  ({ files }) => {
 
-    
+  
+
+    const fileExtension = files[0].name.split('.').pop().toLowerCase();
+    if (fileExtension === 'jpg') {
+      console.log('Archivo válido, se puede subir:', files[0].name);
+      // Lógica adicional para onUpload...
+     
+    } else {
+      console.log('Formato de archivo no válido. Se requiere una imagen .jpg.');
+      // Lógica adicional para el caso de archivo no válido...
+    }
 
 
         const userData = await getUser();
@@ -487,6 +497,7 @@ useEffect( () =>  {
           </span>
         </h5>
         <FileUpload
+        ref={fileUploadRef}
           name='image'
            url={`${mainUrlmin}/api/subir_firma/${dataUser?.dni}`} 
           accept='.jpg'
