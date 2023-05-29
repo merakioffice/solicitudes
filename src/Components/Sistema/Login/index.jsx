@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // PrimeReact
 import sd from "./descocentro.jpg";
-import logo from "./logo.png";
+import logo from "./logo1.png";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
