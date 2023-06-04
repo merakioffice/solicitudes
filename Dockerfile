@@ -17,7 +17,7 @@ RUN rm -f ./package-json.lock
 RUN npm run build
 
 # Expone el puerto 5173 para la aplicación
-EXPOSE 5173
+EXPOSE 3000
 
 # Establece el comando que se ejecutará cuando se inicie el contenedor
 CMD ["npm","run", "dev"]
