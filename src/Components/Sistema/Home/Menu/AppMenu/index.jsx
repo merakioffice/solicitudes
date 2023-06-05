@@ -172,14 +172,14 @@ export default  function  AppMenu({isOpen}) {
             navigate('/registro-cargos');
           },
         }, */
-        {
+/*         {
           label: 'Registro de Documento',
           icon: 'pi pi-fw pi-save',
           to: '/registro-documentos',
           command: () => {
             navigate('/registro-documentos');
           },
-        },
+        }, */
 /*         {
           label: 'Lugares Comisión',
           icon: 'pi pi-fw pi-save',
@@ -202,6 +202,14 @@ export default  function  AppMenu({isOpen}) {
             },
           ],
         }, */
+                    {
+              label: 'Repositorio de documentos',
+              icon: 'pi pi-fw pi-bookmark',
+              to: '/repositorio-documentos',
+              command: () => {
+                navigate('/repositorio-documentos');
+              },
+            },
       ],
     },
   ];
