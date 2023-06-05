@@ -186,7 +186,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen, setIsDarkMode}) {
         <li className='mr-5'>
         <InputSwitch checked={value} onChange={(e) => switchFondo()} />
         </li>
-      <li className='mr-5'>
+{/*       <li className='mr-5'>
     
         {dataUser?.rol == "ADMIN_ROLE"  ? (
             !estado ? (
@@ -200,7 +200,7 @@ export default function AppTopbar({isOpen, setMenuIsOpen, setIsDarkMode}) {
           )}
        
  
-        </li>
+        </li> */}
 
         <li className='mr-5'>  
         {dataUser?.rol == "ADMIN_ROLE"  ? (
