@@ -163,8 +163,9 @@ export default function AppTopbar({isOpen, setMenuIsOpen, setIsDarkMode}) {
 
   return (
     <div   className={value ?  'dark-mode layout-topbar ' : 'layout-topbar'  }  >
+      
       <Link to='/Dashboard' className='layout-topbar-logo'>
-        <span>Proyecto OTE</span>
+        <img style={{height: 40}} src="../../../../../public/logo.png" alt="logo" />
       </Link>
       
       <button 
