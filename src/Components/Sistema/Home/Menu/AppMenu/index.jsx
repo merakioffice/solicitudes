@@ -93,7 +93,7 @@ export default  function  AppMenu({isOpen}) {
         },
       ],
     }, */
-    {
+/*     {
       label: 'Solicitudes',
       items: [
         {
@@ -128,11 +128,11 @@ export default  function  AppMenu({isOpen}) {
           },
         },
       ],
-    },
+    }, */
     {
       label: `Movimientos`,
       items: [
-        {
+ /*        {
           label: 'Registro de Proyectos',
           icon: 'pi pi-fw pi-eye',
           to: '/registro-proyecto',
@@ -171,7 +171,7 @@ export default  function  AppMenu({isOpen}) {
           command: () => {
             navigate('/registro-cargos');
           },
-        },
+        }, */
         {
           label: 'Registro de Documento',
           icon: 'pi pi-fw pi-save',
@@ -180,7 +180,7 @@ export default  function  AppMenu({isOpen}) {
             navigate('/registro-documentos');
           },
         },
-        {
+/*         {
           label: 'Lugares Comisión',
           icon: 'pi pi-fw pi-save',
           to: '/lugar-comision',
@@ -188,6 +188,20 @@ export default  function  AppMenu({isOpen}) {
             navigate('/lugar-comision');
           },
         },
+        {
+          label: `Movimientos`,
+          icon: 'pi pi-fw pi-search',
+          items: [
+            {
+              label: 'Repositorio de documentos',
+              icon: 'pi pi-fw pi-bookmark',
+              to: '/repositorio-documentos',
+              command: () => {
+                navigate('/repositorio-documentos');
+              },
+            },
+          ],
+        }, */
       ],
     },
   ];
@@ -308,7 +322,8 @@ export default  function  AppMenu({isOpen}) {
   };
   return (
     <div className='layout-menu-container eliminar-li '>
-      <ul className='layout-menu'>{!estado ? main() : fyaMain()}</ul>
+      <ul className='layout-menu'>{main() }</ul>
+      {/* <ul className='layout-menu'>{!estado ? main() : fyaMain()}</ul> */}
     </div>
   );
 }
