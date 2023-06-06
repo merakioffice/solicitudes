@@ -8,10 +8,10 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { fetchDelete, fetchGet, createFormData } from '../../../../api';
-
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
-
+import "./style.scss";
 /* import JSZip from 'jszip';
 import JSZipUtils from '../assets/JSZipUtils';
 let zip = new JSZip();
@@ -20,7 +20,7 @@ const RegistroDocumentos = ({isDarkMode}) => {
 
  /*  const mainUrlmin = str.slice(0, -4); */
   const toast = useRef(null);
-
+const [spinner, setSpinner] = useState(false)
   const [products, setProducts] = useState([]);
   const [view] = useState(false);
   //const [text, setText] = useState('');
@@ -131,12 +131,14 @@ const RegistroDocumentos = ({isDarkMode}) => {
 
     const customBase64Uploader = (e) => {
       
+      setSpinner(true)
       let formData = new FormData();
       e.files.map((e) => formData.append('file', e));
       createFormData(`regdocAddAll`, 
          'POST',
         formData,
       ).then((res) => {
+        setSpinner(false)
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -154,13 +156,14 @@ const RegistroDocumentos = ({isDarkMode}) => {
     };
 
     const customBaseUploader = (e) => {
-      
+      setSpinner(true)
       let formData = new FormData();
       e.files.map((e) => formData.append('file', e));
       createFormData(`regdocfirmAddAll`, 
          'POST',
         formData,
       ).then((res) => {
+        setSpinner(false)
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -620,7 +623,12 @@ const RegistroDocumentos = ({isDarkMode}) => {
   };
 
   return (
-    <>
+    <> 
+{  spinner ?  <div className="overlay">
+
+  <ProgressSpinner style={{ zIndex: 1 }} />
+
+</div> : null}
       <div className={isDarkMode ?  'dark-mode-table grid table-demo' : 'grid table-demo'  }  >
         <Toast ref={toast} />
         <div className='col-12'>
