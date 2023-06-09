@@ -70,6 +70,7 @@ export default function Login() {
               <Password
                 placeholder="Contraseña"
                 className="inputs"
+                toggleMask
                 value={login.password}
                 onChange={(e) =>
                   setLogin({ ...login, password: e.target.value })

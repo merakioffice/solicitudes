@@ -207,7 +207,7 @@ const RegistroEmpleado = ({isDarkMode}) => {
                 detail: 'Empleados Created',
                 life: 3000,
               });
-
+             await fetchGet('firmas')
               resolve(setLoading(false), doIt());
               return res;
             } catch (error) {
