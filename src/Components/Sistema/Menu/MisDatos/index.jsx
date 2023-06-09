@@ -316,6 +316,7 @@ import { Toast } from 'primereact/toast';
 import { Image } from 'primereact/image';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
+import { fetchPut } from '../../../../api';
 
 
 const MisDatos = ({isDarkMode}) => {
@@ -413,7 +414,8 @@ useEffect( () =>  {
   // console.log(viewFoto);
   const handleUpdatePassword = async () => {
     const data = {
-      correo: usuario_correo,
+      id: dataUser?.id,
+      correo: dataUser?.email,
       password: value3,
     };
 
@@ -425,15 +427,17 @@ useEffect( () =>  {
         life: 3000,
       });
     } else {
-/*       const res = await axios.put(`${mainUrl}/updatePassword`, data);
-      if (res.data) {
+
+      const res = await fetchPut('updatePassword', 'PUT', data)
+     /*  const res = await axios.put(`${mainUrl}/updatePassword`, data); */
+     
         toast.current.show({
           severity: 'success',
           summary: 'Actualizado',
           detail: 'La contraseña se ha cambiado',
           life: 3000,
         });
-      } */
+      
     }
   };
   useEffect(() => {
@@ -471,7 +475,7 @@ useEffect( () =>  {
         <Password
           value={value3}
           onChange={(e) => setValue3(e.target.value)}
-          toggleMask
+         
           required
         />
         <Button
