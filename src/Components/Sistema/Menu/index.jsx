@@ -15,6 +15,8 @@ import { SolicitudDinero } from './SolicitudRegistro/SolicitudDinero';
 import RepositorioDocumentos from './RepositorioDocumentos/index';
 import {MisDatos} from './MisDatos/index';
 import {VisorDocumento} from './VisorDocumento/index';
+import PermisoLaboral from "./Pdf/permisolaboral"
+import PermisoVacaciones from "./Pdf/permisovacaciones"
 import { Pdf } from "./Pdf/Pdf";
 
 export {
@@ -35,5 +37,7 @@ export {
   RepositorioDocumentos,
   Pdf,
   MisDatos,
-  VisorDocumento
+  VisorDocumento,
+  PermisoLaboral,
+  PermisoVacaciones
 };

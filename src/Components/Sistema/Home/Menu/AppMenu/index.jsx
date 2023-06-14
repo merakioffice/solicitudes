@@ -62,6 +62,7 @@ export default  function  AppMenu({isOpen}) {
             navigate('/mis-datos');
           },  
         },
+        
         {
           label: 'Visor Documentos',
           icon: 'pi pi-eye',
@@ -70,6 +71,24 @@ export default  function  AppMenu({isOpen}) {
             navigate('/visor-documento');
           },      
         },
+        {
+          label: 'Formato permiso laboral',
+          icon: 'pi pi-eye',
+          to: '/permiso-laboral',
+          command: () => {
+            navigate('/permiso-laboral');
+          },      
+        },
+        {
+          label: 'Formato permiso vacacional',
+          icon: 'pi pi-eye',
+          to: '/permiso-vacacional',
+          command: () => {
+            navigate('/permiso-vacacional');
+          },      
+        },
+
+
       ],
     },
 /*     {
@@ -240,6 +259,7 @@ export default  function  AppMenu({isOpen}) {
             navigate('/repositorio-documentos');
           },
         },
+
       ],
     },
   ];
@@ -266,13 +286,14 @@ export default  function  AppMenu({isOpen}) {
               <ul>
                 {item.items
                   ? item.items.map((item2, index2) => {
-                    if(dataUser?.rol == 'ADMIN_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos'){
+                    if(dataUser?.rol == 'ADMIN_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos' | item2.label == 'Formato permiso laboral' | item2.label == 'Formato permiso vacacional'){
                       return
                     }
 
-                    if(dataUser?.rol == 'RESPONSABLE_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos'){
+                    if(dataUser?.rol == 'RESPONSABLE_ROLE' && item2.label == 'Mis Datos' | item2.label == 'Visor Documentos' | item2.label == 'Formato permiso laboral' | item2.label == 'Formato permiso vacacional'){
                       return
                     }
+                    
                       return (
                         <li
                           key={index2}
