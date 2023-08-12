@@ -7,7 +7,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
-import { fetchDelete, fetchGet, createFormData } from '../../../../api';
+import { fetchDelete, fetchGet, createFormData,  VITE_API_URL} from '../../../../api';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
@@ -18,7 +18,7 @@ let zip = new JSZip();
  */
 const RegistroDocumentos = ({isDarkMode}) => {
 
- /*  const mainUrlmin = str.slice(0, -4); */
+  const mainUrlmin =  VITE_API_URL;
   const toast = useRef(null);
 const [spinner, setSpinner] = useState(false)
   const [products, setProducts] = useState([]);
@@ -355,7 +355,7 @@ const [spinner, setSpinner] = useState(false)
   };
 
   const fetchdownload = async (method = '', data) => {
-    const response = await fetch(`${mainUrl}/documentosdowload`, {
+    const response = await fetch(`${VITE_API_URL}/descargar-por-id`, {
       method,
       headers: {
         Accept: 'application/json',
@@ -363,32 +363,25 @@ const [spinner, setSpinner] = useState(false)
       },
       body: JSON.stringify(data),
     });
-    const result = await response.json();
-
-    return result;
+    return response;
   };
 
   const getAll = () => {
+    console.log(mainUrlmin, deleteId)
     fetchdownload('POST', deleteId)
-      .then((response) => {
-        let filename = `${mainUrlmin}/uploads/zip/${response.msg}`;
-
-        JSZipUtils.getBinaryContent(filename, (err, data) => {
-          if (err) {
-            console.log(err);
-            throw err;
-          }
-          zip.file(response.msg, data, { binary: true });
-          zip.generateAsync({ type: 'blob' }).then((content) => {
-            // console.log(content);
-            const objectUrl = URL.createObjectURL(content);
-            setList({ download: 'archivo.zip', href: objectUrl });
-            let link = document.createElement('a');
-            link.download = response.msg;
-            link.href = objectUrl;
-            link.click();
-          });
-        });
+      .then(async (response) => {
+        if (response.ok) {
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+    
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = blobUrl;
+          a.download = 'documentos.zip'; // Nombre del archivo ZIP
+          document.body.appendChild(a);
+          
+          a.click();
+          URL.revokeObjectURL(blobUrl);
 
         toast.current.show({
           severity: 'success',
@@ -396,10 +389,20 @@ const [spinner, setSpinner] = useState(false)
           detail: 'Documentos descargado',
           life: 3000,
         });
+        }else {
+          throw new Error('No se pudo descargar el archivo')
+        }
+
 
         //setText(response.msg);
       })
       .catch((error) => {
+        toast.current.show({
+          severity: 'error',
+          summary: '',
+          detail: 'Error al generar la descarga',
+          life: 3000,
+        });
         console.log(error);
       });
   };
@@ -554,7 +557,6 @@ const [spinner, setSpinner] = useState(false)
               </button>
             ) : (
               <a
-                // ${mainUrlmin}/api/imagePerson/firma_${usuario_codigo}
                 href={list.href}
                 // target='_blank'
                 download={list.download}

@@ -2,7 +2,7 @@ import { json } from 'react-router-dom';
 import { getEnvVariables } from '../helpers';
 import { useNavigate } from 'react-router-dom';
 
-const { VITE_API_URL }  = import.meta.env;
+export const { VITE_API_URL }  = import.meta.env;
 
 function handle401(status) {
 
